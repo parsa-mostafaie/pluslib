@@ -12,6 +12,7 @@ const DEFAULT_VALIDATION_ERRORS = [
   'alphanumeric' => 'The %s should have only letters and numbers',
   'secure' => 'The %s must have between 8 and 64 characters and contain at least one number, one upper case letter, one lower case letter and one special character',
   'unique' => 'The %s already exists',
+  'username' => 'The %s Should Be Starts with a alphabet and only can contains: [A-Z, a-z, 0-9, _, -] remember minimun size is 3 and maximum is 25'
 ];
 
 

@@ -17,12 +17,20 @@ function shrinkDownUser($id)
 //ENDPART
 
 //NOTE THIS PART IS PUBLIC
-function is_username($userName)
+function validateUsername($userName)
 {
   if (preg_match('/^[A-Za-z][0-9A-Za-z_-]{2,24}$/', $userName)) {
     return true;
   }
   return false;
+}
+function is_username(array $data, string $field): bool
+{
+  if (empty($data[$field])) {
+    return true;
+  }
+
+  return validateUsername($data[$field]);
 }
 //ENDPART
 

@@ -64,7 +64,7 @@ function usePassword()
   return implode($pass); //turn the array into a string
 }
 
-function password_verify($input, $hash)
+function pass_verify($input, $hash)
 {
   return hash_pass($input) == $hash;
 }

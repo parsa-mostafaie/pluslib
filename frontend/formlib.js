@@ -22,6 +22,7 @@ class FormSubmitController {
           data: formData,
           success: function (data) {
             fsc.waitTabs.forEach((e) => e.classList.add("d-none"));
+            alert(data);
           },
           cache: false,
           contentType: false,
@@ -31,14 +32,15 @@ class FormSubmitController {
     });
   }
   SubmitWaitTab($query) {
-    if (!$query) return;
+    if (!$query) return this;
     document.querySelector($query).classList.add("d-none");
     this.waitTabs.push(document.querySelector($query));
     return this;
   }
   _ajax($ajax) {
-    if (!$ajax) return;
+    if (!$ajax) return this;
     this.ajax = true;
+    return this;
   }
 }
 
