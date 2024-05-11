@@ -18,28 +18,25 @@ class FormSubmitController {
     let fsc = this;
     const $ = jQuery;
     $($btn).click(function (evt) {
-      evt.preventDefault();
-
       fsc.waitTabs.forEach((e) => e.classList.remove("d-none"));
 
       var button = $(evt.target);
-      var df =
-        $($el).serialize() +
-        "&" +
-        encodeURI(button.attr("name")) +
-        "=" +
-        encodeURI(button.attr("value"));
-      console.log(df);
+      let df = new FormData(fsc.$);
+      df.append(button.attr("name"), button.attr("value"));
+
       $.ajax({
         url: fsc.$.getAttribute("action"),
-        type: "GET",
+        type: "POST",
         data: df,
         success: function (data) {
+          console.log(data);
           data = JSON.parse(data);
           let body = data.body;
           let err = body.error;
           if (err) {
             alert("Error: " + err);
+          } else {
+            window.location = window.location + "/";
           }
         },
         error: function (data) {},
@@ -50,6 +47,7 @@ class FormSubmitController {
         contentType: false,
         processData: false,
       });
+      return false;
     });
   }
   SubmitWaitTab($query) {
