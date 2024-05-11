@@ -20,6 +20,7 @@ include_once '@user/auth.php';
 include_once "info.php";
 include_once '@form/input_validation.php';
 include_once 'headers.php';
+include_once '@ajax.php';
 
 //! For This Project
 include_once '@user/user.php';

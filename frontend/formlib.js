@@ -3,32 +3,53 @@ import bd from "https://cdn.jsdelivr.net/gh/parsa-mostafaie/betterdom@master/bet
 class FormSubmitController {
   $;
   waitTabs = [];
-  ajax = null;
   constructor($el) {
-    bd.ldScript(
+    this.$ = $el;
+  }
+  async loadJQ() {
+    await bd.ldScript(
       "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
     );
-    this.$ = $el;
+    return 0;
+  }
+  async AjaxButton($btn) {
+    await this.loadJQ();
+    let $el = this.$;
     let fsc = this;
-    $el.addEventListener("submit", (event) => {
-      fsc.waitTabs.forEach((e) => e.classList.remove("d-none"));
-      if (fsc.ajax) {
-        event.preventDefault();
-        var formData = new FormData(fsc.$);
+    const $ = jQuery;
+    $($btn).click(function (evt) {
+      evt.preventDefault();
 
-        $.ajax({
-          url: this.$.getAttribute("action"),
-          type: "POST",
-          data: formData,
-          success: function (data) {
-            fsc.waitTabs.forEach((e) => e.classList.add("d-none"));
-            alert(data);
-          },
-          cache: false,
-          contentType: false,
-          processData: false,
-        });
-      }
+      fsc.waitTabs.forEach((e) => e.classList.remove("d-none"));
+
+      var button = $(evt.target);
+      var df =
+        $($el).serialize() +
+        "&" +
+        encodeURI(button.attr("name")) +
+        "=" +
+        encodeURI(button.attr("value"));
+      console.log(df);
+      $.ajax({
+        url: fsc.$.getAttribute("action"),
+        type: "GET",
+        data: df,
+        success: function (data) {
+          data = JSON.parse(data);
+          let body = data.body;
+          let err = body.error;
+          if (err) {
+            alert("Error: " + err);
+          }
+        },
+        error: function (data) {},
+        complete: function (data) {
+          fsc.waitTabs.forEach((e) => e.classList.add("d-none"));
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+      });
     });
   }
   SubmitWaitTab($query) {
@@ -37,16 +58,13 @@ class FormSubmitController {
     this.waitTabs.push(document.querySelector($query));
     return this;
   }
-  _ajax($ajax) {
-    if (!$ajax) return this;
-    this.ajax = true;
-    return this;
-  }
 }
 
 document.querySelectorAll("form[submit-control]").forEach((el) => {
   let obj = new FormSubmitController(el);
   let attr = (a) => el.getAttribute("form-" + a) || undefined;
-  let _ajax = el.hasAttribute("form-ajax");
-  obj.SubmitWaitTab(attr("wait"))._ajax(_ajax);
+  obj.SubmitWaitTab(attr("wait"));
+  el.querySelectorAll('[ajax-submit][type="submit"]').forEach((aj) => {
+    obj.AjaxButton(aj);
+  });
 });
