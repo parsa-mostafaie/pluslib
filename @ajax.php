@@ -24,4 +24,9 @@ class ajaxAPI
     $this->body['error'] = $err;
     $this->send();
   }
+  public function redirect($url)
+  {
+    $this->header['redirect'] = $url;
+    $this->send();
+  }
 }

@@ -17,7 +17,9 @@ class FormSubmitController {
     let $el = this.$;
     let fsc = this;
     const $ = jQuery;
+    $btn.addEventListener("click", () => false);
     $($btn).click(function (evt) {
+      evt.preventDefault();
       fsc.waitTabs.forEach((e) => e.classList.remove("d-none"));
 
       var button = $(evt.target);
@@ -31,12 +33,14 @@ class FormSubmitController {
         success: function (data) {
           console.log(data);
           data = JSON.parse(data);
+          if (data.header.redirect) {
+            // data.redirect contains the string URL to redirect to
+            window.location.href = data.header.redirect;
+          }
           let body = data.body;
           let err = body.error;
           if (err) {
             alert("Error: " + err);
-          } else {
-            window.location = window.location + "/";
           }
         },
         error: function (data) {},
