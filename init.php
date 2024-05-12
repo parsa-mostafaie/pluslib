@@ -36,9 +36,9 @@ function hash_pass(string $str)
     return $str;
   return hash('sha256', $str);
 }
-function c_url($url)
+function c_url($url, $regularIt = true)
 {
-  return regular_url(HOME_URL() . $url);
+  return $regularIt ? regular_url(c_url($url, false)) : HOME_URL() . $url;
 }
 function web_url($url)
 {
