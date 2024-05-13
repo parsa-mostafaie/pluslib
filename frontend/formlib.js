@@ -1,23 +1,23 @@
-import bd from "https://cdn.jsdelivr.net/gh/parsa-mostafaie/betterdom@master/betterdom.js";
+import useAjax, { useJQuery } from "./@ajax.js";
 
 class FormSubmitController {
   $;
   waitTabs = [];
-  constructor($el) {
-    this.$ = $el;
+  constructor($el, $q = false) {
+    this.$ = !$q ? $el : document.querySelector($el);
   }
-  async loadJQ() {
-    await bd.ldScript(
-      "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-    );
-    return 0;
-  }
-  async AjaxButton($btn) {
-    await this.loadJQ();
-    let $el = this.$;
+  async AjaxButton(
+    $btn,
+    res = (data) => undefined,
+    rej = (data) => undefined,
+    allway = (data) => undefined,
+    redirect = true
+  ) {
+    await useJQuery();
     let fsc = this;
     const $ = jQuery;
     $btn.addEventListener("click", () => false);
+
     $($btn).click(function (evt) {
       evt.preventDefault();
       fsc.waitTabs.forEach((e) => e.classList.remove("d-none"));
@@ -26,31 +26,26 @@ class FormSubmitController {
       let df = new FormData(fsc.$);
       df.append(button.attr("name"), button.attr("value"));
 
-      $.ajax({
-        url: fsc.$.getAttribute("action"),
-        type: "POST",
-        data: df,
-        success: function (data) {
-          console.log(data);
-          data = JSON.parse(data);
-          if (data.header.redirect) {
+      useAjax(fsc.$.getAttribute("action"), df)
+        .then((data) => {
+          let jdata = JSON.parse(data);
+          if (jdata.header.redirect && redirect) {
             // data.redirect contains the string URL to redirect to
-            window.location.href = data.header.redirect;
+            window.location.href = jdata.header.redirect;
           }
-          let body = data.body;
+          let body = jdata.body;
           let err = body.error;
           if (err) {
-            alert("Error: " + err);
+            rej({ data: data, jdata: jdata, err: err });
+            return;
           }
-        },
-        error: function (data) {},
-        complete: function (data) {
+          // res({ data, jdata });
+        })
+        .catch(rej)
+        .finally((data) => {
           fsc.waitTabs.forEach((e) => e.classList.add("d-none"));
-        },
-        cache: false,
-        contentType: false,
-        processData: false,
-      });
+          allway(data);
+        });
       return false;
     });
   }
@@ -62,11 +57,29 @@ class FormSubmitController {
   }
 }
 
-document.querySelectorAll("form[submit-control]").forEach((el) => {
-  let obj = new FormSubmitController(el);
-  let attr = (a) => el.getAttribute("form-" + a) || undefined;
-  obj.SubmitWaitTab(attr("wait"));
-  el.querySelectorAll('[ajax-submit][type="submit"]').forEach((aj) => {
-    obj.AjaxButton(aj);
-  });
-});
+window.FormLibInitializer = {
+  settings: {},
+  findLast(el) {
+    let res = [];
+    for (let [k, v] of Object.entries(this.settings)) {
+      if (el.matches(k)) {
+        res = v;
+      }
+    }
+    return res;
+  },
+  setting(q, ...attr) {
+    this.settings[q] = attr;
+    return this;
+  },
+  init() {
+    document.querySelectorAll("form[submit-control]").forEach((el) => {
+      let obj = new FormSubmitController(el);
+      let attr = (a) => el.getAttribute("form-" + a) || undefined;
+      obj.SubmitWaitTab(attr("wait"));
+      el.querySelectorAll('[ajax-submit][type="submit"]').forEach((aj) => {
+        obj.AjaxButton(aj, ...this.findLast(aj));
+      });
+    });
+  },
+};
