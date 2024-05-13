@@ -3,6 +3,7 @@ import bd from "https://cdn.jsdelivr.net/gh/parsa-mostafaie/betterdom@master/bet
 let __jq__loaded = false;
 export async function useJQuery() {
   if (__jq__loaded) return;
+  __jq__loaded = true;
   await bd.ldScript(
     "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
   );
