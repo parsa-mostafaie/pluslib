@@ -23,10 +23,6 @@ class multiStepForm {
   get prevBtn() {
     return this.$.querySelector("#prevBtn");
   }
-
-  get ftab() {
-    return this.$.querySelector(".final-tab");
-  }
   get nextBtn() {
     return this.$.querySelector("#nextBtn");
   }
@@ -77,7 +73,6 @@ class multiStepForm {
     this.nextBtn.innerText = this.n;
     this.prevBtn.innerText = this.p;
     this.submitBtn.innerText = this.s;
-    this.submitBtn.addEventListener('click', ()=>this.validateForm())
   }
   showTab(n) {
     // This function will display the specified tab of the form ...
