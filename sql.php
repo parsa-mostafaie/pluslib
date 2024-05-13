@@ -146,9 +146,9 @@ class Sql_DB extends PDO
     }
   }
 
-  public function TABLE($name)
+  public function TABLE($name, $nocheck = false)
   {
-    return $this->hasTable($name) ? new Sql_Table($this, $name) : null;
+    return $this->hasTable($name) || $nocheck ? new Sql_Table($this, $name) : null;
   }
 }
 
