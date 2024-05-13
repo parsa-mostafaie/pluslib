@@ -247,7 +247,7 @@ class selectQueryCLASS
 
   public function Generate()
   {
-    $join = $this->join_tbl && $this->join_query ? "INNER JOIN" . $this->join_tbl . " ON " . $this->join_query : '';
+    $join = $this->join_tbl && $this->join_query ? "INNER JOIN " . $this->join_tbl . " ON " . $this->join_query : '';
     $cond = $this->condition ? "WHERE " . $this->condition : '';
     $gb = $this->groupby ? "GROUP BY " . $this->groupby : '';
     $having = $this->having ? "HAVING " . $this->having : '';
