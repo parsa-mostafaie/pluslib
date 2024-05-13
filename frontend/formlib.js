@@ -39,7 +39,7 @@ class FormSubmitController {
             rej({ data: data, jdata: jdata, err: err });
             return;
           }
-          // res({ data, jdata });
+          res({ data, jdata });
         })
         .catch(rej)
         .finally((data) => {
