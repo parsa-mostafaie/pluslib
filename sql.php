@@ -562,11 +562,11 @@ class sql_abcol
 
   }
 
-  function get_img($cattrs = '')
+  function get_img($cattrs = '', $undefined = '/default_uploads/unknown.png', $echo = false, $ue_src = true)
   {
     $purl =
       $this->get_url();
-    return imageComponent($purl, 'class="avatar-xxl rounded-circle" ' . $cattrs);
+    return imageComponent($purl, $cattrs);
   }
 
   function has()
