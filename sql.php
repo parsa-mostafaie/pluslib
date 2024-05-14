@@ -458,10 +458,15 @@ class sqlRow
   public PDOStatement $stmt;
   public array $row;
   public ?Sql_Table $tbl = null;
+  public $found = false;
   public function __construct(PDOStatement $stmt, $tbl)
   {
     $this->stmt = $stmt;
-    $this->row = $this->stmt->fetch(PDO::FETCH_ASSOC);
+    $t = $this->stmt->fetch(PDO::FETCH_ASSOC);
+    $this->row = $t ? $t : [];
+    if($t){
+      $this->found = true;
+    }
     $this->tbl = $tbl;
   }
   public function getColumn($cn)
