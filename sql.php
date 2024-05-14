@@ -173,6 +173,19 @@ class Sql_Table
   {
     return (new deleteQueryCLASS($this))->Where($condition);
   }
+  public function primaryKey()
+  {
+    $n = $this->name;
+    $q = "SELECT COLUMN_NAME 
+FROM information_schema.KEY_COLUMN_USAGE 
+WHERE TABLE_NAME = '$n' 
+  AND CONSTRAINT_NAME = 'PRIMARY'";
+    return $this->db->execute_q($q, [], true)->fetchColumn();
+  }
+  public function UPDATE($condition)
+  {
+    return new updateQueryCLASS($this, $condition);
+  }
 }
 
 class selectQueryCLASS
@@ -245,6 +258,11 @@ class selectQueryCLASS
     );
   }
 
+  public function getFirstRow($params = [])
+  {
+    return new sqlRow($this->Run($params), $this->table);
+  }
+
   public function Generate()
   {
     $join = $this->join_tbl && $this->join_query ? "INNER JOIN " . $this->join_tbl . " ON " . $this->join_query : '';
@@ -292,6 +310,53 @@ class insertQueryCLASS
     return "INSERT INTO $tbl (" . $this->keys . ") VALUES ( " . $this->vals . " )";
   }
 }
+
+class updateQueryCLASS
+{
+  private Sql_Table $table;
+  private $cond, $vals;
+
+  public function __construct($table, $cond)
+  {
+    $this->table = $table;
+    $this->cond = $cond;
+  }
+
+  public function WHERE($cond)
+  {
+    $this->cond .= ' AND ' . $cond;
+
+    return $this;
+  }
+
+  public function SET($v)
+  {
+    if ($this->vals) {
+      $this->vals .= ', ';
+    }
+
+    $this->vals .= $v;
+
+    return $this;
+  }
+
+  public function Run($params = [])
+  {
+    return $this->table->db->execute_q(
+      $this->Generate(),
+      $params
+    );
+  }
+
+  public function Generate()
+  {
+    $tbl = $this->table->name;
+    $v = $this->vals;
+    $condition = $this->cond;
+    return "UPDATE $tbl SET $v WHERE $condition";
+  }
+}
+
 
 class deleteQueryCLASS
 {
@@ -385,5 +450,98 @@ class sqlConditionGenerator
   public function Generate()
   {
     return sqlConditionGenerator::Stringify($this);
+  }
+}
+
+class sqlRow
+{
+  public PDOStatement $stmt;
+  public array $row;
+  public ?Sql_Table $tbl = null;
+  public function __construct(PDOStatement $stmt, $tbl)
+  {
+    $this->stmt = $stmt;
+    $this->row = $this->stmt->fetch(PDO::FETCH_ASSOC);
+    $this->tbl = $tbl;
+  }
+  public function getColumn($cn)
+  {
+    return $this->row[$cn];
+  }
+  public function getAssetBasedCol(
+    $cn,
+    $maxSize = 3145728,
+    $allowedTypes = [
+      'image/png' => 'png',
+      'image/jpeg' => 'jpg'
+    ],
+    $prefix = ''
+  ) {
+    $pk = $this->tbl->primaryKey();
+    $pv = $this->getColumn($pk);
+    return new sql_abcol($this->tbl, $cn, $this->row[$cn], $maxSize, $allowedTypes, $prefix, $pk, $pv);
+  }
+}
+
+class sql_abcol
+{
+  public $val, $name;
+  public $ms, $at, $pf;
+  public $pk, $pv;
+  public Sql_Table $tbl;
+  public function __construct($tbl, $name, $val, $ms, $at, $p, $pk, $pv)
+  {
+    [$this->val, $this->name, $this->$tbl] = [$val, $name, $tbl];
+    [$this->ms, $this->at, $this->pf] = [$ms, $at, $p];
+    [$this->pk, $this->pv] = [$pk, $pv];
+  }
+  public function cond()
+  {
+    return $this->pk . ' = ' . $this->pv;
+  }
+  public function set_inp(
+    $name
+  ) {
+    $file = uploadFile_secure($name, $this->ms, $this->at, $this->pf);
+    if ($file) {
+      $this->rem();
+      return $this->set($file);
+    }
+  }
+  private function set(
+    $v
+  ) {
+    $temp = $this->tbl->Update($this->cond())->Set($this->name = $v);
+    if ($temp) {
+      $this->val = $v;
+    }
+    return $temp;
+  }
+  function get_url()
+  {
+    return urlOfUpload($this->val);
+  }
+
+  function rem()
+  {
+    if ($this->has()) {
+      unlinkUpload($this->get_url());
+      return $this->set('NULL');
+    }
+
+  }
+
+  function get_img($cattrs = '')
+  {
+    $purl =
+      $this->get_url();
+    return imageComponent($purl, 'class="avatar-xxl rounded-circle" ' . $cattrs);
+  }
+
+  function has()
+  {
+    $_purl = $this->get_url();
+    $purl = $_SERVER['DOCUMENT_ROOT'] . regular_url($_purl);
+    return file_exists($purl) && $this->get_url();
   }
 }
