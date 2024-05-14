@@ -204,13 +204,39 @@ class selectQueryCLASS
     $this->join_tbl = $jt;
     return $this;
   }
+  public function injoins()
+  {
+    if (is_array($this->join_tbl) || is_array($this->join_query)) {
+      $res = '';
+      foreach ($this->join_tbl as $i => $t) {
+        $res .= ' INNER JOIN ' . $t;
+        $res .= ' ON ' . $this->join_query[$i];
+      }
+      return $res;
+    } else {
+      $join = $this->join_tbl && $this->join_query ? "INNER JOIN " . $this->join_tbl . " ON " . $this->join_query : '';
+      return $join;
+    }
+  }
+
+  private static function set_arr_s(&$arr_s, $v)
+  {
+    if ($arr_s) {
+      if (!is_array($arr_s))
+        $arr_s = [$arr_s];
+
+      array_push($arr_s, $v);
+    } else
+      $arr_s = $v;
+    return $arr_s;
+  }
 
   public function ON($jq, $jt = null)
   {
-    if ($this->join_tbl === null) {
-      $this->join_tbl = $jt;
+    if ($this->join_tbl === null || $jt) {
+      selectQueryCLASS::set_arr_s($this->join_tbl, $jt);
     }
-    $this->join_query = $jq;
+    selectQueryCLASS::set_arr_s($this->join_query, $jq);
     return $this;
   }
   public function WHERE($cond)
@@ -265,7 +291,7 @@ class selectQueryCLASS
 
   public function Generate()
   {
-    $join = $this->join_tbl && $this->join_query ? "INNER JOIN " . $this->join_tbl . " ON " . $this->join_query : '';
+    $join = $this->injoins();
     $cond = $this->condition ? "WHERE " . $this->condition : '';
     $gb = $this->groupby ? "GROUP BY " . $this->groupby : '';
     $having = $this->having ? "HAVING " . $this->having : '';
@@ -464,7 +490,7 @@ class sqlRow
     $this->stmt = $stmt;
     $t = $this->stmt->fetch(PDO::FETCH_ASSOC);
     $this->row = $t ? $t : [];
-    if($t){
+    if ($t) {
       $this->found = true;
     }
     $this->tbl = $tbl;
