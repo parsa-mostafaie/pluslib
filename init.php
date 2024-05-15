@@ -16,6 +16,8 @@ include_once '@security/upload.php';
 include_once '@security/security.php';
 include_once 'session.php';
 include_once 'sql.php';
+include_once 'oop.sql.php';
+include_once 'queries.oop.sql.php';
 include_once '@user/auth.php';
 include_once "info.php";
 include_once '@form/input_validation.php';
