@@ -146,20 +146,26 @@ class Sql_DB extends PDO
     }
   }
 
-  public function TABLE($name, $nocheck = false)
+  public function TABLE($name, $nocheck = false, $alias = null)
   {
-    return $this->hasTable($name) || $nocheck ? new Sql_Table($this, $name) : null;
+    return $this->hasTable($name) || $nocheck ? new Sql_Table($this, $name, $alias) : null;
   }
 }
 
 class Sql_Table
 {
   readonly Sql_DB $db;
-  readonly string $name;
-  public function __construct($db, $name)
+  private readonly string $name;
+  public function name()
+  {
+    return $this->name . ($this->alias ? ' as ' . $this->alias : '');
+  }
+  readonly string $alias;
+  public function __construct($db, $name, $alias = null)
   {
     $this->db = $db;
     $this->name = $name;
+    $this->alias = $alias ? $alias : '';
   }
   public function SELECT($cols = '*')
   {
@@ -298,7 +304,7 @@ class selectQueryCLASS
     $ob = $this->order ? "ORDER BY " . $this->order : '';
     $lm = $this->lim ? "LIMIT " . $this->lim : '';
     $cols = $this->cols;
-    $tbl = $this->table->name;
+    $tbl = $this->table->name();
 
     $query = "SELECT $cols FROM $tbl $join $cond $gb $having $ob $lm";
     return $query;
@@ -332,7 +338,7 @@ class insertQueryCLASS
 
   public function Generate()
   {
-    $tbl = $this->table->name;
+    $tbl = $this->table->name();
     return "INSERT INTO $tbl (" . $this->keys . ") VALUES ( " . $this->vals . " )";
   }
 }
@@ -376,7 +382,7 @@ class updateQueryCLASS
 
   public function Generate()
   {
-    $tbl = $this->table->name;
+    $tbl = $this->table->name();
     $v = $this->vals;
     $condition = $this->cond;
     return "UPDATE $tbl SET $v WHERE $condition";
@@ -411,7 +417,7 @@ class deleteQueryCLASS
 
   public function Generate()
   {
-    $tbl = $this->table->name;
+    $tbl = $this->table->name();
     $condition = $this->condition;
     return "DELETE FROM $tbl WHERE $condition";
   }
