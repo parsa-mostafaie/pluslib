@@ -522,7 +522,8 @@ class sql_abcol
   public Sql_Table $tbl;
   public function __construct($tbl, $name, $val, $ms, $at, $p, $pk, $pv)
   {
-    [$this->val, $this->name, $this->$tbl] = [$val, $name, $tbl];
+    $this->tbl = $tbl;
+    [$this->val, $this->name] = [$val, $name];
     [$this->ms, $this->at, $this->pf] = [$ms, $at, $p];
     [$this->pk, $this->pv] = [$pk, $pv];
   }
