@@ -90,7 +90,7 @@ function imageComponent($purl, $cattr = '', $undefined = '/default_uploads/unkno
 {
   $ud = $ue_src ? 'this.src' : 'this.style.background';
   $ud = "$ud = '$undefined';";
-  $str = '<img loading="lazy" src="' . $purl . '" onerror="this.onerror=null;' . $ud . '" alt="Image" ' . $cattr . '>
+  $str = '<img loading="lazy" src="' . $purl . '" onerror="this.onerror=null;' . $ud . '" ' . $cattr . '>
 ';
   if ($echo)
     echo $str;

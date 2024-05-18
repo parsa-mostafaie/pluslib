@@ -248,7 +248,7 @@ class sql_abcol
   {
     $purl =
       $this->get_url();
-    return imageComponent($purl, $cattrs);
+    return imageComponent($purl, $cattrs, $undefined, $echo, $ue_src);
   }
 
   function has()
