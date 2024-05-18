@@ -68,3 +68,25 @@ function pass_verify($input, $hash)
 {
   return hash_pass($input) == $hash;
 }
+enum secure_form_enum
+{
+  case gen;
+  case get;
+}
+function secure_form(secure_form_enum $st = secure_form_enum::gen)
+{
+  if ($st == secure_form_enum::gen) {
+    $n = uniqid('sec_form_sess_');
+    $v = bin2hex(random_bytes(4));
+    set_session($n, hash_pass($v));
+    return ['n' => $n, 'v' => $v];
+  } else {
+    $n = get_val('sec_form_sess_n');
+    $v = get_val('sec_form_sess_v');
+
+    if (pass_verify($v, get_session($n))) {
+      return true;
+    }
+    return false;
+  }
+}
