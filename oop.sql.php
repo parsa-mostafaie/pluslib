@@ -5,7 +5,7 @@ class Sql_DB extends PDO
 {
   private $username;
   private $password;
-  private $db;
+  public $db;
   private $host;
   public function __construct($db = 'plus', $username = 'root', $password = '', $host = 'localhost')
   {
