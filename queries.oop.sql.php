@@ -99,7 +99,7 @@ class selectQueryCLASS
 
   public function getFirstRow($params = [])
   {
-    return new sqlRow($this->Run($params), $this->table);
+    return new sqlRow($this->Run($params), $this->table, $this->join_query || $this->join_tbl);
   }
 
   public function Generate()

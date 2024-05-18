@@ -156,11 +156,13 @@ class sqlRow
   public array $row;
   public ?Sql_Table $tbl = null;
   public $found = false;
-  public function __construct(PDOStatement $stmt, $tbl)
+  public $imm = false;
+  public function __construct(PDOStatement $stmt, $tbl, $imm = false)
   {
     $this->stmt = $stmt;
     $t = $this->stmt->fetch(PDO::FETCH_ASSOC);
     $this->row = $t ? $t : [];
+    $this->imm = $imm;
     if ($t) {
       $this->found = true;
     }
@@ -179,9 +181,12 @@ class sqlRow
     ],
     $prefix = ''
   ) {
-    $pk = $this->tbl->primaryKey();
-    $pv = $this->getColumn($pk);
-    return new sql_abcol($this->tbl, $cn, $this->row[$cn], $maxSize, $allowedTypes, $prefix, $pk, $pv);
+    if (!$this->imm) {
+      $pk = $this->tbl->primaryKey();
+      $pv = $this->getColumn($pk);
+    }
+    $pk = $pv = null;
+    return new sql_abcol($this->tbl, $cn, $this->row[$cn], $maxSize, $allowedTypes, $prefix, $this->imm, $pk, $pv);
   }
 }
 
@@ -191,12 +196,15 @@ class sql_abcol
   public $ms, $at, $pf;
   public $pk, $pv;
   public Sql_Table $tbl;
-  public function __construct($tbl, $name, $val, $ms, $at, $p, $pk, $pv)
+  public $imm = false;
+  public function __construct($tbl, $name, $val, $ms, $at, $p, $imm = false, $pk = null, $pv = null)
   {
     $this->tbl = $tbl;
     [$this->val, $this->name] = [$val, $name];
     [$this->ms, $this->at, $this->pf] = [$ms, $at, $p];
-    [$this->pk, $this->pv] = [$pk, $pv];
+    if (!$imm)
+      [$this->pv] = [$pk, $pv];
+    $this->imm = $imm;
   }
   public function cond()
   {
@@ -214,6 +222,8 @@ class sql_abcol
   private function set(
     $v
   ) {
+    if ($this->imm)
+      throw new Exception('Cant Set Immutable asset-based column (This Column may selected from a select query with join)');
     $temp = $this->tbl->Update($this->cond())->Set($this->name = $v);
     if ($temp) {
       $this->val = $v;
