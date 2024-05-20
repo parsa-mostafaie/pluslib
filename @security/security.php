@@ -85,6 +85,7 @@ function secure_form(secure_form_enum $st = secure_form_enum::gen)
     $v = get_val('sec_form_sess_v');
 
     if (pass_verify($v, get_session($n))) {
+      session__unset(false, $n, $v);
       return true;
     }
     return false;
