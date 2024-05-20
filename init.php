@@ -31,13 +31,6 @@ include_once '@user/follow.php';
 //! ADMIN
 include_once "admin/lib.php";
 
-function hash_pass(string $str)
-{
-  global $__unsafe__hash__pass__disable;
-  if ($__unsafe__hash__pass__disable)
-    return $str;
-  return hash('sha256', $str);
-}
 function c_url($url, $regularIt = true)
 {
   return $regularIt ? regular_url(c_url($url, false)) : HOME_URL() . $url;

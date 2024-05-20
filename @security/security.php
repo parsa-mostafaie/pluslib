@@ -1,5 +1,6 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/init.php';
 
+//! Not recommended to use [always not never]; start
 function redirect_secure($path, $back_addr = null, $back = false, $gen_only = false)
 {
   [$u, $p] = useRedirectCode();
@@ -51,6 +52,7 @@ function useRedirectCode()
 
   return [$u, $p];
 }
+//! Not recommended to use; end
 
 function usePassword()
 {
@@ -64,15 +66,25 @@ function usePassword()
   return implode($pass); //turn the array into a string
 }
 
+function hash_pass(string $str)
+{
+  global $__unsafe__hash__pass__disable;
+  if ($__unsafe__hash__pass__disable)
+    return $str;
+  return hash('sha256', $str);
+}
+
 function pass_verify($input, $hash)
 {
   return hash_pass($input) == $hash;
 }
+
 enum secure_form_enum
 {
   case gen;
   case get;
 }
+
 function secure_form(secure_form_enum $st = secure_form_enum::gen)
 {
   if ($st == secure_form_enum::gen) {
