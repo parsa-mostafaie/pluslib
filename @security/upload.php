@@ -10,7 +10,6 @@ function uploadFile_secure(
     $prefix = ''
 ) {
 
-    var_dump($_FILES);
     if (!isset($_FILES[$name]) || $_FILES[$name]['name'] === '') {
         return '';
     }
