@@ -20,26 +20,27 @@ function uploadFile_secure(
     $filetype = finfo_file($fileinfo, $filepath);
 
     if ($fileSize === 0) {
-        die("The file is empty.");
+        throw new Exception("The file is empty.");
     }
 
     if ($fileSize > $max_size) {
-        die("The file is too large");
+        throw new Exception("The file is too large");
     }
 
     if (!in_array($filetype, array_keys($allowedTypes))) {
-        die("File not allowed.");
+        throw new Exception("File not allowed.");
     }
 
     $filename = uniqid('UPLOAD_' . $prefix, true);
     // $filename = basename($filepath);
 
     $extension = $allowedTypes[$filetype];
-    $targetDirectory = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
+    $targetDirectory = $_SERVER['DOCUMENT_ROOT'] . web_url(c_url('/uploads'));
 
     $newFilepath = $targetDirectory . "/" . $filename . "." . $extension;
+
     if (!copy($filepath, $newFilepath)) { // Copy the file, returns false if failed
-        die("Can't move file.");
+        throw new Exception("Can't move file.");
     }
     unlink($filepath); // Delete the temp file
 
