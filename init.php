@@ -119,3 +119,12 @@ function truncate($string, $chars = 50, $terminator = ' …')
   $boundaryPos = mb_strrpos(mb_substr($string, 0, mb_strpos($string, ' ', $cutPos)), ' ');
   return mb_substr($string, 0, $boundaryPos === false ? $cutPos : $boundaryPos) . $terminator;
 }
+
+function valueof($fv, $data)
+{
+  $_fv = $fv;
+  if (is_callable($fv)) {
+    $_fv = $_fv($data);
+  }
+  return $_fv;
+}
