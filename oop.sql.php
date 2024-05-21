@@ -14,7 +14,7 @@ class Sql_DB extends PDO
     $this->password = $password;
     $this->host = $host;
     parent::__construct(
-      'mysql:hostname=' . $this->host . ';dbname=' . $this->db . ';charset=utf8',
+      'mysql:hostname=' . $this->host . ';dbname=' . $this->db . ';charset=utf8mb4',
       $this->username,
       $this->password
     );
