@@ -108,6 +108,9 @@ function form_processor_url($path, $dir = '/libs/custom/@form', $base = '')
 
 function truncate($string, $chars = 50, $terminator = ' …')
 {
+  if(mb_strlen($string) < $chars){
+    return $string;
+  }
   $cutPos = $chars - mb_strlen($terminator);
   $boundaryPos = mb_strrpos(mb_substr($string, 0, mb_strpos($string, ' ', $cutPos)), ' ');
   return mb_substr($string, 0, $boundaryPos === false ? $cutPos : $boundaryPos) . $terminator;
