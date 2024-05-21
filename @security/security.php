@@ -30,7 +30,7 @@ function validate_redirect()
 {
   $u = get_val('u');
   $p = get_val('p');
-  $hash = hash_pass($p);
+  $hash = md5($p);
 
   if (setted('u') && setted('p')) {
     $r = select_q('redirect_codes', '1', condition: 'u = ? AND p = ?', p: [$u, $hash])->fetchColumn();
@@ -46,7 +46,7 @@ function useRedirectCode()
 {
   $u = uniqid('useRedirectCode_');
   $p = usePassword();
-  $hash = hash_pass($p);
+  $hash = md5($p);
 
   insert_q('redirect_codes', 'u, p', '?, ?', [$u, $hash]);
 
@@ -90,13 +90,13 @@ function secure_form(secure_form_enum $st = secure_form_enum::gen)
   if ($st == secure_form_enum::gen) {
     $n = uniqid('sec_form_sess_');
     $v = bin2hex(random_bytes(4));
-    set_session($n, hash_pass($v));
+    set_session($n, md5($v));
     return ['n' => $n, 'v' => $v];
   } else {
     $n = get_val('sec_form_sess_n');
     $v = get_val('sec_form_sess_v');
 
-    if (pass_verify($v, get_session($n))) {
+    if (md5($v) == get_session($n)) {
       session__unset(false, $n, $v);
       return true;
     }
