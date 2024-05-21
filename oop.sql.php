@@ -184,8 +184,8 @@ class sqlRow
     if (!$this->imm) {
       $pk = $this->tbl->primaryKey();
       $pv = $this->getColumn($pk);
-    }
-    $pk = $pv = null;
+    } else
+      $pk = $pv = null;
     return new sql_abcol($this->tbl, $cn, $this->row[$cn], $maxSize, $allowedTypes, $prefix, $this->imm, $pk, $pv);
   }
 }
@@ -203,7 +203,7 @@ class sql_abcol
     [$this->val, $this->name] = [$val, $name];
     [$this->ms, $this->at, $this->pf] = [$ms, $at, $p];
     if (!$imm)
-      [$this->pv] = [$pk, $pv];
+      [$this->pk, $this->pv] = [$pk, $pv];
     $this->imm = $imm;
   }
   public function cond()
@@ -224,7 +224,7 @@ class sql_abcol
   ) {
     if ($this->imm)
       throw new Exception('Cant Set Immutable asset-based column (This Column may selected from a select query with join)');
-    $temp = $this->tbl->Update($this->cond())->Set($this->name = $v);
+    $temp = $this->tbl->UPDATE($this->cond())->Set($this->name . " = ?")->Run([$v]);
     if ($temp) {
       $this->val = $v;
     }
@@ -238,7 +238,7 @@ class sql_abcol
   function rem()
   {
     if ($this->has()) {
-      unlinkUpload($this->get_url());
+      unlinkUpload($this->val);
       return $this->set('NULL');
     }
 
