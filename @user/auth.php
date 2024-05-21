@@ -35,7 +35,7 @@ function canLoginWith($id, $pass)
   if ($user) {
     $user_pass = $user->fetchColumn();
 
-    if (hash_pass($pass) === $user_pass) {
+    if (pass_verify($pass, $user_pass)) {
       return true;
     }
   }
