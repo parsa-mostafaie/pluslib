@@ -2,24 +2,37 @@
 // NOTE THAT's ALWAYS PUBLIC
 session_start();
 
+if (!$_SESSION['PATHS']) {
+    $_SESSION['PATHS'] = array();
+}
+
 function get_session($name, $public = false)
 {
-    return $_SESSION[session_local_name($name, $public)] ?? '';
+    return session_arr($public)[$name] ?? '';
 }
 
 function set_session($name, $value, $public = false)
 {
-    $_SESSION[session_local_name($name, $public)] = $value;
+    session_arr($public)[$name] = $value;
 }
 
 function session__unset($public = false, ...$val)
 {
     foreach ($val as $n) {
-        unset($_SESSION[session_local_name($n, $public)]);
+        unset(session_arr($public)[$n]);
     }
 }
 
-function session_local_name($pureName, $public = false)
+function &session_arr($public = false): array
 {
-    return !$public ? c_url('__$' . $pureName) : $pureName;
+    $PATHS =& $_SESSION['PATHS'];
+    if (!isset($PATHS[HOME_URL()]) || !$PATHS[HOME_URL()]) {
+        $_SESSION['PATHS'][HOME_URL()] = array();
+    }
+    if (!$public) {
+        $ref =& $_SESSION['PATHS'][HOME_URL()];
+    } else {
+        $ref =& $_SESSION;
+    }
+    return $ref;
 }
