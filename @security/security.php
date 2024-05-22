@@ -115,9 +115,12 @@ function secure_form(secure_form_enum $st = secure_form_enum::gen)
 
 function unti_xss($html)
 {
+  if (empty($html)) {
+    return $html;
+  }
   $dom = new DOMDocument();
 
-  $dom->loadHTML($html);
+  $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
 
   $script = $dom->getElementsByTagName('script');
 
