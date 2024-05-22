@@ -83,6 +83,7 @@ enum secure_form_enum
 {
   case gen;
   case get;
+  case expire;
 }
 
 function secure_form(secure_form_enum $st = secure_form_enum::gen)
@@ -92,6 +93,14 @@ function secure_form(secure_form_enum $st = secure_form_enum::gen)
     $v = bin2hex(random_bytes(4));
     set_session($n, md5($v));
     return ['n' => $n, 'v' => $v];
+  } else if ($st == secure_form_enum::get) {
+    $n = get_val('sec_form_sess_n');
+    $v = get_val('sec_form_sess_v');
+
+    if (md5($v) == get_session($n)) {
+      return true;
+    }
+    return false;
   } else {
     $n = get_val('sec_form_sess_n');
     $v = get_val('sec_form_sess_v');
