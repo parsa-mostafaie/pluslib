@@ -11,6 +11,7 @@ class FormSubmitController {
     res = (data) => undefined,
     rej = (data) => undefined,
     allway = (data) => undefined,
+    submit = (data) => undefined,
     redirect = true
   ) {
     await useJQuery();
@@ -25,7 +26,7 @@ class FormSubmitController {
       var button = $(evt.target);
       let df = new FormData(fsc.$);
       df.append(button.attr("name"), button.attr("value"));
-
+      submit(df);
       useAjax(fsc.$.getAttribute("action"), df)
         .then((data) => {
           let jdata = JSON.parse(data);
