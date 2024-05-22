@@ -2,7 +2,7 @@
 // NOTE THAT's ALWAYS PUBLIC
 session_start();
 
-if (!$_SESSION['PATHS']) {
+if ((!isset($_SESSION['PATHS'])) || !$_SESSION['PATHS']) {
     $_SESSION['PATHS'] = array();
 }
 
