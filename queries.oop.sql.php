@@ -6,6 +6,44 @@ class selectQueryCLASS
   private $cols = '*', $join_tbl = null, $join_query = null, $condition = '1 = 1', $groupby = null, $having = null, $order
     = null, $lim = null, $p = [];
 
+  function pagination($per_page, $page, $params = [])
+  {
+    $stmt = $this->Run($params);
+    $count = $stmt->rowCount();
+
+    // Pagination Main
+    $page = intval($page);
+
+    $pages = ceil($count / $per_page);
+
+    if ($page < 1) {
+      $page = 1;
+    }
+
+    if ($page > $pages) {
+      $page = $pages;
+    }
+
+    $off = ($page - 1) * $per_page;
+
+    if ($this->lim) {
+      trigger_error("Pagination Select Queries Can't be have LIMIT/OFFSET", E_USER_WARNING);
+    }
+
+    $copy = clone $this;
+
+    $mn = $copy->LIMIT("$per_page OFFSET $off")->Run($params);
+
+    return [
+      'page_count' => $pages,
+      'current' => $page,
+      'res' => $mn,
+      'result_count' => $mn->rowCount(),
+      'count' => $count,
+      'offset' => $off
+    ];
+  }
+
   public function __construct($table, $cols)
   {
     $this->table = $table;
