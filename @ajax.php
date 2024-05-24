@@ -4,9 +4,10 @@ class ajaxAPI
 {
   private $header = [];
   private $body = [];
+  private $customs = [];
   public function generateObj()
   {
-    $obj = ['header' => $this->header, 'body' => $this->body];
+    $obj = ['header' => $this->header, 'body' => $this->body, ...$this->customs];
     return $obj;
   }
   public function generateStr()
@@ -18,6 +19,10 @@ class ajaxAPI
     echo $this->generateStr();
     if (!$live)
       die;
+  }
+  public function custom($n, $v)
+  {
+    $customs[$n] = $v;
   }
   public function err($err)
   {
