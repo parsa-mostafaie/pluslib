@@ -18,13 +18,37 @@ function _404_()
   die();
 }
 
+function _403_()
+{
+  ap_header_("403 Access Denied");
+  die();
+}
+
+function _500_()
+{
+  ap_header_("500 Server Error");
+  die();
+}
+
+function _400_()
+{
+  ap_header_("400 Bad Request");
+  die();
+}
+
 function redirect($url)
 {
   header('Location: ' . $url);
   die();
 }
 
-function API_header()
+function API_ORIGIN_header()
 {
   header('Access-Control-Allow-Origin: ' . $_SERVER['SERVER_NAME']);
+}
+
+
+function API_header()
+{
+  API_ORIGIN_header();
 }
