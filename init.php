@@ -79,6 +79,18 @@ function regular_url($_purl)
   return str_replace('/', DIRECTORY_SEPARATOR, $_purl);
 }
 
+function i_protocol()
+{
+  $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? "https://" : "http://";
+  return $protocol;
+}
+
+function http_baseurl()
+{
+  $baseurl = i_protocol() . $_SERVER["HTTP_HOST"];
+  return $baseurl;
+}
+
 function imageComponent($purl, $cattr = '', $undefined = '/default_uploads/unknown.png', $echo = false, $ue_src = true)
 {
   $ud = $ue_src ? 'this.src' : 'this.style.background';
@@ -108,7 +120,7 @@ function form_processor_url($path, $dir = '/libs/custom/@form', $base = '')
 
 function truncate($string, $chars = 50, $terminator = ' …')
 {
-  if(mb_strlen($string) < $chars){
+  if (mb_strlen($string) < $chars) {
     return $string;
   }
   $cutPos = $chars - mb_strlen($terminator);
