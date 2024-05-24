@@ -12,7 +12,7 @@ function uploadFile_secure(
 
     if ($_FILES[$name]["error"] != 0) {
         //stands for any kind of errors happen during the uploading
-        return;
+        return null;
     }
 
     $filepath = $_FILES[$name]['tmp_name'];
@@ -21,15 +21,15 @@ function uploadFile_secure(
     $filetype = finfo_file($fileinfo, $filepath);
 
     if ($fileSize === 0) {
-        throw new Exception("The file is empty.");
+        throw new Exception("The file is empty.", 400);
     }
 
     if ($fileSize > $max_size) {
-        throw new Exception("The file is too large");
+        throw new Exception("The file is too large", 400);
     }
 
     if (!in_array($filetype, array_keys($allowedTypes))) {
-        throw new Exception("File not allowed.");
+        throw new Exception("File not allowed.", 400);
     }
 
     $filename = uniqid('UPLOAD_' . $prefix, true);
