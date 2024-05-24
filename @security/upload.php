@@ -10,8 +10,9 @@ function uploadFile_secure(
     $prefix = ''
 ) {
 
-    if (!isset($_FILES[$name]) || $_FILES[$name]['name'] === '') {
-        return '';
+    if ($_FILES[$name]["error"] != 0) {
+        //stands for any kind of errors happen during the uploading
+        return;
     }
 
     $filepath = $_FILES[$name]['tmp_name'];
