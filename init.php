@@ -141,3 +141,8 @@ function valueof($fv, $data)
   }
   return $_fv;
 }
+
+function importJSON($file, $assoc = null, $depth = 512, $flags = 0)
+{
+  return json_decode(file_get_contents($file), $assoc, $depth, $flags);
+}
