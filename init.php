@@ -91,6 +91,11 @@ function http_baseurl()
   return $baseurl;
 }
 
+function etc_url($url)
+{
+  return $_SERVER['DOCUMENT_ROOT'] . $url;
+}
+
 function imageComponent($purl, $cattr = '', $undefined = '/default_uploads/unknown.png', $echo = false, $ue_src = true)
 {
   $ud = $ue_src ? 'this.src' : 'this.style.background';
