@@ -74,6 +74,11 @@ function hash_pass(string $str)
   return hash('sha256', $str);
 }
 
+function rand_hex($len = 4)
+{
+  return bin2hex(random_bytes($len));
+}
+
 function pass_verify($input, $hash)
 {
   return hash_pass($input) == $hash;
@@ -90,7 +95,7 @@ function secure_form(secure_form_enum $st = secure_form_enum::gen)
 {
   if ($st == secure_form_enum::gen) {
     $n = uniqid('sec_form_sess_');
-    $v = bin2hex(random_bytes(4));
+    $v = rand_hex();
     set_session($n, md5($v));
     return ['n' => $n, 'v' => $v];
   } else if ($st == secure_form_enum::get) {
