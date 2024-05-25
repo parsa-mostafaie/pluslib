@@ -113,7 +113,7 @@ function secure_form(secure_form_enum $st = secure_form_enum::gen)
   }
 }
 
-function unti_xss($html)
+function anti_xss($html)
 {
   if (empty($html)) {
     return $html;
