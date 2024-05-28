@@ -1,5 +1,5 @@
 <?php
-include_once ('init.php');
+include_once __DIR__ . '/../init.php';
 class selectQueryCLASS
 {
   private Sql_Table $table;

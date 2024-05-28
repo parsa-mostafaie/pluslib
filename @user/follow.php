@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/pluslib/sql.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/pluslib/init.php';
 
 //NOTE THIS FILE IS CUSTOMIZED
 

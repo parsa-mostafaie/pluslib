@@ -23,9 +23,9 @@ include_once '@security/security.php';
 
 include_once 'session.php';
 
-include_once 'sql.php';
-include_once 'oop.sql.php';
-include_once 'queries.oop.sql.php';
+include_once '@sql/sql.php';
+include_once '@sql/oop.sql.php';
+include_once '@sql/queries.oop.sql.php';
 
 include_once '@user/user.php';
 include_once '@user/follow.php';
