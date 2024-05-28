@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/init.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/pluslib/init.php';
 
 //NOTE THIS FILE REQUIRES:
 // A users TABLE WITH {id, last_activity_time}

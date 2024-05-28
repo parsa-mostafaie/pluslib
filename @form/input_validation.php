@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/init.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/pluslib/init.php';
 
 // VALIDATION
 const DEFAULT_VALIDATION_ERRORS = [

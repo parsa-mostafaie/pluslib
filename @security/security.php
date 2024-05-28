@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/init.php';
+<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/pluslib/init.php';
 
 //! Not recommended to use [always not never]; start
 function redirect_secure($path, $back_addr = null, $back = false, $gen_only = false)
