@@ -9,40 +9,37 @@ function HOME_URL($set = null)
 }
 //? libs:init.php v0.5.1
 //! Publics
+include_once 'config.php';
+
+include_once '@url.php';
+
 include_once 'array.php';
+
 include_once '@form/processors/@processor.php';
 include_once '@form/get_post.php';
+
 include_once '@security/upload.php';
 include_once '@security/security.php';
+
 include_once 'session.php';
 
 include_once 'sql.php';
 include_once 'oop.sql.php';
 include_once 'queries.oop.sql.php';
 
+include_once '@user/user.php';
+include_once '@user/follow.php';
 include_once '@user/auth.php';
+
 include_once "info.php";
+
 include_once '@form/input_validation.php';
+
 include_once 'headers.php';
 include_once '@ajax.php';
 
-include_once 'config.php';
-
-//! For This Project
-include_once '@user/user.php';
-include_once '@user/follow.php';
-
-//! ADMIN
 include_once "admin/lib.php";
 
-function c_url($url, $regularIt = true)
-{
-  return $regularIt ? regular_url(c_url($url, false)) : HOME_URL() . $url;
-}
-function web_url($url)
-{
-  return str_replace('\\', '/', $url);
-}
 function number_format_short($n, $precision = 1)
 {
   if ($n < 900) {
@@ -77,29 +74,6 @@ function number_format_short($n, $precision = 1)
   return $n_format . $suffix;
 }
 
-
-function regular_url($_purl)
-{
-  return str_replace('/', DIRECTORY_SEPARATOR, $_purl);
-}
-
-function i_protocol()
-{
-  $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? "https://" : "http://";
-  return $protocol;
-}
-
-function http_baseurl()
-{
-  $baseurl = i_protocol() . $_SERVER["HTTP_HOST"];
-  return $baseurl;
-}
-
-function etc_url($url)
-{
-  return $_SERVER['DOCUMENT_ROOT'] . $url;
-}
-
 function imageComponent($purl, $cattr = '', $undefined = '/default_uploads/unknown.png', $echo = false, $ue_src = true)
 {
   $ud = $ue_src ? 'this.src' : 'this.style.background';
@@ -118,13 +92,6 @@ function divImage($purl, $cattr, $undefined_color = 'ffaabb', $echo = false)
   if ($echo)
     echo $str;
   return $str;
-}
-
-function form_processor_url($path, $dir = '/libs/custom/@form', $base = '')
-{
-  $base = $base ? $base : $_SERVER['DOCUMENT_ROOT'];
-  $full = $base . $dir . $path;
-  return $full;
 }
 
 function truncate($string, $chars = 50, $terminator = ' …')
