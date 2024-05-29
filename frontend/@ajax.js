@@ -4,9 +4,7 @@ let __jq__loaded = false;
 export async function useJQuery() {
   if (__jq__loaded) return;
   __jq__loaded = true;
-  await bd.ldScript(
-    "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-  );
+  await bd.ldScript("https://code.jquery.com/jquery-3.7.1.min.js");
   return 0;
 }
 
@@ -22,9 +20,6 @@ export default async function useAjax(url, data) {
       },
       error: function (data) {
         rej(data);
-      },
-      complete: function (data) {
-        res(data);
       },
       cache: false,
       contentType: false,

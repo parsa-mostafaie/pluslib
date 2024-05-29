@@ -14,13 +14,16 @@ class FormSubmitController {
     submit = (data) => undefined,
     redirect = true
   ) {
-    await useJQuery();
+    try {
+      await useJQuery();
+    } catch ($ex) {
+      console.error($ex);
+    }
     let fsc = this;
-    const $ = jQuery;
-    $btn.addEventListener("click", () => false);
 
-    $($btn).click(function (evt) {
+    $btn.addEventListener("click", function (evt) {
       evt.preventDefault();
+      const $ = jQuery;
       fsc.waitTabs.forEach((e) => e.classList.remove("d-none"));
 
       var button = $(evt.target);
@@ -47,7 +50,6 @@ class FormSubmitController {
           fsc.waitTabs.forEach((e) => e.classList.add("d-none"));
           allway(data);
         });
-      return false;
     });
   }
   SubmitWaitTab($query) {
