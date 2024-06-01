@@ -13,6 +13,6 @@ function isAdmin()
 function authAdmin()
 {
     if (!isAdmin()) {
-        _404_();
+        _403_();
     }
 }
