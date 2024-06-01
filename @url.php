@@ -30,6 +30,10 @@ function etc_url($url)
   return $_SERVER['DOCUMENT_ROOT'] . $url;
 }
 
+function www_url($url){
+  return http_baseurl() . web_url($url);
+}
+
 function form_processor_url($path, $dir = '/libs/custom/@form', $base = '')
 {
   $base = $base ? $base : $_SERVER['DOCUMENT_ROOT'];
