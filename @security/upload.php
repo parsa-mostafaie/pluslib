@@ -55,12 +55,12 @@ function unlinkUpload($fname)
   unlink(etc_urlOfUpload($fname));
 }
 
-function urlOfUpload($fname)
+function urlOfUpload($fname, $no_www = false)
 {
-  return $fname ? c_url('/') . $fname : null;
+  return $fname ? ($no_www ? c_url('/') . $fname : www_url(urlOfUpload($fname, true))) : null;
 }
 
 function etc_urlOfUpload($fname)
 {
-  return $_SERVER['DOCUMENT_ROOT'] . urlOfUpload($fname);
+  return $_SERVER['DOCUMENT_ROOT'] . urlOfUpload($fname, true);
 }
