@@ -12,29 +12,8 @@ function ap_header_(
   );
   die();
 }
-function _404_()
-{
-  ap_header_('404 Not Found', true, 404);
-  die();
-}
 
-function _403_()
-{
-  ap_header_("403 Access Denied");
-  die();
-}
-
-function _500_()
-{
-  ap_header_("500 Server Error");
-  die();
-}
-
-function _400_()
-{
-  ap_header_("400 Bad Request");
-  die();
-}
+include_once 'http_status.php';
 
 function redirect($url)
 {
