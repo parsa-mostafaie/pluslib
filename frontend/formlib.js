@@ -30,7 +30,7 @@ class FormSubmitController {
       let df = new FormData(fsc.$);
       df.append(button.attr("name"), button.attr("value"));
       submit(df);
-      useAjax(fsc.$.getAttribute("action"), df)
+      useAjax(fsc.$.getAttribute("form-action"), df)
         .then((data) => {
           let jdata = JSON.parse(data);
           if (jdata.header.redirect && redirect) {
