@@ -29,6 +29,7 @@ class FormSubmitController {
       var button = $(evt.target);
       let df = new FormData(fsc.$);
       df.append(button.attr("name"), button.attr("value"));
+      button.attr("disabled", "disabled");
       submit(df);
       useAjax(fsc.$.getAttribute("form-action"), df)
         .then((data) => {
@@ -48,13 +49,16 @@ class FormSubmitController {
         .catch(rej)
         .finally((data) => {
           fsc.waitTabs.forEach((e) => e.classList.add("d-none"));
+          button.removeAttr("disabled");
           allway(data);
         });
     });
   }
   SubmitWaitTab($query) {
     if (!$query) return this;
-    document.querySelector($query).classList.add("d-none");
+    let $el = document.querySelector($query);
+    $el.classList.add("d-none");
+    window.addEventListener("load", () => $el.classList.add("d-none"));
     this.waitTabs.push(document.querySelector($query));
     return this;
   }
