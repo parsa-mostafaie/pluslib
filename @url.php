@@ -1,7 +1,7 @@
 <?php include_once 'init.php';
 function c_url($url, $regularIt = true)
 {
-  return $regularIt ? regular_url(c_url($url, false)) : HOME_URL() . $url;
+  return $regularIt ? regular_url(c_url($url, false)) : web_url(HOME_URL() . $url);
 }
 function web_url($url)
 {
@@ -30,7 +30,8 @@ function etc_url($url)
   return $_SERVER['DOCUMENT_ROOT'] . $url;
 }
 
-function www_url($url){
+function www_url($url)
+{
   return http_baseurl() . web_url($url);
 }
 
