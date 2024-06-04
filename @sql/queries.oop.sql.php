@@ -3,7 +3,7 @@ include_once __DIR__ . '/../init.php';
 class selectQueryCLASS
 {
   private Sql_Table $table;
-  private $cols = '*', $join_tbl = null, $join_query = null, $condition = '1 = 1', $groupby = null, $having = null, $order
+  private $cols = '*', $join_tbl = [], $join_query = [], $condition = '1 = 1', $groupby = null, $having = null, $order
     = null, $lim = null, $p = [];
 
   function pagination($per_page, $page, $params = [])
@@ -50,44 +50,20 @@ class selectQueryCLASS
     $this->cols = $cols;
   }
 
-  public function INNER_JOIN($jt)
-  {
-    $this->join_tbl = $jt;
-    return $this;
-  }
   public function injoins()
   {
-    if (is_array($this->join_tbl) || is_array($this->join_query)) {
-      $res = '';
-      foreach ($this->join_tbl as $i => $t) {
-        $res .= ' INNER JOIN ' . $t;
-        $res .= ' ON ' . $this->join_query[$i];
-      }
-      return $res;
-    } else {
-      $join = $this->join_tbl && $this->join_query ? "INNER JOIN " . $this->join_tbl . " ON " . $this->join_query : '';
-      return $join;
+    $res = '';
+    foreach ($this->join_tbl as $i => $t) {
+      $res .= ' INNER JOIN ' . $t;
+      $res .= ' ON ' . $this->join_query[$i];
     }
-  }
-
-  private static function set_arr_s(&$arr_s, $v)
-  {
-    if ($arr_s) {
-      if (!is_array($arr_s))
-        $arr_s = [$arr_s];
-
-      array_push($arr_s, $v);
-    } else
-      $arr_s = $v;
-    return $arr_s;
+    return $res;
   }
 
   public function ON($jq, $jt = null)
   {
-    if ($this->join_tbl === null || $jt) {
-      selectQueryCLASS::set_arr_s($this->join_tbl, $jt);
-    }
-    selectQueryCLASS::set_arr_s($this->join_query, $jq);
+    array_push($this->join_tbl, $jt);
+    array_push($this->join_query, $jq);
     return $this;
   }
   public function WHERE($cond)
