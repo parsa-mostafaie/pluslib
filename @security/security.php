@@ -41,6 +41,9 @@ enum secure_form_enum
 
 function secure_form(secure_form_enum $st = secure_form_enum::gen)
 {
+  if ($st != secure_form_enum::gen && !is_post()) {
+    return false;
+  }
   if ($st == secure_form_enum::gen) {
     $n = uniqid('sec_form_sess_');
     $v = rand_hex();
