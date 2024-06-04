@@ -8,6 +8,10 @@ class selectQueryCLASS
 
   function pagination($per_page, $page, $params = [])
   {
+    if ($this->lim) {
+      trigger_error("Pagination Select Queries Can't be have LIMIT/OFFSET", E_USER_WARNING);
+    }
+
     $stmt = $this->Run($params);
     $count = $stmt->rowCount();
 
@@ -16,19 +20,15 @@ class selectQueryCLASS
 
     $pages = ceil($count / $per_page);
 
-    if ($page < 1) {
-      $page = 1;
-    }
-
     if ($page > $pages) {
       $page = $pages;
     }
 
-    $off = ($page - 1) * $per_page;
-
-    if ($this->lim) {
-      trigger_error("Pagination Select Queries Can't be have LIMIT/OFFSET", E_USER_WARNING);
+    if ($page < 1) {
+      $page = 1;
     }
+
+    $off = ($page - 1) * $per_page;
 
     $copy = clone $this;
 
