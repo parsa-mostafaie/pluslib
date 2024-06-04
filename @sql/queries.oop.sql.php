@@ -2,8 +2,7 @@
 include_once __DIR__ . '/../init.php';
 class selectQueryCLASS
 {
-  private Sql_Table $table;
-  private $cols = '*', $join_tbl = [], $join_query = [], $condition = '1 = 1', $groupby = null, $having = null, $order
+  private $join_tbl = [], $join_query = [], $condition = '1 = 1', $groupby = null, $having = null, $order
     = null, $lim = null, $p = [];
 
   function pagination($per_page, $page, $params = [])
@@ -44,10 +43,10 @@ class selectQueryCLASS
     ];
   }
 
-  public function __construct($table, $cols)
-  {
-    $this->table = $table;
-    $this->cols = $cols;
+  public function __construct(
+    public readonly Sql_Table $table,
+    public readonly string $cols = '*'
+  ) {
   }
 
   public function injoins()
@@ -134,13 +133,12 @@ class selectQueryCLASS
 
 class insertQueryCLASS
 {
-  private Sql_Table $table;
-  private $keys, $vals;
+  public readonly string $vals;
 
-  public function __construct($table, $keys)
-  {
-    $this->table = $table;
-    $this->keys = $keys;
+  public function __construct(
+    public readonly Sql_Table $table,
+    public readonly string $keys
+  ) {
   }
 
   public function VALUES($vals)
@@ -166,13 +164,12 @@ class insertQueryCLASS
 
 class updateQueryCLASS
 {
-  private Sql_Table $table;
-  private $cond, $vals;
+  public readonly string $vals;
 
-  public function __construct($table, $cond)
-  {
-    $this->table = $table;
-    $this->cond = $cond;
+  public function __construct(
+    public readonly Sql_Table $table,
+    public readonly string $cond
+  ) {
   }
 
   public function WHERE($cond)
@@ -213,12 +210,10 @@ class updateQueryCLASS
 
 class deleteQueryCLASS
 {
-  private Sql_Table $table;
   private $condition = '1=1';
 
-  public function __construct($table)
+  public function __construct(public readonly Sql_Table $table)
   {
-    $this->table = $table;
   }
 
   public function Run($params = [])

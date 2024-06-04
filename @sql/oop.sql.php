@@ -3,16 +3,12 @@ include_once __DIR__ . '/../init.php';
 // OBJECTs
 class Sql_DB extends PDO
 {
-  private $username;
-  private $password;
-  public $db;
-  private $host;
-  public function __construct($db = 'plus', $username = 'root', $password = '', $host = 'localhost')
-  {
-    $this->db = $db;
-    $this->username = $username;
-    $this->password = $password;
-    $this->host = $host;
+  public function __construct(
+    public readonly string $db = 'plus',
+    public readonly string $username = 'root',
+    public readonly string $password = '',
+    public readonly string $host = 'localhost'
+  ) {
     parent::__construct(
       'mysql:hostname=' . $this->host . ';dbname=' . $this->db . ';charset=utf8mb4',
       $this->username,
@@ -46,18 +42,15 @@ class Sql_DB extends PDO
 
 class Sql_Table
 {
-  readonly Sql_DB $db;
-  private readonly string $name;
   public function name()
   {
     return $this->name . ($this->alias ? ' as ' . $this->alias : '');
   }
-  readonly string $alias;
-  public function __construct($db, $name, $alias = null)
-  {
-    $this->db = $db;
-    $this->name = $name;
-    $this->alias = $alias ? $alias : '';
+  public function __construct(
+    public readonly Sql_DB $db,
+    public readonly string $name,
+    public readonly string|null $alias = null
+  ) {
   }
   public function SELECT($cols = '*')
   {
@@ -132,7 +125,7 @@ class sqlConditionGenerator
       $this->cond = $cond->cond;
       return;
     }
-    $this->cond = $cond && (strlen($cond) > 0) ? $cond : '1 = 1';
+    $this->cond = !empty($cond) ? $cond : '1 = 1';
   }
   public function AND($cond)
   {
@@ -152,21 +145,18 @@ class sqlConditionGenerator
 
 class sqlRow
 {
-  public PDOStatement $stmt;
   public array $row;
-  public ?Sql_Table $tbl = null;
   public $found = false;
-  public $imm = false;
-  public function __construct(PDOStatement $stmt, $tbl, $imm = false)
-  {
-    $this->stmt = $stmt;
+  public function __construct(
+    public readonly PDOStatement $stmt,
+    public readonly sql_Table $tbl,
+    public readonly bool $imm = false
+  ) {
     $t = $this->stmt->fetch(PDO::FETCH_ASSOC);
     $this->row = $t ? $t : [];
-    $this->imm = $imm;
     if ($t) {
       $this->found = true;
     }
-    $this->tbl = $tbl;
   }
   public function getColumn($cn)
   {
@@ -188,23 +178,22 @@ class sqlRow
       $pk = $pv = null;
     return new sql_abcol($this->tbl, $cn, $this->row[$cn], $maxSize, $allowedTypes, $prefix, $this->imm, $pk, $pv);
   }
+  // TODO: __get
 }
 
 class sql_abcol
 {
-  public $val, $name;
-  public $ms, $at, $pf;
-  public $pk, $pv;
-  public Sql_Table $tbl;
-  public $imm = false;
-  public function __construct($tbl, $name, $val, $ms, $at, $p, $imm = false, $pk = null, $pv = null)
-  {
-    $this->tbl = $tbl;
-    [$this->val, $this->name] = [$val, $name];
-    [$this->ms, $this->at, $this->pf] = [$ms, $at, $p];
-    if (!$imm)
-      [$this->pk, $this->pv] = [$pk, $pv];
-    $this->imm = $imm;
+  public function __construct(
+    public readonly Sql_Table $tbl,
+    public readonly string $name, // Colname
+    public readonly string $val, // ColVal
+    public readonly int $ms,
+    public readonly array $at,
+    public readonly string $pf,
+    public readonly bool $imm = false,
+    public readonly mixed $pk = null,
+    public readonly mixed $pv = null
+  ) {
   }
   public function cond()
   {
