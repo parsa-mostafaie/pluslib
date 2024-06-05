@@ -73,9 +73,8 @@ function hasprofimg($tid)
 //NOTE THIS PART IS CUSTOMIZED
 function add_user($fname, $lname, $uname, $pword)
 {
-  $date = date('Y-m-d H:i:s');
   $hashed = hash_pass($pword);
-  $insert = insert_q('users', 'firstname, lastname, date, username, password', '?, ?, ?, ?, ?', [$fname, $lname, $date, $uname, $hashed]);
+  $insert = insert_q('users', 'firstname, lastname, username, password', '?, ?, ?, ?', [$fname, $lname, $uname, $hashed]);
   return $insert;
 }
 //ENDPART
