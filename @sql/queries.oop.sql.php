@@ -175,12 +175,13 @@ class insertQueryCLASS
 
 class updateQueryCLASS
 {
-  public readonly string $vals;
+  private string $vals;
 
   public function __construct(
     public readonly Sql_Table $table,
     public readonly string $cond
   ) {
+    $this->vals = '';
   }
 
   public function WHERE($cond)
