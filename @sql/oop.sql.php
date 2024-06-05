@@ -178,7 +178,10 @@ class sqlRow
       $pk = $pv = null;
     return new sql_abcol($this->tbl, $cn, $this->row[$cn], $maxSize, $allowedTypes, $prefix, $this->imm, $pk, $pv);
   }
-  // TODO: __get
+  public function __get($name)
+  {
+    return $this->getColumn($name);
+  }
 }
 
 class sql_abcol
