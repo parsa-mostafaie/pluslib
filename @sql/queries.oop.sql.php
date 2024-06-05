@@ -5,6 +5,17 @@ class selectQueryCLASS
   private $join_tbl = [], $join_query = [], $condition = '1 = 1', $groupby = null, $having = null, $order
     = null, $lim = null, $p = [];
 
+  public function alsoSelect(string|array $cols)
+  {
+    if (!is_array($this->cols)) {
+      $this->cols = [$this->cols];
+    }
+    if (!is_array($cols)) {
+      $cols = [$this->cols];
+    }
+    $this->cols[] = $cols;
+  }
+
   function pagination($per_page, $page, $params = [])
   {
     if ($this->lim) {
@@ -45,7 +56,7 @@ class selectQueryCLASS
 
   public function __construct(
     public readonly Sql_Table $table,
-    public readonly string $cols = '*'
+    public readonly string|array $cols = '*'
   ) {
   }
 
@@ -123,7 +134,7 @@ class selectQueryCLASS
     $having = $this->having ? "HAVING " . $this->having : '';
     $ob = $this->order ? "ORDER BY " . $this->order : '';
     $lm = $this->lim ? "LIMIT " . $this->lim : '';
-    $cols = $this->cols;
+    $cols = is_array($this->cols) ? join(', ', $this->cols) : $this->cols;
     $tbl = $this->table->name();
 
     $query = "SELECT $cols FROM $tbl $join $cond $gb $having $ob $lm";
