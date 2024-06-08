@@ -1,5 +1,8 @@
 <?php
 include_once __DIR__ . '/../init.php';
+
+include_once 'uploadBaseColumn.php';
+
 // OBJECTs
 class Sql_DB extends PDO
 {
@@ -189,7 +192,7 @@ class sql_abcol
   public function __construct(
     public readonly Sql_Table $tbl,
     public readonly string $name, // Colname
-    public readonly string|NULL $val, // ColVal
+    public readonly string|null $val, // ColVal
     public readonly int $ms,
     public readonly array $at,
     public readonly string $pf,
