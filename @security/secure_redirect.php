@@ -17,12 +17,16 @@ function redirect_secure($path, $back_addr = null, $gen_only = false)
   }
   redirectBack();
 */
-function redirectBack()
+function redirectBack($default = null)
 {
   return (setted('back') ? (function () {
     $back = get_val('back');
     redirect($back);
-  }) : (function () {}))();
+  }) : (function ($default) {
+    if ($default) {
+      redirect($default);
+    }
+  }))($default);
 }
 
 function validate_redirect()
