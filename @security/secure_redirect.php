@@ -18,16 +18,19 @@ function redirect_secure($path, $back_addr = null, $gen_only = false)
   }
   redirectBack();
 */
-function redirectBack($default = null)
+function redirectBack($default = null, $gen_only = false)
 {
-  return (setted('back') ? (function () {
+  $url = '';
+  if (setted('back')) {
     $back = get_val('back');
-    redirect($back);
-  }) : (function ($default) {
-    if ($default) {
-      redirect($default);
-    }
-  }))($default);
+
+    $url = $back;
+  } else if ($default) {
+    $url = $default;
+  }
+  if ($gen_only)
+    return $url;
+  redirect($url);
 }
 
 function validate_redirect()
