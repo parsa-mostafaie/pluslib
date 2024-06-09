@@ -1,5 +1,5 @@
 <?php
-include_once __DIR__ . '/../init.php';
+defined('ABSPATH') || exit;
 
 include_once 'uploadBaseColumn.php';
 

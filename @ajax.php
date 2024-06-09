@@ -1,4 +1,5 @@
-<?php require_once 'init.php';
+<?php
+defined('ABSPATH') || exit;
 
 class ajaxAPI
 {

@@ -1,4 +1,6 @@
-<?php include_once 'init.php';
+<?php
+defined('ABSPATH') || exit;
+
 function c_url($url, $regularIt = true)
 {
   return $regularIt ? regular_url(c_url($url, false)) : web_url(HOME_URL() . $url);

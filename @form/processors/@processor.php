@@ -7,7 +7,7 @@
 //      functions: (OPTIONAL, CAN BE SET USING ARGs)
 //          __PROCESS__CALLBACK__, __PROCESS__SUCCESS__, __PROCESS__FAILED__
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/pluslib/init.php';
+defined('ABSPATH') || exit;
 
 $_SUCCESS = false;
 

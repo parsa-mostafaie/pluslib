@@ -1,5 +1,6 @@
 <?php
-include_once __DIR__ . '/../init.php';
+defined('ABSPATH') || exit;
+
 class selectQueryCLASS
 {
   private $join_tbl = [], $join_query = [], $condition = '1 = 1', $groupby = null, $having = null, $order

@@ -1,4 +1,6 @@
 <?php
+defined('ABSPATH') || exit;
+
 //NOTE: THIS FILE IS ALWAYS PUBLIC
 //? Check Both Of POST and GET Methods
 

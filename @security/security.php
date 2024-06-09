@@ -1,4 +1,5 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/pluslib/init.php';
+<?php
+defined('ABSPATH') || exit;
 
 require_once 'secure_redirect.php';
 

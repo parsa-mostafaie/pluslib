@@ -1,4 +1,6 @@
 <?php
+defined('ABSPATH') || exit;
+
 //NOTE: THIS IS ALWAYS PUBLIC
 function array_any(array $array, callable $fn)
 {

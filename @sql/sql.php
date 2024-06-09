@@ -1,4 +1,6 @@
 <?php
+defined('ABSPATH') || exit;
+
 //NOTE: THIS NEED CUSTOMIZATION IN LINE THAT MARKED BY *
 
 date_default_timezone_set('Asia/Tehran');

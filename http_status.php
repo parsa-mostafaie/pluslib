@@ -1,4 +1,6 @@
-<?php include_once 'headers.php';
+<?php
+defined('ABSPATH') || exit;
+
 function _404_()
 {
   ap_header_('404 Not Found', true, 404);

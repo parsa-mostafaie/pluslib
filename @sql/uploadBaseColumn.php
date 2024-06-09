@@ -3,7 +3,7 @@ namespace pluslib\SQL;
 
 use Sql_Table;
 
-include_once __DIR__ . '/../init.php';
+defined('ABSPATH') || exit;
 
 class UploadBaseColumn
 {

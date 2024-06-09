@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 //NOTE: THIS FILE IS ALWAYS PUBLIC
 function uploadFile_secure(

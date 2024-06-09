@@ -1,5 +1,6 @@
 <?php
-require_once 'init.php';
+defined('ABSPATH') || exit;
+
 function ap_header_(
   string $header,
   bool $replace = true,

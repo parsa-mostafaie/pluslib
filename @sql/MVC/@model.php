@@ -4,7 +4,7 @@ namespace pluslib\MVC;
 use Sql_DB;
 use Sql_Table;
 
-include_once ('../../init.php');
+defined('ABSPATH') || exit;
 
 class Model
 {

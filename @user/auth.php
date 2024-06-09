@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . "/libs/pluslib/init.php";
+defined('ABSPATH') || exit;
 
 //NOTE: THIS PART/FILE IS PUBLIC ONLY WHEN:
 //------ DB HAS:
