@@ -35,6 +35,7 @@ class FormSubmitController {
         .then((data) => {
           let jdata = JSON.parse(data);
           if (jdata.header.redirect && redirect) {
+            res({ data, jdata });
             // data.redirect contains the string URL to redirect to
             window.location.href = jdata.header.redirect;
           }
