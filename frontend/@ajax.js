@@ -8,12 +8,12 @@ export async function useJQuery() {
   return 0;
 }
 
-export default async function useAjax(url, data) {
+export default async function useAjax(url, data, method='POST') {
   await useJQuery();
   return new Promise((res, rej) => {
     $.ajax({
       url: url,
-      type: "POST",
+      type: method,
       data: data,
       success: function (data) {
         res(data);
