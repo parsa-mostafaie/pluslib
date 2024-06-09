@@ -1,12 +1,11 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/pluslib/init.php';
 
 //! Not recommended to use [always not never]; start
-function redirect_secure($path, $back_addr = null, $back = false, $gen_only = false)
+function redirect_secure($path, $back_addr = null, $gen_only = false)
 {
   [$u, $p] = useRedirectCode();
-  $back = urlencode((empty($back_addr) ? null : $back_addr) ?? $_SERVER['REQUEST_URI']);
-  $q = "&u=$u&p=$p&back=$back";
-  $g = str_contains($path, '?') ? $path . $q : $path . "?$q";
+  $q = "&u=$u&p=$p";
+  $g = redirect($path, true, $back_addr, true) . $q;
   if ($gen_only)
     return $g;
   redirect($g);

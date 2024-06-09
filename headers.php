@@ -15,8 +15,15 @@ function ap_header_(
 
 include_once 'http_status.php';
 
-function redirect($url)
+function redirect($url, $back = false, $backURL = null, $gen = false)
 {
+  if ($back) {
+    $backURL = $backURL ?? $_SERVER['REQUEST_URI'];
+    $sep = parse_url($url, PHP_URL_QUERY) ? '&' : '?';
+    $url = $url . $sep . 'back=' . urlencode($backURL);
+  }
+  if ($gen)
+    return $url;
   header('Location: ' . $url);
   die();
 }
