@@ -114,3 +114,4 @@ function PaginationQuery($per_page, $page, $fetchMode, ...$SEL_PARAMS)
 }
 
 include_once ('oop.sql.php');
+include_once 'MVC/@model.php';
