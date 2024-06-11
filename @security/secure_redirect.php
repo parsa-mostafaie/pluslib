@@ -21,7 +21,7 @@ function redirect_secure($path, $back_addr = null, $gen_only = false)
 function redirectBack($default = null, $gen_only = false)
 {
   $url = '';
-  if (setted('back')) {
+  if (!empty(get_val('back'))) {
     $back = get_val('back');
 
     $url = $back;
