@@ -1,4 +1,6 @@
 <?php
+const ABSPATH = __DIR__ . '/';
+
 function HOME_URL($set = null)
 {
   static $hu = '';

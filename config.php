@@ -1,2 +1,10 @@
 <?php
-const ABSPATH = __DIR__ . '/';
+namespace pluslib;
+
+defined('ABSPATH') || exit;
+
+class Config
+{
+  public static bool $passwordHashDisable = false;
+  public static string $uploadDirectory = 'uploads/';
+}

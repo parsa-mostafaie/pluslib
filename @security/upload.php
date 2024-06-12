@@ -1,6 +1,8 @@
 <?php
 defined('ABSPATH') || exit;
 
+use pluslib\Config;
+
 //NOTE: THIS FILE IS ALWAYS PUBLIC
 function uploadFile_secure(
   $name,
@@ -38,16 +40,16 @@ function uploadFile_secure(
   // $filename = basename($filepath);
 
   $extension = $allowedTypes[$filetype];
-  $targetDirectory = etc_urlOfUpload('/uploads'); // loc
+  $targetDirectory = etc_urlOfUpload('/' . Config::$uploadDirectory); // loc
 
-  $newFilepath = $targetDirectory . "/" . $filename . "." . $extension;
+  $newFilepath = $targetDirectory . $filename . "." . $extension;
 
   if (!copy($filepath, $newFilepath)) { // Copy the file, returns false if failed
     throw new Exception("Can't move file.");
   }
   unlink($filepath); // Delete the temp file
 
-  return 'uploads/' . $filename . '.' . $extension;
+  return Config::$uploadDirectory . $filename . '.' . $extension;
 }
 function unlinkUpload($fname)
 {
