@@ -86,3 +86,9 @@ function slugify($string, $separator = '-')
   return $string;
 
 }
+
+function ScanRoute($format, &...$vars)
+{
+  sscanf($_SERVER['REQUEST_URI'], c_url($format, false), ...$vars);
+  return $vars;
+}
