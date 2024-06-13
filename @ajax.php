@@ -4,26 +4,32 @@ defined('ABSPATH') || exit;
 class ajaxAPI
 {
   private $header = [];
-  private $body = [];
+  private $body = ['logs' => ''];
   private $customs = [];
+  public function __construct()
+  {
+    ob_start();
+  }
   public function generateObj()
   {
-    $obj = ['header' => $this->header, 'body' => $this->body, ...$this->customs];
+    $obj = array_merge(
+      ['header' => $this->header, 'body' => $this->body, 'ob' => ob_get_contents()],
+      $this->customs
+    );
     return $obj;
   }
   public function generateStr()
   {
     return json_encode($this->generateObj());
   }
-  public function send($live = false)
+  public function send()
   {
+    ob_end_clean();
     echo $this->generateStr();
-    if (!$live)
-      die;
   }
   public function custom($n, $v)
   {
-    $customs[$n] = $v;
+    $this->customs[$n] = $v;
   }
   public function err($err)
   {
