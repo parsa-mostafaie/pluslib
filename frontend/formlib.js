@@ -1,4 +1,4 @@
-import useAjax, { useJQuery } from "./@ajax.js";
+import useAjax from "./@ajax.js";
 
 class FormSubmitController {
   $;
@@ -10,49 +10,43 @@ class FormSubmitController {
     $btn,
     res = (data) => undefined,
     rej = (data) => undefined,
-    allway = (data) => undefined,
+    allway = () => undefined,
     submit = (data) => undefined,
     redirect = true
   ) {
-    try {
-      await useJQuery();
-    } catch ($ex) {
-      console.error($ex);
-    }
     let fsc = this;
 
     $btn.addEventListener("click", function (evt) {
       evt.preventDefault();
-      const $ = jQuery;
       fsc.waitTabs.forEach((e) => e.classList.remove("d-none"));
 
-      var button = $(evt.target);
       let df = new FormData(fsc.$);
-      df.append(button.attr("name"), button.attr("value"));
-      button.attr("disabled", "disabled");
+      let button = evt.target;
+      df.append(button.getAttribute("name"), button.getAttribute("value"));
+      button.setAttribute("disabled", "disabled");
       submit(df);
       useAjax(fsc.$.getAttribute("form-action"), df)
-        .then((data) => {
-          let jdata = JSON.parse(data);
-          if (jdata.header.redirect && redirect) {
-            res({ data, jdata });
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.header.redirect && redirect) {
+            res(json);
             // data.redirect contains the string URL to redirect to
-            window.location.href = jdata.header.redirect;
+            window.location.href = json.header.redirect;
           }
-          let body = jdata.body;
+          let body = json.body;
           let err = body.error;
           if (err) {
-            rej({ data: data, jdata: jdata, err: err });
+            rej({ json, err: err });
             return;
           }
-          res({ data, jdata });
+          res({ json });
         })
-        .catch(rej)
-        .finally((data) => {
+        .finally(() => {
           fsc.waitTabs.forEach((e) => e.classList.add("d-none"));
-          button.removeAttr("disabled");
-          allway(data);
-        });
+          button.removeAttribute("disabled");
+          allway();
+        })
+        .catch(rej);
     });
   }
   SubmitWaitTab($query) {

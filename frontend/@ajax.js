@@ -8,22 +8,38 @@ export async function useJQuery() {
   return 0;
 }
 
-export default async function useAjax(url, data, method='POST') {
-  await useJQuery();
+export default function useAjax(url, data, method = "POST") {
+  // await useJQuery();
   return new Promise((res, rej) => {
-    $.ajax({
-      url: url,
-      type: method,
-      data: data,
-      success: function (data) {
-        res(data);
-      },
-      error: function (data) {
-        rej(data);
-      },
-      cache: false,
-      contentType: false,
-      processData: false,
-    });
+    fetch(url, {
+      cache: "no-cache",
+      method,
+      body: new URLSearchParams(data),
+      credentials: "same-origin",
+    })
+      .then((response) => {
+        if (response.ok) {
+          res(response);
+        } else {
+          rej(response);
+        }
+      })
+      .catch(rej);
   });
+  // return new Promise((res, rej) => {
+  //   $.ajax({
+  //     url: url,
+  //     type: method,
+  //     data: data,
+  //     success: function (data) {
+  //       res(data);
+  //     },
+  //     error: function (data) {
+  //       rej(data);
+  //     },
+  //     cache: false,
+  //     contentType: false,
+  //     processData: false,
+  //   });
+  // });
 }
