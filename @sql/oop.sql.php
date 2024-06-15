@@ -187,6 +187,9 @@ class sqlRow
   }
 }
 
+/**
+ * !NOT RECOMMENDED TO USE!
+ */
 class sql_abcol
 {
   public function __construct(
