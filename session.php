@@ -29,10 +29,10 @@ function &session_arr($public = false): array
 {
     $PATHS =& $_SESSION['PATHS'];
     if (!isset($PATHS[HOME_URL()]) || !$PATHS[HOME_URL()]) {
-        $_SESSION['PATHS'][HOME_URL()] = array();
+        $PATHS[HOME_URL()] = array();
     }
     if (!$public) {
-        $ref =& $_SESSION['PATHS'][HOME_URL()];
+        $ref =& $PATHS[HOME_URL()];
     } else {
         $ref =& $_SESSION;
     }
