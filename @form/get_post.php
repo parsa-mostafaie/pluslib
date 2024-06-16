@@ -34,17 +34,21 @@ function urlParam($name)
 
 function get_val($name)
 {
-  $res = '';
-  if (isset($_POST[$name])) {
-    $res = $_POST[$name];
-  } elseif (isset($_GET[$name])) {
-    $res = $_GET[$name];
-  }
-  return htmlspecialchars($res);
+  return posted($name) ? posted_val($name) : urlParam($name);
 }
 
 // Method Managing
 function is_post()
 {
-  return strtoupper($_SERVER['REQUEST_METHOD']) == 'POST';
+  return request_method('post');
+}
+
+function request_method($method = 'post')
+{
+  return strtoupper($_SERVER['REQUEST_METHOD']) == strtoupper($method);
+}
+
+function request_body($json = false)
+{
+  return !$json ? file_get_contents('php://input') : json_decode(request_body(false));
 }
