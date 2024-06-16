@@ -105,3 +105,5 @@ function secretFile($addr = null)
   }
   return importJSON($address ?? $default, true);
 }
+
+include_once ('oop.security.php');
