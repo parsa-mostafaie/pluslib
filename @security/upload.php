@@ -13,6 +13,8 @@ function uploadFile_secure(
   ],
   $prefix = ''
 ) {
+  if (!$_FILES[$name])
+    return null;
 
   if ($_FILES[$name]["error"] != 0) {
     //stands for any kind of errors happen during the uploading
