@@ -33,6 +33,7 @@ class UploadBaseColumn
       static::rem($id);
       return static::set($id, $file);
     }
+    return $file;
   }
   private static function set(
     $id,
@@ -94,3 +95,5 @@ class UploadBaseColumn
 //     $this->colName = 'profile';
 //   }
 // }
+
+include_once 'upc.defaults.php';
