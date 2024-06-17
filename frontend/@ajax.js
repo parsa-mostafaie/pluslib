@@ -14,7 +14,7 @@ export default function useAjax(url, data, method = "POST") {
     fetch(url, {
       cache: "no-cache",
       method,
-      body: new URLSearchParams(data),
+      body: (data),
       credentials: "same-origin",
     })
       .then((response) => {
