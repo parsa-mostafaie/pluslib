@@ -26,6 +26,7 @@ class ajaxAPI
   {
     ob_end_clean();
     echo $this->generateStr();
+    die;
   }
   public function custom($n, $v)
   {
