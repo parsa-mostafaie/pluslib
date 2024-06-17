@@ -145,17 +145,33 @@ class selectQueryCLASS
 
 class insertQueryCLASS
 {
-  public readonly string $vals;
+  private array $vals = [];
+  private array $keys = [];
 
   public function __construct(
     public readonly Sql_Table $table,
-    public readonly string $keys
+    string|array $keys = []
   ) {
+    $this->keys = is_array($keys) ? $keys : [$keys];
   }
 
-  public function VALUES($vals)
+  public function fromArray(array $arr) // ['id'=>1, ...]
   {
-    $this->vals = $vals;
+    $keys = array_keys($arr);
+    $vals = array_values($arr);
+
+    array_push($this->keys, ...$keys);
+    array_push($this->vals, ...$vals);
+
+    return $this;
+  }
+
+  public function VALUES(string|array $vals)
+  {
+    $j = is_array($vals) ? $vals : [$vals];
+
+    array_push($this->vals, ...$j);
+
     return $this;
   }
 
@@ -170,7 +186,7 @@ class insertQueryCLASS
   public function Generate()
   {
     $tbl = $this->table->name();
-    return "INSERT INTO $tbl (" . $this->keys . ") VALUES ( " . $this->vals . " )";
+    return "INSERT INTO $tbl (" . join(', ', $this->keys) . ") VALUES ( " . join(', ', $this->vals) . " )";
   }
 }
 
@@ -189,6 +205,14 @@ class updateQueryCLASS
   {
     $this->cond .= ' AND ' . $cond;
 
+    return $this;
+  }
+
+  public function fromArray(array $arr)
+  {
+    foreach ($arr as $key => $value) {
+      $this->SET("$key = $value");
+    }
     return $this;
   }
 
