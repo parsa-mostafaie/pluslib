@@ -151,9 +151,7 @@ class sqlRow
   public array $row;
   public $found = false;
   public function __construct(
-    public readonly PDOStatement $stmt,
-    public readonly sql_Table $tbl,
-    public readonly bool $imm = false
+    public readonly PDOStatement $stmt
   ) {
     $t = $this->stmt->fetch(PDO::FETCH_ASSOC);
     $this->row = $t ? $t : [];
@@ -174,12 +172,7 @@ class sqlRow
     ],
     $prefix = ''
   ) {
-    if (!$this->imm) {
-      $pk = $this->tbl->primaryKey();
-      $pv = $this->getColumn($pk);
-    } else
-      $pk = $pv = null;
-    return new sql_abcol($this->tbl, $cn, $this->row[$cn], $maxSize, $allowedTypes, $prefix, $this->imm, $pk, $pv);
+    return new sql_abcol($cn, $this->row[$cn], $maxSize, $allowedTypes, $prefix);
   }
   public function __get($name)
   {
@@ -193,53 +186,16 @@ class sqlRow
 class sql_abcol
 {
   public function __construct(
-    public readonly Sql_Table $tbl,
     public readonly string $name, // Colname
     public readonly string|null $val, // ColVal
     public readonly int $ms,
     public readonly array $at,
     public readonly string $pf,
-    public readonly bool $imm = false,
-    public readonly mixed $pk = null,
-    public readonly mixed $pv = null
   ) {
-  }
-  public function cond()
-  {
-    return $this->pk . ' = ' . $this->pv;
-  }
-  public function set_inp(
-    $name
-  ) {
-    $file = uploadFile_secure($name, $this->ms, $this->at, $this->pf);
-    if ($file) {
-      $this->rem();
-      return $this->set($file);
-    }
-  }
-  private function set(
-    $v
-  ) {
-    if ($this->imm)
-      throw new Exception('Cant Set Immutable asset-based column (This Column may selected from a select query with join)');
-    $temp = $this->tbl->UPDATE($this->cond())->Set($this->name . " = ?")->Run([$v]);
-    if ($temp) {
-      $this->val = $v;
-    }
-    return $temp;
   }
   function get_url()
   {
     return urlOfUpload($this->val);
-  }
-
-  function rem()
-  {
-    if ($this->has()) {
-      unlinkUpload($this->val);
-      return $this->set('NULL');
-    }
-
   }
 
   function get_img($cattrs = '', $undefined = '/default_uploads/unknown.png', $echo = false, $ue_src = true)
