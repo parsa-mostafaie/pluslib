@@ -59,9 +59,9 @@ class Sql_Table
   {
     return new selectQueryCLASS($this, $cols);
   }
-  public function INSERT($keys)
+  public function INSERT(array $values)
   {
-    return new insertQueryCLASS($this, $keys);
+    return new insertQueryCLASS($this, $values);
   }
   public function DELETE($condition)
   {

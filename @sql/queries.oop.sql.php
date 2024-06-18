@@ -145,32 +145,25 @@ class selectQueryCLASS
 
 class insertQueryCLASS
 {
-  private array $vals = [];
-  private array $keys = [];
+  private array $arr=[];
 
   public function __construct(
     public readonly Sql_Table $table,
-    string|array $keys = []
+    array $arr = []
   ) {
-    $this->keys = is_array($keys) ? $keys : [$keys];
+    $this->VALUES($arr);
   }
 
   public function fromArray(array $arr) // ['id'=>1, ...]
   {
-    $keys = array_keys($arr);
-    $vals = array_values($arr);
-
-    array_push($this->keys, ...$keys);
-    array_push($this->vals, ...$vals);
+    $this->arr = array_merge($this->arr, $arr);
 
     return $this;
   }
 
-  public function VALUES(string|array $vals)
+  public function VALUES(array $vals)
   {
-    $j = is_array($vals) ? $vals : [$vals];
-
-    array_push($this->vals, ...$j);
+    $this->fromArray($vals);
 
     return $this;
   }
@@ -186,7 +179,9 @@ class insertQueryCLASS
   public function Generate()
   {
     $tbl = $this->table->name();
-    return "INSERT INTO $tbl (" . join(', ', $this->keys) . ") VALUES ( " . join(', ', $this->vals) . " )";
+    $keys = array_keys($this->arr);
+    $vals = array_values($this->arr);
+    return "INSERT INTO $tbl (" . join(', ', $keys) . ") VALUES ( " . join(', ', $vals) . " )";
   }
 }
 
