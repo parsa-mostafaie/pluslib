@@ -7,14 +7,8 @@ defined('ABSPATH') || exit;
 
 class UserProfile extends UploadBaseColumn
 {
-
-  function __construct()
-  {
-    parent::__construct();
-
-    $this->tbl = db()->TABLE('users');
-    $this->prefix = 'PROFILE_';
-    $this->colName = 'profile';
-  }
+  protected ?string $table = 'users';
+  protected string $prefix = 'PROFILE_';
+  protected string $colName = 'profile';
 }
 
