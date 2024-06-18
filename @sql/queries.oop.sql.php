@@ -192,13 +192,12 @@ class insertQueryCLASS
 
 class updateQueryCLASS
 {
-  private string $vals;
+  private array $arr = [];
 
   public function __construct(
     public readonly Sql_Table $table,
     public readonly string $cond
   ) {
-    $this->vals = '';
   }
 
   public function WHERE($cond)
@@ -208,21 +207,24 @@ class updateQueryCLASS
     return $this;
   }
 
+  private function toString()
+  {
+    return join(
+      array_map(function ($k, $v) {
+        return "$k = $v";
+      }, array_keys($this->arr), $this->arr)
+    );
+  }
+
   public function fromArray(array $arr)
   {
-    foreach ($arr as $key => $value) {
-      $this->SET("$key = $value");
-    }
+    $this->Set($arr);
     return $this;
   }
 
-  public function SET($v)
+  public function SET(array $v)
   {
-    if ($this->vals) {
-      $this->vals .= ', ';
-    }
-
-    $this->vals .= $v;
+    $this->arr = array_merge($this->arr, $v);
 
     return $this;
   }
@@ -238,7 +240,7 @@ class updateQueryCLASS
   public function Generate()
   {
     $tbl = $this->table->name();
-    $v = $this->vals;
+    $v = $this->toString();
     $condition = $this->cond;
     return "UPDATE $tbl SET $v WHERE $condition";
   }

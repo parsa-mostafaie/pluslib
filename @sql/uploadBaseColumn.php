@@ -8,7 +8,7 @@ defined('ABSPATH') || exit;
 class UploadBaseColumn
 {
   protected ?string $table;
-  
+
   protected string $colName; // Colname
   protected int $maxSize = 3145728;
   protected array $allowedTypes = ['image/png' => 'png', 'image/jpeg' => 'jpg'];
@@ -41,7 +41,7 @@ class UploadBaseColumn
     $v
   ) {
     $_ = new static;
-    $temp = static::tbl()->UPDATE(static::cond($id))->Set($_->colName . " = ?")->Run([$v]);
+    $temp = static::tbl()->UPDATE(static::cond($id))->Set([$_->colName => "?"])->Run([$v]);
     return $temp;
   }
   public static function get_url($id)
@@ -81,8 +81,9 @@ class UploadBaseColumn
 
     return static::tbl()->SELECT([$_->colName])->WHERE(static::cond($id))->Run()->fetchColumn();
   }
-  
-  protected static function tbl(){
+
+  protected static function tbl()
+  {
     return db()->TABLE((new static)->table);
   }
 }
