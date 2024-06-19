@@ -96,60 +96,30 @@ class selectQueryCLASS
     $this->having = $h;
     return $this;
   }
+class ConditionalQueryBASE
+{
+  protected sqlConditionGenerator $condition;
 
-  public function ORDER_BY($o)
+  function __construct()
   {
-    $this->order = $o;
+    $this->condition = new sqlConditionGenerator();
+  }
+
+  public function WHERE(sqlConditionGenerator|string $cond, $boolean = 'AND', $onall = false)
+  {
+    $this->condition->extra($cond, $boolean, $onall);
 
     return $this;
-  }
-
-  public function LIMIT($l)
-  {
-    $this->lim = $l;
-
-    return $this;
-  }
-
-  public function Run($params = [])
-  {
-    $this->p = $params;
-
-    return $this->table->db->execute_q(
-      $this->Generate(),
-      $this->p,
-      true
-    );
-  }
-
-  public function getFirstRow($params = [])
-  {
-    return new sqlRow($this->Run($params));
-  }
-
-  public function Generate()
-  {
-    $join = $this->injoins();
-    $cond = $this->condition ? "WHERE " . $this->condition : '';
-    $gb = $this->groupby ? "GROUP BY " . $this->groupby : '';
-    $having = $this->having ? "HAVING " . $this->having : '';
-    $ob = $this->order ? "ORDER BY " . $this->order : '';
-    $lm = $this->lim ? "LIMIT " . $this->lim : '';
-    $cols = is_array($this->cols) ? join(', ', $this->cols) : $this->cols;
-    $tbl = $this->table->name();
-
-    $query = "SELECT $cols FROM $tbl $join $cond $gb $having $ob $lm";
-    return $query;
   }
 }
 
 class insertQueryCLASS
 {
-  private array $arr=[];
+  private array $arr = [];
 
   public function __construct(
     public readonly Sql_Table $table,
-    array $arr = []
+    array $arr = [],
   ) {
     $this->VALUES($arr);
   }
@@ -176,30 +146,28 @@ class insertQueryCLASS
     );
   }
 
+
+
   public function Generate()
   {
     $tbl = $this->table->name();
+    $this->arr = QueryBuilding::NormalizeArray($this->arr);
     $keys = array_keys($this->arr);
     $vals = array_values($this->arr);
     return "INSERT INTO $tbl (" . join(', ', $keys) . ") VALUES ( " . join(', ', $vals) . " )";
   }
 }
 
-class updateQueryCLASS
+class updateQueryCLASS extends ConditionalQueryBASE
 {
   private array $arr = [];
 
   public function __construct(
     public readonly Sql_Table $table,
-    public readonly string $cond
+    sqlConditionGenerator|string $cond
   ) {
-  }
-
-  public function WHERE($cond)
-  {
-    $this->cond .= ' AND ' . $cond;
-
-    return $this;
+    parent::__construct();
+    $this->WHERE($cond);
   }
 
   private function toString()
@@ -236,18 +204,17 @@ class updateQueryCLASS
   {
     $tbl = $this->table->name();
     $v = $this->toString();
-    $condition = $this->cond;
+    $condition = $this->condition;
     return "UPDATE $tbl SET $v WHERE $condition";
   }
 }
 
 
-class deleteQueryCLASS
+class deleteQueryCLASS extends ConditionalQueryBASE
 {
-  private $condition = '1=1';
-
   public function __construct(public readonly Sql_Table $table)
   {
+    parent::__construct();
   }
 
   public function Run($params = [])
@@ -256,13 +223,6 @@ class deleteQueryCLASS
       $this->Generate(),
       $params
     );
-  }
-
-  public function WHERE($cond)
-  {
-    $this->condition .= ' AND ' . $cond;
-
-    return $this;
   }
 
   public function Generate()
