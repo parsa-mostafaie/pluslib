@@ -1,4 +1,7 @@
 <?php
+
+use pluslib\Tools\QueryBuilding;
+
 defined('ABSPATH') || exit;
 
 include_once 'uploadBaseColumn.php';
@@ -130,13 +133,19 @@ class sqlConditionGenerator
     }
     $this->cond = !empty($cond) ? $cond : '1 = 1';
   }
-  public function AND($cond)
+  public function AND($cond, $onall = false)
   {
+    if ($onall) {
+      $this->cond = '(' . $this->cond . ')';
+    }
     $this->cond .= ' AND ' . sqlConditionGenerator::Stringify($cond);
     return $this;
   }
-  public function OR($cond)
+  public function OR($cond, $onall = false)
   {
+    if ($onall) {
+      $this->cond = '(' . $this->cond . ')';
+    }
     $this->cond .= ' OR ' . sqlConditionGenerator::Stringify($cond);
     return $this;
   }
@@ -144,6 +153,31 @@ class sqlConditionGenerator
   {
     return sqlConditionGenerator::Stringify($this);
   }
+  public function extra($cond, $boolean = 'AND', $onall = false)
+  {
+    if ($onall) {
+      $this->cond = '(' . $this->cond . ')';
+    }
+    $this->cond .= " $boolean $cond";
+  }
+
+  public function __toString()
+  {
+    return self::Stringify($this);
+  }
+
+  public static function smart(string|sqlConditionGenerator $name, $operator = null, $value = null)
+  {
+    $instance = new self;
+
+    if (!is_null($operator) && !is_null($operator) && !($name instanceof sqlConditionGenerator))
+      $instance->AND(QueryBuilding::NormalizeColumnName($name) . ' = ' . $value);
+    else {
+      $instance->AND($name);
+    }
+    return $instance;
+  }
+
 }
 
 class sqlRow
@@ -212,3 +246,5 @@ class sql_abcol
     return file_exists($purl) && $this->get_url();
   }
 }
+
+include_once "tools.php";
