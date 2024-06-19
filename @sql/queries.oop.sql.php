@@ -111,6 +111,7 @@ class updateQueryCLASS extends ConditionalQueryBASE
 
   public function Generate()
   {
+    $this->arr = QueryBuilding::NormalizeArray($this->arr);
     $tbl = $this->table->name();
     $v = $this->toString();
     $condition = $this->condition;
