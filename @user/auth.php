@@ -8,6 +8,7 @@ defined('ABSPATH') || exit;
 //? return: login successed?
 function loginWith($username, $pass)
 {
+  session_new_id();
   $id = (get_users(cols: 'id', condition: 'username = ? OR mail = ?', p: [$username, $username]));
   if ($id) {
     $id = $id->fetchColumn();
@@ -64,5 +65,6 @@ function getCurrentUserInfo_prop($name)
 function signout()
 {
   session__unset(false, 'pass', 'uid');
+  session_new_id();
 }
 // ENDPART
