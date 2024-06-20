@@ -85,7 +85,9 @@ AND CONSTRAINT_NAME = 'PRIMARY'";
   }
 }
 
-include_once ('queries.oop.sql.php');
+
+include_once ('queries.oop.sql.php'); // update, delete, insert
+include_once ('select.query.class.php'); // select
 
 class sqlConditionGenerator
 {

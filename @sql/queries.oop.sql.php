@@ -3,8 +3,6 @@ use pluslib\Tools\QueryBuilding;
 
 defined('ABSPATH') || exit;
 
-include_once ('select.query.class.php');
-
 class ConditionalQueryBASE
 {
   protected sqlConditionGenerator $condition;
