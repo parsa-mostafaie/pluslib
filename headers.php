@@ -39,3 +39,8 @@ function API_header()
 {
   API_ORIGIN_header();
 }
+
+function pls_content_type($type = 'application/json', $charset = 'utf8')
+{
+  header("Content-type: $type; charset=$charset");
+}

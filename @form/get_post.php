@@ -18,7 +18,7 @@ function urlParam_Sended($name)
 
 function setted($name)
 {
-  return posted($name) || urlParam_Sended($name);
+  return posted($name) || urlParam_Sended($name) || request_field_sent($name);
 }
 
 // Get Value
@@ -34,7 +34,7 @@ function urlParam($name)
 
 function get_val($name)
 {
-  return posted($name) ? posted_val($name) : urlParam($name);
+  return posted($name) ? posted_val($name) : (urlParam_Sended($name) ? urlParam($name) : get_request_field($name));
 }
 
 // Method Managing
@@ -48,7 +48,58 @@ function request_method($method = 'post')
   return strtoupper($_SERVER['REQUEST_METHOD']) == strtoupper($method);
 }
 
-function request_body($json = false)
+function request_body()
 {
-  return !$json ? file_get_contents('php://input') : json_decode(request_body(false));
+  return file_get_contents('php://input');
+}
+
+function get_request_field($field)
+{
+  return decoded_request_body()[$field] ?? '';
+}
+
+function request_field_sent($field)
+{
+  return isset(decoded_request_body()[$field]);
+}
+
+function parse_raw_http_request(array &$a_data)
+{
+  // read incoming data
+  $input = file_get_contents('php://input');
+
+  // grab multipart boundary from content type header
+  preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
+  $boundary = $matches[1];
+
+  // split content by boundary and get rid of last -- element
+  $a_blocks = preg_split("/-+$boundary/", $input);
+  array_pop($a_blocks);
+
+  // loop data blocks
+  foreach ($a_blocks as $id => $block) {
+    if (empty($block))
+      continue;
+
+    // you'll have to var_dump $block to understand this and maybe replace \n or \r with a visibile char
+
+    // parse uploaded files
+    if (strpos($block, 'application/octet-stream') !== FALSE) {
+      // match "name", then everything after "stream" (optional) except for prepending newlines 
+      preg_match('/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s', $block, $matches);
+    }
+    // parse all other fields
+    else {
+      // match "name" and optional value in between newline sequences
+      preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
+    }
+    $a_data[$matches[1]] = $matches[2];
+  }
+}
+
+function decoded_request_body()
+{
+  $v = [];
+  parse_raw_http_request($v);
+  return $v;
 }

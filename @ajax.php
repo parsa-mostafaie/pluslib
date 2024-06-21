@@ -25,6 +25,7 @@ class ajaxAPI
   public function send()
   {
     ob_end_clean();
+    pls_content_type();
     echo $this->generateStr();
     die;
   }

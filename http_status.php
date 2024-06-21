@@ -25,8 +25,23 @@ function _400_()
   die();
 }
 
-function pls_http_response_code($code)
+function pls_http_response_code($code, $text = null, $live = false)
 {
-  http_response_code($code);
-  die();
+  if (!$text) {
+    http_response_code($code);
+  } else {
+    ap_header_("$code $text", true, $code);
+  }
+  !$live && die();
+}
+
+function pls_invalid_http_method($live = false, $message = null)
+{
+  pls_http_response_code(405, $message, $live);
+}
+
+function pls_validate_http_method($method = 'post', $live = false, $message = null)
+{
+  if (!request_method($method))
+    pls_invalid_http_method();
 }

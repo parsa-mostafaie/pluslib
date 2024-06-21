@@ -25,7 +25,11 @@ class FormSubmitController {
       df.append(button.getAttribute("name"), button.getAttribute("value"));
       button.setAttribute("disabled", "disabled");
       submit(df);
-      useAjax(fsc.$.getAttribute("form-action"), df)
+      useAjax(
+        fsc.$.getAttribute("form-action"),
+        df,
+        fsc.$.getAttribute("form-method") ?? "POST"
+      )
         .then((res) => res.json())
         .then((json) => {
           if (json.header.redirect && redirect) {
