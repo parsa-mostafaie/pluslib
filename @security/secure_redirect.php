@@ -22,7 +22,7 @@ function redirectBack($default = null, $gen_only = false)
 {
   $url = '';
   if (!empty(get_val('back'))) {
-    $back = get_val('back');
+    $back = htmlspecialchars_decode(get_val('back'));
 
     $url = $back;
   } else if ($default) {
