@@ -80,6 +80,7 @@ class updateQueryCLASS extends ConditionalQueryBASE
   private function toString()
   {
     return join(
+      ',',
       array_map(function ($k, $v) {
         return "$k = $v";
       }, array_keys($this->arr), $this->arr)
