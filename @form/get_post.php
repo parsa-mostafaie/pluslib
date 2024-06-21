@@ -99,6 +99,11 @@ function parse_raw_http_request(array &$a_data)
 
 function decoded_request_body()
 {
+  if (is_post()) {
+    return $_POST;
+  } elseif (request_method('GET')) {
+    return $_GET;
+  }
   $v = [];
   parse_raw_http_request($v);
   return $v;
