@@ -546,6 +546,3 @@ class usersModel extends BaseModel
 // TODO: Create models.defaults.php
 // TODO: Implement The Many-to-many
 // TODO: make properties case-insensitive
-// TODO: make some functions like getWithWhere, ... static
-// TODO: add some functions like find, ...
-// TODO: select all props alltime
