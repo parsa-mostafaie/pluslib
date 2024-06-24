@@ -34,7 +34,7 @@ function urlParam($name)
 
 function get_val($name)
 {
-  return get_request_field($name);
+  return urlParam_Sended($name) ? urlParam($name) : (is_post() ? posted_val($name) : get_request_field($name));
 }
 
 // Method Managing
