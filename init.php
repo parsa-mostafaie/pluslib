@@ -64,3 +64,5 @@ function divImage($purl, $cattr, $undefined_color = 'ffaabb', $echo = false)
     echo $str;
   return $str;
 }
+
+define('RELPATH', abs2rel($_SERVER['DOCUMENT_ROOT'], ABSPATH));
