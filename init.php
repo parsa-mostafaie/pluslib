@@ -14,6 +14,7 @@ function HOME_URL($set = null)
 include_once 'config.php';
 
 include_once '@url.php';
+include_once 'path.php';
 
 include_once 'array.php';
 
