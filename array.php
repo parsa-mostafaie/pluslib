@@ -40,3 +40,18 @@ function array_trim(array $items): array
       return $item;
   }, $items);
 }
+
+function array_dot(array $item, $context = '')
+{
+  $retval = [];
+  foreach ($item as $key => $value) {
+    if (is_array($value) === true) {
+      foreach (array_dot($value, "$context$key.") as $iKey => $iValue) {
+        $retval[$iKey] = $iValue;
+      }
+    } else {
+      $retval["$context$key"] = $value;
+    }
+  }
+  return $retval;
+}
