@@ -14,16 +14,22 @@ export function httplinksInit(
 
     el.addEventListener("click", (e) => {
       e.preventDefault();
-      useAjax($lnk, dyn_data($lnk, $method), $method)
-        .then((response) => {
-          res(response) && refreshOn === 1 && location.reload();
-        })
-        .catch((response) => {
-          rej(response) && refreshOn === -1 && location.reload();
-        })
-        .finally(() => {
-          refreshOn === 0 && location.reload();
-        });
+      let action = () => {
+        useAjax($lnk, dyn_data($lnk, $method), $method)
+          .then((response) => {
+            res(response) && refreshOn === 1 && location.reload();
+          })
+          .catch((response) => {
+            rej(response) && refreshOn === -1 && location.reload();
+          })
+          .finally(() => {
+            refreshOn === 0 && location.reload();
+          });
+      };
+      if (e.pluslib_wait) {
+        e.pluslib_actions ??= [];
+        e.pluslib_actions.push(action);
+      }
     });
   });
 }
