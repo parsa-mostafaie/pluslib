@@ -4,7 +4,7 @@ namespace pluslib\MVC;
 use Sql_DB;
 use Sql_Table;
 use \Exception;
-use pluslib\Tools\QueryBuilding;
+use pluslib\helpers\QueryBuilding;
 use \selectQueryCLASS;
 
 defined('ABSPATH') || exit;

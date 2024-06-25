@@ -1,5 +1,5 @@
 <?php
-use pluslib\Tools\QueryBuilding;
+use pluslib\helpers\QueryBuilding;
 
 defined('ABSPATH') || exit;
 

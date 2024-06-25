@@ -1,5 +1,5 @@
 <?php
-namespace pluslib\Tools;
+namespace pluslib\helpers;
 
 defined('ABSPATH') || exit;
 
