@@ -68,6 +68,10 @@ function parse_raw_http_request(array &$a_data)
   // read incoming data
   $input = file_get_contents('php://input');
 
+  if(@($_SERVER['CONTENT_TYPE'] == 'application/json')){
+    return json_decode($input, true);
+  }
+
   // grab multipart boundary from content type header
   preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
   $boundary = $matches[1];
