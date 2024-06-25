@@ -61,12 +61,20 @@ function number_format_short($n, $precision = 1)
   return $n_format . $suffix;
 }
 
-if (!function_exists('dd')) {
-  function dd($obj)
+if (!function_exists('dump')) {
+  function dump($obj)
   {
     echo "<pre>";
     var_dump($obj);
     echo "</pre>";
+  }
+}
+
+
+if (!function_exists('dd')) {
+  function dd($obj)
+  {
+    dump($obj);
     die;
   }
 }
