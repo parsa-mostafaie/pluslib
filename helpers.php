@@ -16,7 +16,7 @@ function valueof($fv, ...$data)
 {
   $_fv = $fv;
   if (is_callable($fv)) {
-    $_fv = $_fv(...$data);
+    $_fv = call_user_func($fv, ...$data);
   }
   return $_fv;
 }
