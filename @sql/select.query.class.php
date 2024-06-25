@@ -142,6 +142,11 @@ class selectQueryCLASS extends ConditionalQueryBASE
     }, $run);
   }
 
+  public function get($params = [])
+  {
+    return collect($this->getArray($params));
+  }
+
   public function first($params = [])
   {
     return $this->getArray($params)[0];
