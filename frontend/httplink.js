@@ -4,10 +4,11 @@ export function httplinksInit(
   res = (data) => undefined,
   rej = (data) => undefined,
   allway = () => undefined,
+  $selector = "a[http-method]",
   refreshOn = 0, // 0: Allway, 1: Success, -1: Failed
   dyn_data = ($lnk, $method) => ({})
 ) {
-  document.querySelectorAll("a[http-method]").forEach((el) => {
+  document.querySelectorAll($selector).forEach((el) => {
     let $method = el.getAttribute("http-method") ?? "GET";
     let $lnk = el.getAttribute("href") ?? "./";
 
