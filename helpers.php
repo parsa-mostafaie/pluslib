@@ -12,11 +12,11 @@ function truncate($string, $chars = 50, $terminator = ' …')
   return mb_substr($string, 0, $boundaryPos === false ? $cutPos : $boundaryPos) . $terminator;
 }
 
-function valueof($fv, $data)
+function valueof($fv, ...$data)
 {
   $_fv = $fv;
   if (is_callable($fv)) {
-    $_fv = $_fv($data);
+    $_fv = $_fv(...$data);
   }
   return $_fv;
 }
