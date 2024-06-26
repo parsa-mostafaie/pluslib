@@ -8,14 +8,15 @@ export async function useJQuery() {
   return 0;
 }
 
-export default function useAjax(url, data, method = "POST") {
+export default function useAjax(url, data, method = "POST", $request = {}) {
   // await useJQuery();
   return new Promise((res, rej) => {
     fetch(url, {
       cache: "no-cache",
       method,
-      body: (data),
+      body: data,
       credentials: "same-origin",
+      ...$request,
     })
       .then((response) => {
         if (response.ok) {
