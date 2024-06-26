@@ -45,7 +45,11 @@ function is_post()
 
 function request_method($method = 'post')
 {
-  return strtoupper($_SERVER['REQUEST_METHOD']) == strtoupper($method);
+  if (!is_array($method)) {
+    $method = [$method];
+  }
+  $method = array_map('strtoupper', $method);
+  return in_array(strtoupper($_SERVER['REQUEST_METHOD']), $method);
 }
 
 function request_body()
@@ -68,7 +72,7 @@ function parse_raw_http_request(array &$a_data)
   // read incoming data
   $input = file_get_contents('php://input');
 
-  if(@($_SERVER['CONTENT_TYPE'] == 'application/json')){
+  if (@($_SERVER['CONTENT_TYPE'] == 'application/json')) {
     return json_decode($input, true);
   }
 
