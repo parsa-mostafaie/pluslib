@@ -29,6 +29,8 @@ export function httplinksInit(
       if (e.pluslib_wait) {
         e.pluslib_actions ??= [];
         e.pluslib_actions.push(action);
+      } else {
+        action();
       }
     });
   });
