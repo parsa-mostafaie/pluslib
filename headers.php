@@ -31,7 +31,15 @@ function redirect($url, $back = false, $backURL = null, $gen = false)
 
 function API_ORIGIN_header()
 {
-  header('Access-Control-Allow-Origin: ' . $_SERVER['SERVER_NAME']);
+  $accepted_origins = [www_url('')];
+  if (isset($_SERVER['HTTP_ORIGIN'])) {
+    // same-origin requests won't set an origin. If the origin is set, it must be valid.
+    if (in_array($_SERVER['HTTP_ORIGIN'], $accepted_origins)) {
+      header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+    } else {
+      _403_();
+    }
+  }
 }
 
 
