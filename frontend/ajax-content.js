@@ -1,11 +1,11 @@
 import useAjax from "./@ajax.js";
 
 export function ajaxContentLoad(
+  $selector = "[ajax-container]",
   res = (data) => undefined,
   rej = (data) => undefined,
   allway = () => undefined,
-  $selector = "[ajax-container]",
-  dyn_data = ($lnk, $method) => ({}),
+  dyn_data = ($content) => ({}),
   $follow = true
 ) {
   document.querySelectorAll($selector).forEach((container) => {
@@ -24,7 +24,7 @@ export function ajaxContentLoad(
         $content.innerHTML = response;
       }
 
-      useAjax($lnk, dyn_data($lnk, $method), $method, {}, $follow)
+      useAjax($lnk, dyn_data($content), $method, {}, $follow)
         .then((res) => {
           return res.text();
         })
@@ -38,6 +38,6 @@ export function ajaxContentLoad(
   });
 }
 
-window.addEventListener("load", ajaxContentLoad);
+window.addEventListener("load", () => ajaxContentLoad());
 
 window.ajaxContentLoad = ajaxContentLoad;
