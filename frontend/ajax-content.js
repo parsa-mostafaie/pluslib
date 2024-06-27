@@ -1,10 +1,10 @@
 import useAjax from "./@ajax.js";
 
 export function ajaxContentLoad(
+  $selector = "[ajax-container]",
   res = (data) => undefined,
   rej = (data) => undefined,
   allway = () => undefined,
-  $selector = "[ajax-container]",
   dyn_data = ($lnk, $method) => ({}),
   $follow = true
 ) {
@@ -38,6 +38,6 @@ export function ajaxContentLoad(
   });
 }
 
-window.addEventListener("load", ajaxContentLoad);
+window.addEventListener("load", () => ajaxContentLoad());
 
 window.ajaxContentLoad = ajaxContentLoad;
