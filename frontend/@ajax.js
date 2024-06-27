@@ -10,11 +10,12 @@ export async function useJQuery() {
 
 export default function useAjax(url, data, method = "POST", $request = {}) {
   // await useJQuery();
+  method = method.toUpperCase();
   return new Promise((res, rej) => {
     fetch(url, {
       cache: "no-cache",
       method,
-      body: data,
+      ...(method != "GET" ? { body: data } : {}),
       credentials: "same-origin",
       ...$request,
     })
