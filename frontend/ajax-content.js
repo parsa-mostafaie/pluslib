@@ -16,6 +16,7 @@ export function ajaxContentLoad(
       let $loading = container.querySelector($content.getAttribute("loading"));
 
       $loading.classList.remove("d-none");
+      $content.innerHTML = "";
 
       function loaded(response) {
         $loading.classList.add("d-none");
@@ -37,3 +38,5 @@ export function ajaxContentLoad(
 }
 
 window.addEventListener("load", ajaxContentLoad);
+
+window.ajaxContentLoad = ajaxContentLoad;
