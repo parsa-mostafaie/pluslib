@@ -1,7 +1,7 @@
 <?php
 defined('ABSPATH') || exit;
 
-class Collection implements ArrayAccess
+class Collection implements ArrayAccess, Iterator
 {
   private $items = array();
 
@@ -313,12 +313,13 @@ class Collection implements ArrayAccess
   public function eachSpread($callback)
   {
     foreach ($this->items as $k => $v) {
-      if (call_user_func($callback, ...[...(is_array($v)?$v:[$v]), $k]) === false)
+      if (call_user_func($callback, ...[...(is_array($v) ? $v : [$v]), $k]) === false)
         break;
     }
     return $this;
   }
 
+  // ArrayAccess
   public function offsetSet($offset, $value): void
   {
     if (is_null($offset)) {
@@ -341,6 +342,34 @@ class Collection implements ArrayAccess
   public function offsetGet($offset): mixed
   {
     return isset($this->items[$offset]) ? $this->items[$offset] : null;
+  }
+
+  // Iterator
+  public function rewind(): void
+  {
+    reset($this->items);
+  }
+
+  #[\ReturnTypeWillChange]
+  public function current()
+  {
+    return current($this->items);
+  }
+
+  #[\ReturnTypeWillChange]
+  public function key()
+  {
+    return key($this->items);
+  }
+
+  public function next(): void
+  {
+    next($this->items);
+  }
+
+  public function valid(): bool
+  {
+    return key($this->items) !== null;
   }
 }
 
