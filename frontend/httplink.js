@@ -6,7 +6,8 @@ export function httplinksInit(
   allway = () => undefined,
   $selector = "a[http-method]",
   refreshOn = 0, // 0: Allway, 1: Success, -1: Failed
-  dyn_data = ($lnk, $method) => ({})
+  dyn_data = ($lnk, $method) => ({}),
+  $follow = true
 ) {
   document.querySelectorAll($selector).forEach((el) => {
     let $method = el.getAttribute("http-method") ?? "GET";
@@ -15,7 +16,7 @@ export function httplinksInit(
     el.addEventListener("click", (e) => {
       e.preventDefault();
       let action = () => {
-        useAjax($lnk, dyn_data($lnk, $method), $method)
+        useAjax($lnk, dyn_data($lnk, $method), $method, {}, $follow)
           .then((response) => {
             res(response) && refreshOn === 1 && location.reload();
           })

@@ -28,7 +28,9 @@ class FormSubmitController {
       useAjax(
         fsc.$.getAttribute("form-action"),
         df,
-        fsc.$.getAttribute("form-method") ?? "POST"
+        fsc.$.getAttribute("form-method") ?? "POST",
+        {},
+        redirect
       )
         .then((res) => res.json())
         .then((json) => {
