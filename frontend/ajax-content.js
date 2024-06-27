@@ -5,7 +5,8 @@ export function ajaxContentLoad(
   rej = (data) => undefined,
   allway = () => undefined,
   $selector = "[ajax-container]",
-  dyn_data = ($lnk, $method) => ({})
+  dyn_data = ($lnk, $method) => ({}),
+  $follow = true
 ) {
   document.querySelectorAll($selector).forEach((container) => {
     let $contents = container.querySelectorAll("[ajax-content]");
@@ -23,7 +24,7 @@ export function ajaxContentLoad(
         $content.innerHTML = response;
       }
 
-      useAjax($lnk, dyn_data($lnk, $method), $method)
+      useAjax($lnk, dyn_data($lnk, $method), $method, {}, $follow)
         .then((res) => {
           return res.text();
         })

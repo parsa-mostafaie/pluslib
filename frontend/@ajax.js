@@ -8,7 +8,13 @@ export async function useJQuery() {
   return 0;
 }
 
-export default function useAjax(url, data, method = "POST", $request = {}) {
+export default function useAjax(
+  url,
+  data,
+  method = "POST",
+  $request = {},
+  $follow = true
+) {
   // await useJQuery();
   method = method.toUpperCase();
   return new Promise((res, rej) => {
@@ -20,6 +26,9 @@ export default function useAjax(url, data, method = "POST", $request = {}) {
       ...$request,
     })
       .then((response) => {
+        if (response.redirected) {
+          location.href = response.url;
+        }
         if (response.ok) {
           res(response);
         } else {
