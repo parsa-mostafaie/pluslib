@@ -8,10 +8,12 @@ export function ajaxContentLoad(
   dyn_data = ($content) => ({}),
   $follow = true
 ) {
+  let __args__ = [res, rej, allway, dyn_data, $follow];
   document.querySelectorAll($selector).forEach((container) => {
+    console.log(container);
     let $contents = container.querySelectorAll("[ajax-content]");
 
-    ajaxContentReLoads(container, arguments);
+    ajaxContentReLoads(container, __args__);
 
     $contents.forEach(($content) => {
       let $lnk = $content.getAttribute("href") ?? "./";
@@ -56,7 +58,8 @@ function addJSX($html, $content) {
     scriptTag.remove();
     $scripts.push(newS);
   });
-  $content.append(...doc.firstChild.childNodes);
+  $content.innerHTML = "";
+  $content.append(...doc.body.firstChild.childNodes);
   document.body.append(...$scripts);
   $scripts.forEach((script) => script.remove());
   window.scrollY = scrollTop;
@@ -77,6 +80,7 @@ function ajaxContentReLoads(container = undefined, args = undefined) {
         ev.pluslib_actions.push(action);
       } else {
         action();
+        console.log(args);
       }
     });
     ar.setAttribute("ar-eh", "set");
