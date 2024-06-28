@@ -5,11 +5,11 @@ export function httplinksInit(
   rej = (data) => undefined,
   allway = () => undefined,
   $selector = "a[http-method]",
-  refreshOn = 0, // 0: Allway, 1: Success, -1: Failed
+  refreshOn = window.httplinksConfig?.refreshOn ?? 0, // 0: Allway, 1: Success, -1: Failed
   dyn_data = (el) => ({}),
   $follow = true
 ) {
-  document.querySelectorAll($selector).forEach((el) => {
+  document.querySelectorAll(`:is(${$selector}):not(hl-eh)`).forEach((el) => {
     let $method = el.getAttribute("http-method") ?? "GET";
     let $lnk = el.getAttribute("href") ?? "./";
 
@@ -24,7 +24,7 @@ export function httplinksInit(
             rej(response) && refreshOn === -1 && location.reload();
           })
           .finally(() => {
-            refreshOn === 0 && location.reload();
+            allway() && refreshOn === 0 && location.reload();
           });
       };
       if (e.pluslib_wait) {
@@ -34,5 +34,10 @@ export function httplinksInit(
         action();
       }
     });
+    el.setAttribute("hl-eh", "set");
   });
 }
+
+window.httplinksInit = httplinksInit;
+
+httplinksInit();
