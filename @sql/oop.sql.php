@@ -46,6 +46,10 @@ class Sql_DB extends PDO
   }
 }
 
+class DB extends Sql_DB
+{
+}
+
 class Sql_Table
 {
   public function name()
