@@ -537,11 +537,7 @@ class BaseModel
   }
 }
 
-class usersModel extends BaseModel
-{
-  protected $table = 'users';
-  protected $id_field = 'ID';
-}
+include_once ('models.defaults.php');
 
 // TODO: Create models.defaults.php
 // TODO: Implement The Many-to-many
