@@ -50,13 +50,20 @@ class Sql_Table
 {
   public function name()
   {
-    return $this->name . ($this->alias ? ' as ' . $this->alias : '');
+    $normalized = QueryBuilding::NormalizeColumnName($this->name);
+    return $normalized . ($this->alias ? ' as ' . QueryBuilding::NormalizeColumnName($this->alias) : '');
   }
+  public readonly string $name;
+  public readonly string|null $alias;
   public function __construct(
     public readonly Sql_DB $db,
-    public readonly string $name,
-    public readonly string|null $alias = null
+    string $name,
+    string|null $alias = null
   ) {
+    if (str_contains($name, ' as ')) {
+      [$name, $alias] = explode(' as ', $name);
+    }
+    [$this->name, $this->alias] = [$name, $alias];
   }
   public function SELECT($cols = '*')
   {
