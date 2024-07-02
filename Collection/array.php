@@ -83,6 +83,11 @@ if (!function_exists('data_get')) {
   function data_get($data, $key, $default = null)
   {
     $default = valueof($default);
+
+    if (is_object($data)) {
+      $data = (array) $data;
+    }
+
     if (!array_accessible($data)) {
       return $default;
     }
@@ -99,20 +104,29 @@ if (!function_exists('data_get')) {
       return $data[$key] ?? $default;
     }
 
+    $segments = explode('.', $key);
 
-    foreach (explode('.', $key) as $segment) {
+    foreach ($segments as $index => $segment) {
+      if (is_object($data))
+        $data = (array) $data;
+
       if ($segment === '*') {
         $results = [];
         foreach ($data as $value) {
-          $results[] = data_get($value, implode('.', array_slice(explode('.', $key), 1)));
+          $key = implode('.', array_slice($segments, $index + 1));
+          $results[] = data_get($value, $key);
         }
         return $results;
       }
 
-      if (array_accessible($data) && array_exists($segment, $data)) {
-        $data = $data[$segment];
-      } elseif (is_object($data) && isset($data->$segment)) {
-        $data = $data->$segment;
+      if (array_accessible($data)) {
+        if ($segment === '{first}') {
+          $data = reset($data);
+        } elseif ($segment === '{last}') {
+          $data = end($data);
+        } elseif (array_exists($data, $segment)) {
+          $data = $data[$segment];
+        }
       } else {
         return $default;
       }
