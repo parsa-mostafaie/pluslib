@@ -15,6 +15,15 @@ final class QueryBuilding
     }
     return $rawName;
   }
+  public static function NormalizeValue($raw)
+  {
+    if (is_string($raw) && $raw !== '?') {
+      return "'" . addslashes($raw) . "'";
+    } elseif ($raw === null) {
+      return 'NULL';
+    }
+    return $raw;
+  }
 
   public static function NormalizeArray($array)
   {
@@ -22,7 +31,7 @@ final class QueryBuilding
       array_map(function ($v) {
         return static::NormalizeColumnName($v);
       }, array_keys($array)),
-      array_values($array),
+      array_map(fn($v) => static::NormalizeValue($v), array_values($array)),
     );
   }
 }
