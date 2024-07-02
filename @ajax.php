@@ -13,7 +13,7 @@ class ajaxAPI
   public function generateObj()
   {
     $obj = array_merge(
-      ['header' => $this->header, 'body' => $this->body, 'ob' => ob_get_contents()],
+      ['header' => $this->header, 'body' => $this->body, 'ob' => ob_get_clean()],
       $this->customs
     );
     return $obj;
@@ -24,7 +24,6 @@ class ajaxAPI
   }
   public function send()
   {
-    ob_end_clean();
     pls_content_type();
     echo $this->generateStr();
     die;
