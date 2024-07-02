@@ -18,6 +18,12 @@ class ConditionalQueryBASE
 
     return $this;
   }
+
+  public function SMART($name, $operator = null, $value = null, $boolean = 'AND', $onall = false)
+  {
+    $cond = sqlConditionGenerator::smart($name, $operator, $value);
+    return $this->where($cond, $boolean, $onall);
+  }
 }
 
 class insertQueryCLASS
