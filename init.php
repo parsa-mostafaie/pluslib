@@ -16,8 +16,7 @@ include_once 'config.php';
 include_once '@url.php';
 include_once 'path.php';
 
-include_once 'array.php';
-include_once 'collection.php';
+include_once 'Collection/init.php';
 
 include_once '@form/processors/@processor.php';
 include_once '@form/get_post.php';
