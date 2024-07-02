@@ -74,9 +74,9 @@ function ajaxContentReLoads(container = undefined, args = undefined) {
       function action() {
         ajaxContentLoad(ar.getAttribute("ajax-reload"), ...(args ?? []));
       }
-      if (ev.pluslib_wait) {
-        ev.pluslib_actions ??= [];
-        ev.pluslib_actions.push(action);
+      if (ev.pluslib_wait_fetch || ev.pluslib_wait) {
+        ev.pluslib_fetch_actions ??= [];
+        ev.pluslib_fetch_actions.push(action);
       } else {
         action();
       }

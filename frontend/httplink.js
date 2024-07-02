@@ -15,6 +15,7 @@ export function httplinksInit(
 
     el.addEventListener("click", (e) => {
       e.preventDefault();
+      e.pluslib_wait_fetch = true;
       let action = () => {
         useAjax($lnk, dyn_data(el), $method, {}, $follow)
           .then((response) => {
@@ -25,6 +26,7 @@ export function httplinksInit(
           })
           .finally(() => {
             allway() && refreshOn === 0 && location.reload();
+            (e.pluslib_fetch_actions ?? []).forEach((action) => action());
           });
       };
       if (e.pluslib_wait) {
