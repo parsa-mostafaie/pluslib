@@ -260,4 +260,18 @@ class sql_abcol
   }
 }
 
+class SExpression
+{
+  public function __construct(public $raw)
+  {
+  }
+}
+
+if (!function_exists('expr')) {
+  function expr($raw)
+  {
+    return new SExpression($raw);
+  }
+}
+
 include_once "helpers.php";

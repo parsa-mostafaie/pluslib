@@ -17,10 +17,12 @@ final class QueryBuilding
   }
   public static function NormalizeValue($raw)
   {
-    if (is_string($raw) && $raw !== '?') {
+    if (is_string($raw) && $raw !== '?' && !($raw instanceof \SExpression)) {
       return "'" . addslashes($raw) . "'";
     } elseif ($raw === null) {
       return 'NULL';
+    } elseif ($raw instanceof \SExpression) {
+      return $raw->raw;
     }
     return $raw;
   }
