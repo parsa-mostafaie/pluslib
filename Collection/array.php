@@ -84,9 +84,7 @@ if (!function_exists('data_get')) {
   {
     $default = valueof($default);
 
-    if (is_object($data)) {
-      $data = (array) $data;
-    }
+    $data = to_array($data);
 
     if (!array_accessible($data)) {
       return $default;
@@ -107,9 +105,7 @@ if (!function_exists('data_get')) {
     $segments = explode('.', $key);
 
     foreach ($segments as $index => $segment) {
-      if (is_object($data))
-        $data = (array) $data;
-
+      $data = to_array($data);
       if ($segment === '*') {
         $results = [];
         foreach ($data as $value) {
@@ -136,3 +132,22 @@ if (!function_exists('data_get')) {
   }
 }
 
+function to_array($arrayable)
+{
+  if (is_array($arrayable)) {
+    return $arrayable;
+  } elseif ($arrayable instanceof Collection)
+    return $arrayable->all();
+  elseif ($arrayable instanceof stdClass) {
+    return (array) $arrayable;
+  }
+  return [];
+}
+
+function wrap($arr)
+{
+  if (array_accessible($arr)) {
+    return to_array($arr);
+  }
+  return [$arr];
+}
