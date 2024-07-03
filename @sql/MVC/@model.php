@@ -120,7 +120,7 @@ class BaseModel
    */
   public static function getWithWhere(string $where, $data = null)
   {
-    $query = (new selectQueryCLASS(static::_getTable(), modelType: static::class))
+    $query = static::_newSelect()
       ->where($where ?? '1=1');
     $result = $query->LIMIT('1')->Run($data)->fetch()[(new static)->id_field];
 
@@ -539,6 +539,5 @@ class BaseModel
 
 include_once ('models.defaults.php');
 
-// TODO: Create models.defaults.php
 // TODO: Implement The Many-to-many
 // TODO: make properties case-insensitive
