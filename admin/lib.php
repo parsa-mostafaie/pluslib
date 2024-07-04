@@ -6,7 +6,7 @@ defined('ABSPATH') || exit;
 //? Check Logged In User is admin
 function isAdmin()
 {
-    return (getCurrentUserInfo_prop('admin')) == 1;
+    return (getCurrentUserInfo_prop('admin')) >= 1;
 }
 
 //? 404 ERROR If Logged in user isn't admin
