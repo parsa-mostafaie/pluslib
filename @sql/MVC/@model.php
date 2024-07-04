@@ -289,10 +289,16 @@ class BaseModel
   public function update()
   {
     $this->_preupdate();
+
     $mprops = $this->_escapedMagicProps();
     $data = array_values($this->_magicProperties);
 
-    $query = static::_getTable()->UPDATE($this->id_field . ' = ?')->fromArray($mprops);
+    $mp_key = array_keys($mprops);
+    $mp_val = array_fill(0, count($mp_key), '?');
+    $mp = array_combine($mp_key, $mp_val);
+
+
+    $query = static::_getTable()->UPDATE($this->id_field . ' = ?')->fromArray($mp);
     $data[] = $this->{'get' . $this->id_field}();
 
     $result = $query->Run($data);
@@ -307,9 +313,15 @@ class BaseModel
   public function create()
   {
     $this->_precreate();
-    $data = array_values($this->_magicProperties);
+
     $mprops = $this->_escapedMagicProps();
-    $result = static::_getTable()->INSERT([])->fromArray($mprops)->Run($data);
+    $data = array_values($this->_magicProperties);
+
+    $mp_key = array_keys($mprops);
+    $mp_val = array_fill(0, count($mp_key), '?');
+    $mp = array_combine($mp_key, $mp_val);
+
+    $result = static::_getTable()->INSERT([])->fromArray($mp)->Run($data);
     if (!isset($this->_magicProperties['id']) || !$this->_magicProperties['id']) {
       $id = db()->lastInsertId();
       $this->{'set' . $this->id_field}($id);

@@ -19,10 +19,10 @@ final class QueryBuilding
   {
     if ($raw instanceof \SExpression) {
       return $raw->raw;
-    } elseif (is_string($raw) && $raw !== '?') {
-      return "'" . addslashes($raw) . "'";
     } elseif ($raw === null) {
       return 'NULL';
+    } elseif (is_string($raw) && $raw !== '?') {
+      return "'" . addslashes($raw) . "'";
     }
     return $raw;
   }
