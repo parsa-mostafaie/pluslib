@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
 /**
  * A Base database model to extend with tables
  */
-class BaseModel
+abstract class BaseModel
 {
   /** 
    * Table name
