@@ -124,7 +124,7 @@ class selectQueryCLASS extends ConditionalQueryBASE
       true
     );
   }
-  public function getArray($params = [])
+  public function getArray($params = [], $nosql_row = false)
   {
     $run = $this->Run($params)->fetchAll(PDO::FETCH_ASSOC);
     if ($this->modelType) {
@@ -137,8 +137,8 @@ class selectQueryCLASS extends ConditionalQueryBASE
         return $modelInstance;
       }, $run);
     }
-    return array_map(function ($v) {
-      return new SqlRow($v);
+    return array_map(function ($v) use ($nosql_row) {
+      return $nosql_row ? $v : new SqlRow($v);
     }, $run);
   }
 
