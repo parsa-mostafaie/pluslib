@@ -138,7 +138,7 @@ class selectQueryCLASS extends ConditionalQueryBASE
       }, $run);
     }
     return array_map(function ($v) use ($nosql_row) {
-      return $nosql_row ? $v : new SqlRow($v);
+      return $nosql_row ? $v->fetch(PDO::FETCH_ASSOC) : new SqlRow($v);
     }, $run);
   }
 
