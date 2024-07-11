@@ -20,6 +20,8 @@ class Config
   public static bool $session_fingerprint = true;
   public static int $session_expire_time = 3600;
 
+  public static string $AuthClass = Auth::class;
+
   public static function invalidSessionRedirect($why = 'invses')
   {
     redirect(redirect(static::$login_page, true, gen: true) . '&why=' . $why);

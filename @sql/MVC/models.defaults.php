@@ -12,7 +12,7 @@ class User extends BaseModel
 
   static function current()
   {
-    if(!\pluslib\Auth::canLogin()){
+    if (!call_user_func([\pluslib\Config::$AuthClass, 'canlogin'])) {
       return null;
     }
     return new static(
