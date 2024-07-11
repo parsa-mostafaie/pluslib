@@ -253,7 +253,7 @@ class BaseModel
    */
   public function load($id)
   {
-    $result = static::_getTable()->SELECT()->WHERE($this->id_field . '=?')->Run([$id])->fetch(\PDO::FETCH_ASSOC);
+    $result = static::_getTable()->SELECT()->WHERE($this->id_field . '=?')->LIMIT(1)->Run([$id])->fetch(\PDO::FETCH_ASSOC);
 
     $this->fromArray($result);
 
