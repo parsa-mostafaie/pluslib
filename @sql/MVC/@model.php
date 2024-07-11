@@ -141,12 +141,12 @@ class BaseModel
    * get all objects as an array from the database, optionally based on conditions
    * @param  string $conditions conditions for a where statement eg `type=1`
    * @param  array  $data       parameters for the conditions, eg `type=?` for conditions and array(1) for $data
-   * @return array              array of objects
+   * @return \Collection              array of objects
    */
   public static function getAll(string|null $conditions = null, $data = array())
   {
     $query = static::_newSelect()->where($conditions ?? '1=1');
-    $rows = $query->getArray($data);
+    $rows = $query->get($data);
     return $rows;
   }
 
