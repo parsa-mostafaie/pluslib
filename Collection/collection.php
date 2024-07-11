@@ -283,12 +283,12 @@ class Collection implements ArrayAccess, Iterator
 
   public function first()
   {
-    return $this->items[0];
+    return reset($this->items);
   }
 
   public function last()
   {
-    return $this->items[$this->count() - 1];
+    return end($this->items);
   }
 
   public function isNotEmpty()
