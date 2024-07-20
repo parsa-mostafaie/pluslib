@@ -12,7 +12,9 @@ final class Helpers
   }
   public static function NormalizeColumnName($rawName)
   {
-    if (!str_starts_with($rawName, '`')) {
+    if ($rawName instanceof Expression) {
+      return $rawName->raw;
+    } else if (!str_starts_with($rawName, '`')) {
       $rawName = "`" . addslashes($rawName) . "`";
     }
     return $rawName;
