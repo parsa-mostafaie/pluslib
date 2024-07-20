@@ -3,7 +3,7 @@ namespace pluslib;
 
 defined('ABSPATH') || exit;
 
-use pluslib\MVC\Defaults\User as BaseUser;
+use pluslib\App\Models\User as BaseUser;
 
 class Auth
 {
