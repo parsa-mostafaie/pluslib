@@ -170,6 +170,22 @@ class Select extends Conditional
     return new sqlRow($this->Run($params));
   }
 
+  public function use($modelClassName, $clone = false)
+  {
+    if ($clone) {
+      return (clone $this)->use($modelClassName);
+    }
+
+    $this->modelType = $modelClassName;
+
+    return $this;
+  }
+
+  public function toBase($clone = false)
+  {
+    return $this->use(null, $clone);
+  }
+
   public function Generate()
   {
     $join = $this->injoins();
