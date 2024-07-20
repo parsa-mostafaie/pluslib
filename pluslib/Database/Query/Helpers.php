@@ -14,10 +14,20 @@ final class Helpers
   {
     if ($rawName instanceof Expression) {
       return $rawName->raw;
-    } else if (!str_starts_with($rawName, '`')) {
+    } else if (!str_starts_with($rawName, '`') && is_string($rawName)) {
       $rawName = "`" . addslashes($rawName) . "`";
     }
+
     return $rawName;
+  }
+  public static function NormalizeTableName($rawName, $rawAlias = null)
+  {
+    $name = static::NormalizeColumnName($rawName);
+    $alias = static::NormalizeColumnName($rawAlias) ?? ''; // NCN(null) = null
+
+    $as = $alias ? ' as ' : '';
+
+    return $name . $as . $alias;
   }
   public static function NormalizeValue($raw)
   {

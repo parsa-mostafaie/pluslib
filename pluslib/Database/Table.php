@@ -13,8 +13,7 @@ class Table
 {
   public function name()
   {
-    $normalized = QueryBuilding::NormalizeColumnName($this->name);
-    return $normalized . ($this->alias ? ' as ' . QueryBuilding::NormalizeColumnName($this->alias) : '');
+    return QueryBuilding::NormalizeTableName($this->name, $this->alias);
   }
   public readonly string $name;
   public readonly string|null $alias;
