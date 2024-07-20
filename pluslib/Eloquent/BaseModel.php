@@ -380,6 +380,7 @@ abstract class BaseModel
     if ($prefix == 'set') {
       if (count($parameters) < 3) {
         $this->_magicProperties[$suffix] = $parameters[0];
+        return $this;
       } else {
         throw new Exception('Setter does not exist');
       }
