@@ -165,6 +165,14 @@ class Select extends Conditional
     return end($res);
   }
 
+  public function count($params = []){
+    $clone = clone $this;
+
+    $clone->cols = ['COUNT(*)'];
+
+    return $clone->Run($params)->fetchColumn();
+  }
+
   public function getFirstRow($params = [])
   {
     return new sqlRow($this->Run($params));
