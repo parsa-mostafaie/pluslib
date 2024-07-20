@@ -1,4 +1,13 @@
 <?php
+/**
+ * pluslib [BETA]: init.php v0.5.4
+ * 
+ * @author Parsa Mostafaie <pmostafaie1390@gmail.com>
+ * @copyright 2024 Parsa Mostafaie
+ * @license MIT
+ * @requires PHP 8.2.12 + APACHE
+ */
+
 const ABSPATH = __DIR__ . '/';
 
 function HOME_URL($set = null)
@@ -9,41 +18,10 @@ function HOME_URL($set = null)
   }
   return $hu;
 }
-//? libs:init.php v0.5.1
-//! Publics
-include_once 'config.php';
 
-include_once '@url.php';
-include_once 'path.php';
-
-include_once 'Collection/init.php';
-
-include_once '@form/processors/@processor.php';
-include_once '@form/get_post.php';
-
-include_once '@security/upload.php';
-include_once '@security/security.php';
-
-include_once 'session.php';
-
-include_once '@sql/sql.php';
-include_once '@sql/oop.sql.php';
-include_once '@sql/queries.oop.sql.php';
-
-include_once '@user/user.php';
-include_once '@user/follow.php';
-include_once '@user/auth.php';
-
-include_once "info.php";
-
-include_once '@form/input_validation.php';
-
-include_once 'headers.php';
-include_once '@ajax.php';
-
-include_once "admin/lib.php";
-
-include_once "helpers.php";
+// AutoLoad: Fix #2
+include_once '__autoload.php';
+include_once 'pluslib/@helpers.php';
 
 function imageComponent($purl, $cattr = '', $undefined = '/default_uploads/unknown.png', $echo = false, $ue_src = true)
 {
