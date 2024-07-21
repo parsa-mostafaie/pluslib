@@ -103,7 +103,7 @@ abstract class BaseModel
   }
 
   /**
-   * Escapes keys of magic properties arry
+   * Escapes keys/values of magic properties array
    * @return array       result of the load
    */
   protected function _escapedMagicProps()
