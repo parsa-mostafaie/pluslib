@@ -13,9 +13,9 @@ class sqlRow
   public array $row;
   public $found = false;
   public function __construct(
-    public readonly PDOStatement $stmt
+    public readonly mixed $stmt
   ) {
-    $t = $this->stmt->fetch(PDO::FETCH_ASSOC);
+    $t = $stmt instanceof PDOStatement ? $this->stmt->fetch(PDO::FETCH_ASSOC) : $stmt;
     $this->row = $t ? $t : [];
     if ($t) {
       $this->found = true;

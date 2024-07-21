@@ -70,7 +70,7 @@ class Select extends Conditional
   public function __construct(
     public readonly Table $table,
     string|array $cols = ['*'],
-    private readonly string|null $modelType = null
+    private string|null $modelType = null
   ) {
     parent::__construct();
 
@@ -144,9 +144,11 @@ class Select extends Conditional
         return $modelInstance;
       }, $run);
     }
-    return array_map(function ($v) use ($nosql_row) {
-      return $nosql_row ? $v->fetch(PDO::FETCH_ASSOC) : new SqlRow($v);
-    }, $run);
+
+    if ($nosql_row) {
+      return $run;
+    }
+    return array_map(fn($v) => new sqlRow($v), $run);
   }
 
   public function get($params = [])
@@ -165,7 +167,8 @@ class Select extends Conditional
     return end($res);
   }
 
-  public function count($params = []){
+  public function count($params = [])
+  {
     $clone = clone $this;
 
     $clone->cols = ['COUNT(*)'];
