@@ -18,13 +18,17 @@ class Select extends Conditional
 
   public function alsoSelect(string|array $cols)
   {
-    if (($this->cols != [] || ($cols != ['*'] && $cols != '*')) && $this->modelType) {
-      echo ('<p style="direction: ltr"><b style="color: #fe3">Pluslib Warning!</b> selectQueryCLASS::alsoSelect is not recommended in models may cause unwanted bug!, at now if you use Run(...) or generate(...) it selects everyhting not what you want! (If you know how to prevent from unwanted bugs please share it with us in <a href="https://github.com/parsa-mostafaie/pluslib/">Github: Pluslib</a>) <i>If you are a user not admin or developer share this warning with site\'s admin!</i></p>');
+    if (
+      (
+        $this->cols != []
+        || wrap($cols) != [$this->table->primaryKey()]
+      )
+      && $this->modelType
+    ) {
+      echo ('<p style="direction: ltr"><b style="color: #fe3">Pluslib Warning!</b> ' . get_class($this) . '::alsoSelect is not recommended in models may cause unwanted bug!, at now if you use Run(...) or generate(...) it selects Only <code>ID</code> not what you want! (If you know how to prevent from unwanted bugs please share it with us in <a href="https://github.com/parsa-mostafaie/pluslib/">Github: Pluslib</a>) <i>If you are a user not admin or developer share this warning with site\'s admin!</i></p>');
       return $this;
     }
-    if (!is_array($cols)) {
-      $cols = [$cols];
-    }
+    $cols = wrap($cols);
     array_push($this->cols, ...$cols);
     return $this;
   }
@@ -133,18 +137,15 @@ class Select extends Conditional
   }
   public function getArray($params = [], $nosql_row = false)
   {
-    $run = $this->Run($params)->fetchAll(PDO::FETCH_ASSOC);
     if ($this->modelType) {
       $mt = $this->modelType;
-      return array_map(function ($v) use ($mt) {
-        $modelInstance = new $mt();
 
-        $modelInstance->fromArray($v);
+      $run = $this->Run($params)->fetchAll(PDO::FETCH_COLUMN, 0);
 
-        return $modelInstance;
-      }, $run);
+      return array_map(fn($v) => new $mt($v), $run);
     }
 
+    $run = $this->Run($params)->fetchAll(PDO::FETCH_ASSOC);
     if ($nosql_row) {
       return $run;
     }
@@ -181,20 +182,15 @@ class Select extends Conditional
     return new sqlRow($this->Run($params));
   }
 
-  public function use($modelClassName, $clone = false)
-  {
-    if ($clone) {
-      return (clone $this)->use($modelClassName);
-    }
-
-    $this->modelType = $modelClassName;
-
-    return $this;
-  }
-
   public function toBase($clone = false)
   {
-    return $this->use(null, $clone);
+    if ($clone) {
+      return (clone $this)->toBase();
+    }
+
+    $this->modelType = null;
+
+    return $this;
   }
 
   public function Generate()

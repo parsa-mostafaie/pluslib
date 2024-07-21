@@ -99,7 +99,7 @@ abstract class BaseModel
    */
   protected static function _newSelect()
   {
-    return new Select(static::_getTable(), modelType: static::class);
+    return new Select(static::_getTable(), static::_getTable()->primaryKey(), static::class);
   }
 
   /**
@@ -150,9 +150,13 @@ abstract class BaseModel
     return $rows;
   }
 
+  /**
+   * select query class instance of model
+   * @return Select
+   */
   public static function select()
   {
-    return new Select((new static)->_getTable(), '*', static::class);
+    return static::_newSelect();
   }
 
 
