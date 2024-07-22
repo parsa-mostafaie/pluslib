@@ -1,7 +1,7 @@
 <?php
 namespace pluslib;
 
-use pluslib\Auth\Auth;
+use pluslib\Auth;
 use pluslib\Security\Security;
 
 defined('ABSPATH') || exit;
@@ -12,6 +12,7 @@ class Config
   public static string $uploadDirectory = 'uploads/';
   public static bool $passwordHash_SHA256 = true;
   public static bool $devMode = true;
+  public static array $allowedOrigins = [];
 
   public static bool $anti_xss_header = true;
 
