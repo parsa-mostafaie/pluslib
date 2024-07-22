@@ -194,6 +194,14 @@ class Collection implements ArrayAccess, Iterator
     return collect($return);
   }
 
+  public function with($key, $value){
+    $clone = collect($this->items);
+
+    $clone->set($value, $key);
+
+    return $clone;
+  }
+
   public function entries()
   {
     return $this->map(function ($v, $k) {
