@@ -29,14 +29,12 @@ function redirect($url, $back = false, $backURL = null, $gen = false)
 
 function API_ORIGIN_header()
 {
-  $accepted_origins = [www_url('')];
-  if (isset($_SERVER['HTTP_ORIGIN'])) {
-    // same-origin requests won't set an origin. If the origin is set, it must be valid.
-    if (in_array($_SERVER['HTTP_ORIGIN'], $accepted_origins)) {
-      header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
-    } else {
-      _403_();
-    }
+  $accepted_origins = [www_url(''), ...pluslib\Config::$allowedOrigins];
+
+  if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $accepted_origins)) {
+    header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+  } else {
+    _403_();
   }
 }
 
