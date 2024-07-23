@@ -76,6 +76,26 @@ abstract class BaseModel
    */
   protected $_magicProperties = array();
 
+
+  /**
+   * Last Entity's Update Field Name
+   * @var string|null
+   */
+  protected $_updated_at = 'updated_at';
+
+  /**
+   * Entity's Creation Date Field Name
+   * @var string|null
+   */
+  protected $_created_at = 'created_at';
+
+
+  /**
+   * Timestamps Enable State
+   * @var bool
+   */
+  protected $_timestamps = true;
+
   /**
    * relationship Constants
    */
@@ -109,7 +129,7 @@ abstract class BaseModel
    */
   protected function _escapedMagicProps()
   {
-    $normal  = collect($this->_magicProperties);
+    $normal = collect($this->_magicProperties);
     $normal = $normal->map(fn($v) => $v instanceof Expression ? $v : expr('?'))->all();
 
     $data = array_values(array_filter($this->_magicProperties, fn($val) => !$val instanceof Expression));
@@ -279,6 +299,16 @@ abstract class BaseModel
     return $this->loaded;
   }
 
+  public function fresh()
+  {
+    return new static($this->{$this->id_field});
+  }
+
+  public function refresh()
+  {
+    return $this->load($this->{$this->id_field});
+  }
+
   //! crud
   /**
    * delete the object from the database
@@ -308,6 +338,8 @@ abstract class BaseModel
     $result = $query->Run($data);
 
     $this->_postupdate($result);
+    $this->refresh();
+
     return $result;
   }
 
