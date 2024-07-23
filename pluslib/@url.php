@@ -92,3 +92,79 @@ function ScanRoute($format, &...$vars)
   sscanf($_SERVER['REQUEST_URI'], c_url($format, false), ...$vars);
   return $vars;
 }
+
+if (!function_exists('build_url')) {
+  /**
+   * Inverse of parse_url
+   * @param array $url_components
+   * @return string Url
+   */
+  function build_url($url_components = [])
+  {
+    // Initialize an empty URL
+    $url = '';
+
+    // Add the scheme (http, https, etc.)
+    if (!empty($url_components['scheme'])) {
+      $url .= $url_components['scheme'] . '://';
+    }
+
+    // Add the user info (username:password)
+    if (!empty($url_components['user'])) {
+      $url .= $url_components['user'];
+      if (!empty($url_components['pass'])) {
+        $url .= ':' . $url_components['pass'];
+      }
+      $url .= '@';
+    }
+
+    // Add the host
+    if (!empty($url_components['host'])) {
+      $url .= $url_components['host'];
+    }
+
+    // Add the port if it is set
+    if (!empty($url_components['port'])) {
+      $url .= ':' . $url_components['port'];
+    }
+
+    // Add the path
+    if (!empty($url_components['path'])) {
+      $url .= $url_components['path'];
+    }
+
+    // Add the query string if it is set
+    if (!empty($url_components['query'])) {
+      $url .= '?' . $url_components['query'];
+    }
+
+    // Add the fragment if it is set
+    if (!empty($url_components['fragment'])) {
+      $url .= '#' . $url_components['fragment'];
+    }
+
+    return $url;
+  }
+}
+
+if (!function_exists('url')) {
+  function url($url, $query = [])
+  {
+    $parsed = parse_url($url);
+
+    $q = $parsed['query'] ?? '';
+    parse_str($q, $base_query);
+
+    $query = http_build_query(array_merge($base_query, $query));
+
+    $scheme = $parsed['scheme'] ?? substr(i_protocol(), 0, -3);
+
+    $host = $parsed['host'] ?? $_SERVER['HTTP_HOST'];
+
+    return build_url(array_merge($parsed, [
+      'query' => $query,
+      'scheme' => $scheme,
+      'host' => $host
+    ]));
+  }
+}
