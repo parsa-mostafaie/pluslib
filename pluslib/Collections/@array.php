@@ -151,3 +151,29 @@ function wrap($arr)
   }
   return [$arr];
 }
+
+if (!function_exists('head')) {
+  /**
+   * Gets First element of array
+   * @param $arr
+   * @return mixed
+   */
+  function head($arr)
+  {
+    $arr = to_array($arr);
+    return reset($arr);
+  }
+}
+
+if (!function_exists('last')) {
+  /**
+   * Gets Last element of array
+   * @param $arr
+   * @return mixed
+   */
+  function head($arr)
+  {
+    $arr = to_array($arr);
+    return end($arr);
+  }
+}
