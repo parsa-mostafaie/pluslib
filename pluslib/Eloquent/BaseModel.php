@@ -573,7 +573,11 @@ abstract class BaseModel
 
       foreach ($this->_magicProperties as $key => $value) {
         $h .= '<tr>';
-        $h .= '<td style="font-weight: bold;" valign="top">' . htmlspecialchars(in_array($key, $this->translation) ? array_search($key, $this->translation) : $key) . '</td><td>' . htmlspecialchars($value) . '</td>';
+        $h .= '<td style="font-weight: bold;" valign="top">' .
+          htmlspecialchars(in_array($key, $this->translation) ? array_search($key, $this->translation) : $key) .
+          '</td><td><pre>' .
+          ($value instanceof Expression ? '<b>Expression</b> ' . htmlspecialchars($value->raw) : htmlspecialchars($value))
+          . '</pre></td>';
         $h .= '</tr>';
       }
       $h .= '</table>';
