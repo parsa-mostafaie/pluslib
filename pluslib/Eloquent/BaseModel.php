@@ -552,19 +552,19 @@ abstract class BaseModel
     if (!$nice) {
       echo '<pre>', var_dump($this), '</pre>';
     } else {
-      $h = '<table style="margin: 5px 10px; border: solid 1px;" width="50%"><caption style="font-size: 1.2em; color: #666;">' . htmlspecialchars($this->table) . ' (' . get_class($this) . ') #' . $this->id . '</caption>';
+      $h = '<table style="margin: 5px 10px; border: solid 1px;" width="50%"><caption style="font-size: 1.2em; color: #666;">' . e($this->table) . ' (' . get_class($this) . ') #' . $this->id . '</caption>';
       if (count($this->relationships)) {
         $h .= '<tr><th colspan=2>Relationships</th></tr>';
         if (count($this->_related)) {
           foreach ($this->_related as $prop => $r) {
-            $h .= '<tr><td style="font-weight: bold;" valign="top">' . htmlspecialchars($prop) . '</td><td>' . (is_array($r) ? count($r) . ' records' . (count($r) ? ' (' . get_class($r[0]) . ')' : '') : get_class($r)) . '</td></tr>';
+            $h .= '<tr><td style="font-weight: bold;" valign="top">' . e($prop) . '</td><td>' . (is_array($r) ? count($r) . ' records' . (count($r) ? ' (' . get_class($r[0]) . ')' : '') : get_class($r)) . '</td></tr>';
           }
         }
         if (count($this->relationships) > count($this->_related)) {
 
           foreach ($this->relationships as $prop => $r) {
             if (!isset($this->_related[$prop])) {
-              $h .= '<tr><td style="font-weight: bold;" valign="top">' . htmlspecialchars($prop) . '</td><td>' . (is_callable($r) ? 'Unknown Function' : $r[1]) . '</td></tr>';
+              $h .= '<tr><td style="font-weight: bold;" valign="top">' . e($prop) . '</td><td>' . (is_callable($r) ? 'Unknown Function' : $r[1]) . '</td></tr>';
             }
           }
         }
@@ -574,9 +574,9 @@ abstract class BaseModel
       foreach ($this->_magicProperties as $key => $value) {
         $h .= '<tr>';
         $h .= '<td style="font-weight: bold;" valign="top">' .
-          htmlspecialchars(in_array($key, $this->translation) ? array_search($key, $this->translation) : $key) .
+          e(in_array($key, $this->translation) ? array_search($key, $this->translation) : $key) .
           '</td><td><pre>' .
-          ($value instanceof Expression ? '<b>Expression</b> ' . htmlspecialchars($value->raw) : htmlspecialchars($value))
+          ($value instanceof Expression ? '<b>Expression</b> ' . e($value->raw) : e($value))
           . '</pre></td>';
         $h .= '</tr>';
       }

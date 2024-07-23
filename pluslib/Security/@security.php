@@ -103,3 +103,14 @@ function secretFile($addr = null)
   }
   return importJSON($address ?? $default, true);
 }
+
+if(!function_exists('e')){
+  /**
+   * Alias for htmlspecialchars
+   * @param string $html
+   * @return string
+   */
+  function e($html){
+    return htmlspecialchars($html);
+  }
+}

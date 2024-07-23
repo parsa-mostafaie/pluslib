@@ -24,12 +24,12 @@ function setted($name)
 // Get Value
 function posted_val($name)
 {
-  return htmlspecialchars($_POST[$name] ?? '');
+  return e($_POST[$name] ?? '');
 }
 
 function urlParam($name)
 {
-  return htmlspecialchars($_GET[$name] ?? '');
+  return e($_GET[$name] ?? '');
 }
 
 function get_val($name)
