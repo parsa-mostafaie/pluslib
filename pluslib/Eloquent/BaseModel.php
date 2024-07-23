@@ -1,6 +1,7 @@
 <?php
 namespace pluslib\Eloquent;
 
+use pluslib\Database\Expression;
 use Sql_DB;
 use pluslib\Database\Table;
 use \Exception;
@@ -108,7 +109,12 @@ abstract class BaseModel
    */
   protected function _escapedMagicProps()
   {
-    return QueryBuilding::NormalizeArray($this->_magicProperties);
+    $normal  = collect($this->_magicProperties);
+    $normal = $normal->map(fn($v) => $v instanceof Expression ? $v : expr('?'))->all();
+
+    $data = array_values(array_filter($this->_magicProperties, fn($val) => !$val instanceof Expression));
+
+    return [$normal, $data];
   }
 
   //! Selecting static methods
@@ -294,18 +300,13 @@ abstract class BaseModel
   {
     $this->_preupdate();
 
-    $mprops = $this->_escapedMagicProps();
-    $data = array_values($this->_magicProperties);
-
-    $mp_key = array_keys($mprops);
-    $mp_val = array_fill(0, count($mp_key), '?');
-    $mp = array_combine($mp_key, $mp_val);
-
+    [$mp, $data] = $this->_escapedMagicProps();
 
     $query = static::_getTable()->UPDATE($this->id_field . ' = ?')->fromArray($mp);
     $data[] = $this->{'get' . $this->id_field}();
 
     $result = $query->Run($data);
+
     $this->_postupdate($result);
     return $result;
   }
@@ -318,12 +319,7 @@ abstract class BaseModel
   {
     $this->_precreate();
 
-    $mprops = $this->_escapedMagicProps();
-    $data = array_values($this->_magicProperties);
-
-    $mp_key = array_keys($mprops);
-    $mp_val = array_fill(0, count($mp_key), '?');
-    $mp = array_combine($mp_key, $mp_val);
+    [$mp, $data] = $this->_escapedMagicProps();
 
     $result = static::_getTable()->INSERT([])->fromArray($mp)->Run($data);
     if (!isset($this->_magicProperties['id']) || !$this->_magicProperties['id']) {
