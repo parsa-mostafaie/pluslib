@@ -16,11 +16,12 @@ function ap_header_(
 
 function redirect($url, $back = false, $backURL = null, $gen = false)
 {
+  $params = [];
   if ($back) {
-    $backURL = $backURL ?? $_SERVER['REQUEST_URI'];
-    $sep = parse_url($url, PHP_URL_QUERY) ? '&' : '?';
-    $url = $url . $sep . 'back=' . urlencode($backURL);
+    $backURL ??= $_SERVER['REQUEST_URI'];
+    $params['back'] = $backURL;
   }
+  $url = url($url, $params);
   if ($gen)
     return $url;
   header('Location: ' . $url);
