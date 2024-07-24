@@ -13,16 +13,16 @@ class Conditional
     $this->condition = new Condition();
   }
 
-  public function WHERE(Condition|string $cond, $boolean = 'AND', $onall = false)
+  public function WHERE(Condition|string $cond, $boolean = 'AND')
   {
-    $this->condition->extra($cond, $boolean, $onall);
+    $this->condition->extra($cond, $boolean);
 
     return $this;
   }
 
-  public function SMART($name, $operator = null, $value = null, $boolean = 'AND', $onall = false)
+  public function SMART($name, $operator = null, $value = null, $boolean = 'AND')
   {
     $cond = Condition::smart($name, $operator, $value);
-    return $this->where($cond, $boolean, $onall);
+    return $this->where($cond, $boolean);
   }
 }

@@ -19,7 +19,7 @@ class Condition
       foreach ($cols as $col) {
         $COBJ->OR(" $col LIKE ? ");
       }
-      $OBJ->AND(' ( ' . $COBJ->Generate() . ' ) ');
+      $OBJ->AND($COBJ->Generate());
       $qm = count($cols);
     }
 
@@ -51,32 +51,23 @@ class Condition
     }
     $this->cond = !empty($cond) ? $cond : '1 = 1';
   }
-  public function AND($cond, $onall = false)
+  public function AND($cond)
   {
-    if ($onall) {
-      $this->cond = '(' . $this->cond . ')';
-    }
-    $this->cond .= ' AND ' . static::Stringify($cond);
+    $this->cond .= " AND ($cond)";
     return $this;
   }
-  public function OR($cond, $onall = false)
+  public function OR($cond)
   {
-    if ($onall) {
-      $this->cond = '(' . $this->cond . ')';
-    }
-    $this->cond .= ' OR ' . static::Stringify($cond);
+    $this->cond .= " OR ($cond)";
     return $this;
   }
   public function Generate()
   {
     return static::Stringify($this);
   }
-  public function extra($cond, $boolean = 'AND', $onall = false)
+  public function extra($cond, $boolean = 'AND')
   {
-    if ($onall) {
-      $this->cond = '(' . $this->cond . ')';
-    }
-    $this->cond .= " $boolean $cond";
+    $this->cond .= " $boolean ($cond)";
   }
 
   public function __toString()
