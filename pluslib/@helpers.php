@@ -108,6 +108,53 @@ if (!function_exists('optional')) {
   }
 }
 
+if (!function_exists('blank')) {
+  /**
+   * Determine if the given value is "blank".
+   *
+   * @param  mixed  $value
+   * @return bool
+   */
+  function blank($value)
+  {
+    if (is_null($value)) {
+      return true;
+    }
+
+    if (is_string($value)) {
+      return trim($value) === '';
+    }
+
+    if (is_numeric($value) || is_bool($value)) {
+      return false;
+    }
+
+    if ($value instanceof Countable) {
+      return count($value) === 0;
+    }
+
+    if ($value instanceof Stringable) {
+      return trim((string) $value) === '';
+    }
+
+    return empty($value);
+  }
+}
+
+if (!function_exists('filled')) {
+  /**
+   * Determines whether the given value is not "blank"
+   * 
+   * @param  mixed  $value
+   * @return bool
+   */
+  function filled($value)
+  {
+    return !blank($value);
+  }
+}
+
+
 include_once '@info.php';
 include_once '@url.php';
 include_once '@path.php';
