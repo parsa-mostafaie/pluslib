@@ -79,6 +79,34 @@ if (!function_exists('dd')) {
   }
 }
 
+if (!function_exists('optional')) {
+  /**
+   * IF $obj != null: Returns the $obj (Or $closure($obj) IF $closure be instanceof Closure), 
+   * else returns a object that returns null for all properties or methods!
+   * @param mixed $obj
+   * @param mixed $closure
+   * @return mixed
+   */
+  function optional($obj, $closure = null)
+  {
+    if (is_null($obj)) {
+      return new class {
+        function __get($prop)
+        {
+          return null;
+        }
+        function __call($f, $p)
+        {
+          return null;
+        }
+      };
+    }
+    if ($closure instanceof Closure && !is_null($closure)) {
+      return $closure($obj);
+    }
+    return $obj;
+  }
+}
 
 include_once '@info.php';
 include_once '@url.php';
