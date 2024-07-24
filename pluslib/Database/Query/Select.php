@@ -101,9 +101,9 @@ class Select extends Conditional
     return $this;
   }
 
-  public function ORDER_BY($o)
+  public function ORDER_BY($o, $s = "")
   {
-    $this->order = $o;
+    $this->order = $o . ($s ? " $s" : "");
 
     return $this;
   }
