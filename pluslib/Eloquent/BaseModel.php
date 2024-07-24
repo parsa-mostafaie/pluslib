@@ -220,6 +220,11 @@ abstract class BaseModel
    */
   protected function _postcreate($result)
   {
+    if ($this->_timestamps && $this->_created_at) {
+      $this->_getTable()->UPDATE($this->id_field . '=?')->SET([
+        $this->_created_at => expr('current_timestamp()')
+      ])->Run([$this->{$this->id_field}]);
+    }
   }
 
   /**
@@ -235,6 +240,11 @@ abstract class BaseModel
    */
   protected function _postupdate($result)
   {
+    if ($this->_timestamps && $this->_updated_at) {
+      $this->_getTable()->UPDATE($this->id_field . '=?')->SET([
+        $this->_updated_at => expr('current_timestamp()')
+      ])->Run([$this->{$this->id_field}]);
+    }
   }
 
   /**
