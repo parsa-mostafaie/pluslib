@@ -150,6 +150,12 @@ if (!function_exists('build_url')) {
 if (!function_exists('url')) {
   function url($url, $query = [])
   {
+    /**
+     * relative url: file.ext, ../file.ext, ...
+     * absolute url: /file.ext, ...
+     */
+    $auto_host = str_starts_with(web_url($url), '/'); // handle relative url
+
     $parsed = parse_url($url);
 
     $q = $parsed['query'] ?? '';
@@ -157,9 +163,9 @@ if (!function_exists('url')) {
 
     $query = http_build_query(array_merge($base_query, $query));
 
-    $scheme = $parsed['scheme'] ?? substr(i_protocol(), 0, -3);
+    $scheme = $parsed['scheme'] ?? ($auto_host ? substr(i_protocol(), 0, -3) : '');
 
-    $host = $parsed['host'] ?? $_SERVER['HTTP_HOST'];
+    $host = $parsed['host'] ?? ($auto_host ? $_SERVER['HTTP_HOST'] : '');
 
     return build_url(array_merge($parsed, [
       'query' => $query,
