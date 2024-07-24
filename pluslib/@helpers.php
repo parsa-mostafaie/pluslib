@@ -154,6 +154,21 @@ if (!function_exists('filled')) {
   }
 }
 
+if (!function_exists('literal')) {
+  /**
+   * Return a new literal or anonymous object using named arguments.
+   *
+   * @return \stdClass
+   */
+  function literal(...$arguments)
+  {
+    if (count($arguments) === 1 && array_is_list($arguments)) {
+      return $arguments[0];
+    }
+
+    return (object) $arguments;
+  }
+}
 
 include_once '@info.php';
 include_once '@url.php';
