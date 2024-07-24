@@ -18,16 +18,6 @@ class Select extends Conditional
 
   public function alsoSelect(string|array $cols)
   {
-    if (
-      (
-        $this->cols != []
-        || wrap($cols) != [$this->table->primaryKey()]
-      )
-      && $this->modelType
-    ) {
-      echo ('<p style="direction: ltr"><b style="color: #fe3">Pluslib Warning!</b> ' . get_class($this) . '::alsoSelect is not recommended in models may cause unwanted bug!, at now if you use Run(...) or generate(...) it selects Only <code>ID</code> not what you want! (If you know how to prevent from unwanted bugs please share it with us in <a href="https://github.com/parsa-mostafaie/pluslib/">Github: Pluslib</a>) <i>If you are a user not admin or developer share this warning with site\'s admin!</i></p>');
-      return $this;
-    }
     $cols = wrap($cols);
     array_push($this->cols, ...$cols);
     return $this;
@@ -201,7 +191,7 @@ class Select extends Conditional
     $having = $this->having ? "HAVING " . $this->having : '';
     $ob = $this->order ? "ORDER BY " . $this->order : '';
     $lm = $this->lim ? "LIMIT " . $this->lim : '';
-    $cols = join(', ', $this->cols);
+    $cols = $this->modelType ? $this->table->primaryKey() : join(', ', $this->cols);
     $tbl = $this->table->name();
 
     $query = "SELECT $cols FROM $tbl $join $cond $gb $having $ob $lm";
