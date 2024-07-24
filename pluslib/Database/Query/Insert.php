@@ -42,8 +42,8 @@ class Insert
   public function Generate()
   {
     $tbl = $this->table->name();
-    $this->arr = QueryBuilding::NormalizeArray($this->arr);
-    $keys = array_keys($this->arr);
+    $arr = QueryBuilding::NormalizeArray($this->arr);
+    $keys = array_keys($arr);
     $vals = array_values($this->arr);
     return "INSERT INTO $tbl (" . join(', ', $keys) . ") VALUES ( " . join(', ', $vals) . " )";
   }

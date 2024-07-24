@@ -20,13 +20,13 @@ class Update extends Conditional
     $this->WHERE($cond);
   }
 
-  private function toString()
+  private function toString($arr)
   {
     return join(
       ',',
       array_map(function ($k, $v) {
         return "$k = $v";
-      }, array_keys($this->arr), $this->arr)
+      }, array_keys($arr), $arr)
     );
   }
 
@@ -53,9 +53,9 @@ class Update extends Conditional
 
   public function Generate()
   {
-    $this->arr = QueryBuilding::NormalizeArray($this->arr);
+    $arr = QueryBuilding::NormalizeArray($this->arr);
     $tbl = $this->table->name();
-    $v = $this->toString();
+    $v = $this->toString($arr);
     $condition = $this->condition;
     return "UPDATE $tbl SET $v WHERE $condition";
   }
