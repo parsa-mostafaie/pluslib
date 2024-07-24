@@ -12,13 +12,35 @@ function truncate($string, $chars = 50, $terminator = ' …')
   return mb_substr($string, 0, $boundaryPos === false ? $cutPos : $boundaryPos) . $terminator;
 }
 
-function valueof($fv, ...$data)
-{
-  $_fv = $fv;
-  if (is_callable($fv)) {
-    $_fv = call_user_func($fv, ...$data);
+if (!function_exists('valueof')) {
+  /**
+   * Return the default value of the given value.
+   *
+   * @param  mixed  $fv
+   * @param  mixed  ...$args
+   * @return mixed
+   */
+  function valueof($fv, ...$data)
+  {
+    return $fv instanceof Closure ? $fv(...$data) : $fv;
   }
-  return $_fv;
+}
+
+if (!function_exists('value')) {
+  /**
+   * Return the default value of the given value.
+   *
+   * @template TValue
+   * @template TArgs
+   *
+   * @param  TValue|\Closure(TArgs): TValue  $value
+   * @param  TArgs  ...$args
+   * @return TValue
+   */
+  function value($value, ...$args)
+  {
+    return valueof($value, ...$args);
+  }
 }
 
 function importJSON($file, $assoc = null, $depth = 512, $flags = 0)
