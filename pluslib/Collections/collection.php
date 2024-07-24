@@ -36,16 +36,7 @@ class Collection implements ArrayAccess, Iterator
 
   protected static function arr_obj_at($arr_obj, $at = null)
   {
-    if (is_null($at)) {
-      return $arr_obj;
-    }
-    if ($arr_obj instanceof Collection)
-      return static::arr_obj_at(uncollect($arr_obj), $at);
-    else if (is_array($arr_obj))
-      return $arr_obj[$at];
-    else if ($arr_obj instanceof \stdClass)
-      return $arr_obj->{$at};
-    return $arr_obj;
+    return data_get($arr_obj, $at);
   }
   //? <End>Helpers</End>
 
