@@ -156,11 +156,12 @@ abstract class BaseModel
   /**
    * Load a record from the database with id
    * @param  $id id of record
-   * @return static       result of the search
+   * @return static|null       result of the search
    */
   public static function find($id)
   {
-    return new static($id);
+    $v = new static($id);
+    return $v->loaded ? $v : null;
   }
 
   /**
