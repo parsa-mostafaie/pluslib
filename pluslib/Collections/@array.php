@@ -288,3 +288,10 @@ if (!function_exists('data_forget')) {
     return $target;
   }
 }
+
+if (!function_exists('join_assoc')) {
+  function join_assoc($arr, $key_val = " = ", $pair_sep = ", ")
+  {
+    return join($pair_sep, array_map(fn($k, $v) => $k . $key_val . $v, array_keys($arr), $arr));
+  }
+}
