@@ -108,9 +108,9 @@ class Select extends Conditional
     return $this;
   }
 
-  public function LIMIT($l)
+  public function LIMIT($l, $o = "")
   {
-    $this->lim = $l;
+    $this->lim = $l . ($o ? " OFFSET $o" : "");
 
     return $this;
   }
