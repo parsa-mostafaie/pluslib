@@ -10,7 +10,7 @@ use \PDO;
 
 class Select extends Conditional
 {
-  private $join_tbl = [], $join_query = [], $groupby = null, $having = null, $order
+  private $joins = [], $groupby = null, $having = null, $order
     = null, $lim = null, $p = [];
 
 
@@ -74,17 +74,16 @@ class Select extends Conditional
   public function injoins()
   {
     $res = '';
-    foreach ($this->join_tbl as $i => $t) {
+    foreach ($this->joins as $t => $q) {
       $res .= ' INNER JOIN ' . $t;
-      $res .= ' ON ' . $this->join_query[$i];
+      $res .= ' ON ' . $q;
     }
     return $res;
   }
 
   public function ON($jq, $jt = null)
   {
-    array_push($this->join_tbl, $jt);
-    array_push($this->join_query, $jq);
+    $this->joins[$jt] = $jq;
     return $this;
   }
 
