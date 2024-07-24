@@ -171,7 +171,7 @@ if (!function_exists('last')) {
    * @param $arr
    * @return mixed
    */
-  function head($arr)
+  function last($arr)
   {
     $arr = to_array($arr);
     return end($arr);
