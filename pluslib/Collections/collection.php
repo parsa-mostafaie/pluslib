@@ -81,7 +81,7 @@ class Collection implements ArrayAccess, Iterator
 
   public function deepAll()
   {
-    return $this->map(fn($v) => $v instanceof Collection ? $v->deepAll() : $v)->all();
+    return $this->map(fn($v) => collect($v)->deepAll())->all();
   }
 
   public function values()
@@ -102,14 +102,7 @@ class Collection implements ArrayAccess, Iterator
 
   public function map($callback)
   {
-    $nitems = array_map(
-      function ($v, $k) use ($callback) {
-        return call_user_func($callback, $v, $k);
-      },
-      $this->values()->all(),
-      $this->keys()->all()
-    );
-    return $this->keys()->combine(collect($nitems));
+    return collect(Arr::map($this->all(), $callback));
   }
 
   public function after($cond, $strict = false)
@@ -194,7 +187,8 @@ class Collection implements ArrayAccess, Iterator
     return collect($return);
   }
 
-  public function with($key, $value){
+  public function with($key, $value)
+  {
     $clone = collect($this->items);
 
     $clone->set($value, $key);
