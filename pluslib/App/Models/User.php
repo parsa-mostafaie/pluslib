@@ -13,12 +13,13 @@ class User extends BaseModel
   static function current()
   {
     if (!call_user_func([\pluslib\Config::$AuthClass, 'canlogin'])) {
-      return null;
+      return optional(null);
     }
-    return new static(
+    return optional(static::find(
       \getCurrentUserInfo_prop(
         (new static)->id_field
       )
+    )
     );
   }
 }
