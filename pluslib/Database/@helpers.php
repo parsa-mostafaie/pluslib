@@ -145,3 +145,10 @@ if (!function_exists('escape_col')) {
     return QB::NormalizeColumnName($raw);
   }
 }
+
+if (!function_exists('cond')) {
+  function cond($cond = '1 = 1', $operator = null, $value = null)
+  {
+    return new pluslib\Database\Condition(...func_get_args());
+  }
+}

@@ -13,16 +13,25 @@ class Conditional
     $this->condition = new Condition();
   }
 
-  public function WHERE(Condition|string $cond, $boolean = 'AND')
+  public function where($cond, $operator = null, $value = null, $boolean = 'and')
   {
-    $this->condition->extra($cond, $boolean);
+    $this->condition->extra($cond, $operator, $value, $boolean);
 
     return $this;
   }
 
-  public function SMART($name, $operator = null, $value = null, $boolean = 'AND')
+  public function orWhere($cond, $operator = null, $value = null)
   {
-    $cond = Condition::smart($name, $operator, $value);
-    return $this->where($cond, $boolean);
+    return $this->where($cond, $operator, $value, 'or');
+  }
+
+  public function whereNot($cond, $operator = null, $value = null, $boolean = 'and')
+  {
+    return $this->where(cond($cond, $operator, $value)->reverse(), boolean: $boolean);
+  }
+
+  public function orWhereNot($cond, $operator = null, $value = null)
+  {
+    return $this->whereNot($cond, $operator, $value, boolean: 'or');
   }
 }

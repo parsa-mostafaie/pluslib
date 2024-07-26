@@ -7,6 +7,49 @@ use pluslib\Database\Query\Helpers as QueryBuilding;
 
 class Condition
 {
+  const True = "1 = 1";
+  const False = "1 = 0";
+  const operators = [
+    '=',
+    '<',
+    '>',
+    '<=',
+    '>=',
+    '<>',
+    '!=',
+    '<=>',
+    'like',
+    'like binary',
+    'not like',
+    'ilike',
+    '&',
+    '|',
+    '^',
+    '<<',
+    '>>',
+    '&~',
+    'is',
+    'is not',
+    'rlike',
+    'not rlike',
+    'regexp',
+    'not regexp',
+    '~',
+    '~*',
+    '!~',
+    '!~*',
+    'similar to',
+    'not similar to',
+    'not ilike',
+    '~~*',
+    '!~~*',
+  ];
+
+  public static function invalidOperator($operator)
+  {
+    return !is_string($operator) || !in_array(strtolower($operator), static::operators, true);
+  }
+
   public static function TextSearch($searchInput, ...$cols)
   {
     $OBJ = new static();
@@ -15,7 +58,7 @@ class Condition
 
     if ($searchInput && $searchInput != '') {
       $sval = '%' . $searchInput . '%';
-      $COBJ = new static('0 = 1');
+      $COBJ = new static(static::False);
       foreach ($cols as $col) {
         $COBJ->OR(" $col LIKE ? ");
       }
@@ -25,7 +68,7 @@ class Condition
 
     return [$OBJ->Generate(), array_fill(0, $qm, $sval)];
   }
-  private $cond;
+  private string $cond;
   public static function Objectify($val)
   {
     if ($val instanceof static) {
@@ -43,48 +86,76 @@ class Condition
       return $val;
     }
   }
-  public function __construct($cond = '1 = 1')
+
+  // Construct
+  public function __construct($cond = "1 = 1", $operator = null, $value = null)
   {
+    if ($cond instanceof Expression) {
+      $cond = $cond->raw;
+    }
+
     if ($cond instanceof static) {
-      $this->cond = $cond->cond;
+      $this->cond = $cond;
       return;
     }
-    $this->cond = !empty($cond) ? $cond : '1 = 1';
+    if ($cond instanceof \Closure) {
+      $this->cond = static::True;
+      $cond($this);
+      return;
+    }
+
+    if (is_array($cond)) {
+      $this->cond = static::True;
+      foreach ($cond as $key => $item) {
+        if (!is_numeric($key)) {
+          $this->and(new static($key, $item));
+          continue;
+        }
+        $this->and(new static(...(wrap($item))));
+      }
+      return;
+    }
+
+    if (static::invalidOperator($operator) && !is_null($operator)) {
+      [$value, $operator] = [$operator, "="];
+    }
+
+    if (!is_null($operator)) {
+      $this->cond = escape_col($cond) . " $operator " . escape($value);
+      return;
+    }
+    $this->cond = !empty($cond) ? $cond : static::True;
   }
-  public function AND($cond)
+
+  // Operator
+  public function and($cond, $operator = null, $value = null)
   {
-    $this->cond .= " AND ($cond)";
+    return $this->extra($cond, $operator, $value, 'and');
+  }
+  public function or($cond, $operator = null, $value = null)
+  {
+    return $this->extra($cond, $operator, $value, 'or');
+  }
+  public function reverse()
+  {
+    return "NOT ($this)";
+  }
+  public function extra($cond, $operator = null, $value = null, $boolean = 'and')
+  {
+    $cond = new static(...[$cond, $operator, $value]);
+    $this->cond .= " $boolean ($cond)";
     return $this;
   }
-  public function OR($cond)
-  {
-    $this->cond .= " OR ($cond)";
-    return $this;
-  }
+
+  // Convert
   public function Generate()
   {
     return static::Stringify($this);
-  }
-  public function extra($cond, $boolean = 'AND')
-  {
-    $this->cond .= " $boolean ($cond)";
   }
 
   public function __toString()
   {
     return static::Stringify($this);
-  }
-
-  public static function smart(string|self $name, $operator = null, $value = null)
-  {
-    $instance = new static;
-
-    if (!is_null($operator) && !is_null($operator) && !($name instanceof static))
-      $instance->AND(QueryBuilding::NormalizeColumnName($name) . ' = ' . $value);
-    else {
-      $instance->AND($name);
-    }
-    return $instance;
   }
 
 }
