@@ -345,7 +345,10 @@ abstract class BaseModel
     }
 
 
-    $this->_predelete();
+    if ($this->_predelete() === false) {
+      return false; // cancel delete
+    }
+
     $result = static::_getTable()->DELETE($this->id_field . ' = ?')->Run([$this->{$this->id_field}]);
     $this->_postdelete($result);
     return $result;
@@ -364,7 +367,9 @@ abstract class BaseModel
       throw new Exception("Update is not allowed in readonly model: " . static::class);
     }
 
-    $this->_preupdate();
+    if ($this->_preupdate() === false) {
+      return false; // cancel update;
+    }
 
     [$mp, $data] = $this->_escapedMagicProps();
 
