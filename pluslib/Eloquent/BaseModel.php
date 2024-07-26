@@ -340,6 +340,11 @@ abstract class BaseModel
       throw new Exception("Delete is not allowed in readonly model: " . static::class);
     }
 
+    if (!$this->loaded) {
+      throw new Exception("Can't delete a model that not currently loaded from database!");
+    }
+
+
     $this->_predelete();
     $result = static::_getTable()->DELETE($this->id_field . ' = ?')->Run([$this->{$this->id_field}]);
     $this->_postdelete($result);
