@@ -81,13 +81,13 @@ abstract class BaseModel
    * Last Entity's Update Field Name
    * @var string|null
    */
-  protected $_updated_at = 'updated_at';
+  const updated_at = 'updated_at';
 
   /**
    * Entity's Creation Date Field Name
    * @var string|null
    */
-  protected $_created_at = 'created_at';
+  const created_at = 'created_at';
 
 
   /**
@@ -220,9 +220,9 @@ abstract class BaseModel
    */
   protected function _postcreate($result)
   {
-    if ($this->_timestamps && $this->_created_at) {
+    if ($this->_timestamps && static::created_at) {
       $this->_getTable()->UPDATE($this->id_field . '=?')->SET([
-        $this->_created_at => expr('current_timestamp()')
+        static::created_at => expr('current_timestamp()')
       ])->Run([$this->{$this->id_field}]);
     }
   }
@@ -240,9 +240,9 @@ abstract class BaseModel
    */
   protected function _postupdate($result)
   {
-    if ($this->_timestamps && $this->_updated_at) {
+    if ($this->_timestamps && static::updated_at) {
       $this->_getTable()->UPDATE($this->id_field . '=?')->SET([
-        $this->_updated_at => expr('current_timestamp()')
+        static::updated_at => expr('current_timestamp()')
       ])->Run([$this->{$this->id_field}]);
     }
   }
