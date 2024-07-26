@@ -138,7 +138,7 @@ class Condition
   }
   public function reverse()
   {
-    return "NOT ($this)";
+    return cond("NOT ($this)");
   }
   public function extra($cond, $operator = null, $value = null, $boolean = 'and')
   {
