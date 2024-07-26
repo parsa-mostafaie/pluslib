@@ -122,3 +122,26 @@ if (!function_exists('expr')) {
     return new Expression($raw);
   }
 }
+
+use pluslib\Database\Query\Helpers as QB;
+
+if (!function_exists('escape')) {
+  function escape($raw)
+  {
+    return QB::NormalizeValue($raw);
+  }
+}
+
+if (!function_exists('escape_arr')) {
+  function escape_arr($raw)
+  {
+    return QB::NormalizeArray($raw);
+  }
+}
+
+if (!function_exists('escape_col')) {
+  function escape_col($raw)
+  {
+    return QB::NormalizeColumnName($raw);
+  }
+}
