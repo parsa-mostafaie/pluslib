@@ -20,6 +20,12 @@ defined('ABSPATH') || exit;
  */
 abstract class BaseModel
 {
+  /**
+   * when enabled, delete/insert/update will denied!
+   * @var bool 
+   */
+  protected $readonly = false;
+
   /** 
    * Table name
    * @var string
@@ -323,10 +329,17 @@ abstract class BaseModel
   //! crud
   /**
    * delete the object from the database
+   * 
+   * @throws Exception If Model is readonly
+   * 
    * @return boolean result of the query
    */
   public function delete()
   {
+    if ($this->readonly) {
+      throw new Exception("Delete is not allowed in readonly model: " . static::class);
+    }
+
     $this->_predelete();
     $result = static::_getTable()->DELETE($this->id_field . ' = ?')->Run([$this->{$this->id_field}]);
     $this->_postdelete($result);
@@ -335,10 +348,17 @@ abstract class BaseModel
 
   /** 
    * run an UPDATE on the object in the db
+   * 
+   * @throws Exception if model is readonly
+   * 
    * @return boolean result
    */
   public function update()
   {
+    if ($this->readonly) {
+      throw new Exception("Update is not allowed in readonly model: " . static::class);
+    }
+
     $this->_preupdate();
 
     [$mp, $data] = $this->_escapedMagicProps();
@@ -356,10 +376,17 @@ abstract class BaseModel
 
   /**
    * run a database insert
+   * 
+   * @throws Exception If model is readonly
+   * 
    * @return integer primary key of inserted row (if available)
    */
   public function create()
   {
+    if ($this->readonly) {
+      throw new Exception("Create is not allowed in readonly model: " . static::class);
+    }
+
     $this->_precreate();
 
     [$mp, $data] = $this->_escapedMagicProps();
