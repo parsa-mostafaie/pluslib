@@ -229,7 +229,7 @@ abstract class BaseModel
     if ($this->_timestamps && static::created_at) {
       $this->_getTable()->UPDATE($this->id_field . '=?')->SET([
         static::created_at => expr('current_timestamp()')
-      ])->Run([$this->{$this->id_field}]);
+      ])->Run([$this->_id()]);
     }
   }
 
@@ -249,7 +249,7 @@ abstract class BaseModel
     if ($this->_timestamps && static::updated_at) {
       $this->_getTable()->UPDATE($this->id_field . '=?')->SET([
         static::updated_at => expr('current_timestamp()')
-      ])->Run([$this->{$this->id_field}]);
+      ])->Run([$this->_id()]);
     }
   }
 
@@ -318,12 +318,12 @@ abstract class BaseModel
 
   public function fresh()
   {
-    return new static($this->{$this->id_field});
+    return new static($this->_id());
   }
 
   public function refresh()
   {
-    return $this->load($this->{$this->id_field});
+    return $this->load($this->_id());
   }
 
   //! crud
@@ -349,7 +349,7 @@ abstract class BaseModel
       return false; // cancel delete
     }
 
-    $result = static::_getTable()->DELETE($this->id_field . ' = ?')->Run([$this->{$this->id_field}]);
+    $result = static::_getTable()->DELETE($this->id_field . ' = ?')->Run([$this->_id()]);
     $this->_postdelete($result);
     return $result;
   }
@@ -409,7 +409,7 @@ abstract class BaseModel
     $this->loaded = true;
     $this->_postcreate($result);
     $this->load($id); // load all columns from db (also what not setted)
-    return $this->{$this->id_field};
+    return $this->_id();
   }
 
   /**
@@ -508,6 +508,16 @@ abstract class BaseModel
       $name = $this->translation[$name];
     }
     return array_key_exists($name, $this->_magicProperties);
+  }
+
+  /**
+   * Returns value of id field
+   * 
+   * @return mixed
+   */
+  public function _id()
+  {
+    return $this->{$this->id_field};
   }
 
   //! Relations
