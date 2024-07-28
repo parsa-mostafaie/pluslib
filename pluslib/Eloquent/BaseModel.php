@@ -65,6 +65,12 @@ abstract class BaseModel
   protected $relationships = array();
 
   /**
+   * Default data for a model instance that not loaded from database
+   * @var array
+   */
+  protected $defaultData = array();
+
+  /**
    * related records (loaded through relationships)
    * @var array
    */
@@ -584,7 +590,7 @@ abstract class BaseModel
     $this->_preload();
 
     // clear out saved data
-    $this->_magicProperties = array();
+    $this->_magicProperties = $this->defaultData ?? [];
 
     // clear out cached relations
     $this->_related = array();
