@@ -161,6 +161,13 @@ if (!function_exists('url')) {
     $q = $parsed['query'] ?? '';
     parse_str($q, $base_query);
 
+    foreach ($query as $i => $q) {
+      if (is_int($i)) {
+        unset($query[$i]);
+        $query[$q] = '';
+      }
+    }
+
     $query = http_build_query(array_merge($base_query, $query));
 
     $scheme = $parsed['scheme'] ?? ($auto_host ? substr(i_protocol(), 0, -3) : '');
