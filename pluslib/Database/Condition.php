@@ -116,7 +116,8 @@ class Condition
       return;
     }
 
-    if (static::invalidOperator($operator) && !is_null($operator)) {
+    if (static::invalidOperator($operator) && func_num_args() == 2) {
+      dump(func_get_args());
       [$value, $operator] = [$operator, "="];
     }
 
