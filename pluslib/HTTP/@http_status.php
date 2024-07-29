@@ -43,5 +43,5 @@ function pls_invalid_http_method($live = false, $message = null)
 function pls_validate_http_method($method = 'post', $live = false, $message = null)
 {
   if (!request_method($method))
-    pls_invalid_http_method();
+    pls_invalid_http_method($live, $message);
 }
