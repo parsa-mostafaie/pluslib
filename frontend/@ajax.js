@@ -23,7 +23,7 @@ export default function useAjax(
       method,
       ...(method != "GET" ? { body: data } : {}),
       credentials: "same-origin",
-      redirect: "follow",
+      redirect: $follow ? "follow" : "manual",
       ...$request,
     })
       .then((response) => {
