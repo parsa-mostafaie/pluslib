@@ -167,6 +167,20 @@ abstract class BaseModel
 
   //! Selecting static methods
   /**
+   * Returns a select query with initial where condition(s)
+   * 
+   * @param mixed $key
+   * @param mixed $operator
+   * @param mixed $value
+   * 
+   * @return Select
+   */
+  public static function where($key, $operator = null, $value = null)
+  {
+    return static::select()->where(cond(...func_get_args()));
+  }
+
+  /**
    * Load a record from the database with conditions
    * @param  string $where conditions for a where statement eg `type=1`
    * @param  array  $data  parameters for the conditions, eg `type=?` for conditions and array(1) for $data
