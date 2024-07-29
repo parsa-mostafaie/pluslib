@@ -44,7 +44,7 @@ class Insert
     $tbl = $this->table->name();
     $arr = QueryBuilding::NormalizeArray($this->arr);
     $keys = array_keys($arr);
-    $vals = array_values($this->arr);
+    $vals = array_values($arr);
     return "INSERT INTO $tbl (" . join(', ', $keys) . ") VALUES ( " . join(', ', $vals) . " )";
   }
 }
