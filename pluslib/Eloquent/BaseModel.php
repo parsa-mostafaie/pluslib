@@ -455,9 +455,20 @@ abstract class BaseModel
    * Returns Original (From db) Value of a field (= attribute = prop = data)
    * @return mixed
    */
-  public function _getOriginalField($field)
+  public function _getOriginal($field)
   {
     return $this->_data[$field] ?? null;
+  }
+
+  /**
+   * Sets a field
+   * @return static $this
+   */
+  public function _setField($field, $value)
+  {
+    $this->_magicProperties[$field] = $value;
+
+    return $this;
   }
 
   /**
@@ -492,7 +503,7 @@ abstract class BaseModel
 
     if ($prefix == 'set') {
       if (count($parameters) < 3) {
-        $this->_magicProperties[$suffix] = $parameters[0];
+        $this->_setField($suffix, $parameters[0]);
         return $this;
       } else {
         throw new Exception('Setter does not exist');
@@ -513,7 +524,7 @@ abstract class BaseModel
         'Setting id (' . $this->id_field . ') In a loaded Model instance may cause bugs!'
       );
     }
-    $this->_magicProperties[$property] = $value;
+    $this->_setField($property, $value);
   }
 
   /**
