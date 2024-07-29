@@ -350,6 +350,15 @@ abstract class BaseModel
 
   //! crud
   /**
+   * Returns: model instance is changed?
+   * 
+   * @return bool
+   */
+  public function changed(){
+    return $this->_mergedProps() !== $this->_data;
+  }
+
+  /**
    * delete the object from the database
    * 
    * @throws Exception If Model is readonly
