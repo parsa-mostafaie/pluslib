@@ -43,7 +43,7 @@ enum secure_form_enum
 
 function secure_form(secure_form_enum $st = secure_form_enum::gen)
 {
-  if ($st != secure_form_enum::gen && !is_post()) {
+  if ($st != secure_form_enum::gen && request_method('get')) {
     return false;
   }
   if ($st == secure_form_enum::gen) {
@@ -104,13 +104,14 @@ function secretFile($addr = null)
   return importJSON($address ?? $default, true);
 }
 
-if(!function_exists('e')){
+if (!function_exists('e')) {
   /**
    * Alias for htmlspecialchars
    * @param string $html
    * @return string
    */
-  function e($html){
+  function e($html)
+  {
     return htmlspecialchars($html);
   }
 }
