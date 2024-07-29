@@ -80,10 +80,16 @@ abstract class BaseModel
    * Whether or not the object has been loaded from the database
    * @var boolean
    */
-  public $loaded = false;  //a record/object is loaded
+  public $loaded = false;  // a record/object is loaded
 
   /**
    * The objects attributes
+   * @var array
+   */
+  protected $_data = array();
+
+  /**
+   * The objects attributes (changes)
    * @var array
    */
   protected $_magicProperties = array();
@@ -136,15 +142,25 @@ abstract class BaseModel
   }
 
   /**
+   * Apply changes to data
+   * @return array
+   */
+  protected function _mergedProps()
+  {
+    return array_merge($this->_data, $this->_magicProperties);
+  }
+
+  /**
    * Escapes keys/values of magic properties array
    * @return array       result of the load
    */
   protected function _escapedMagicProps()
   {
-    $normal = collect($this->_magicProperties);
+    $props = $this->_mergedProps();
+    $normal = collect($props);
     $normal = $normal->map(fn($v) => $v instanceof Expression ? $v : expr('?'))->all();
 
-    $data = array_values(array_filter($this->_magicProperties, fn($val) => !$val instanceof Expression));
+    $data = array_values(array_filter($props, fn($val) => !$val instanceof Expression));
 
     return [$normal, $data];
   }
@@ -408,13 +424,15 @@ abstract class BaseModel
     [$mp, $data] = $this->_escapedMagicProps();
 
     $result = static::_getTable()->INSERT([])->fromArray($mp)->Run($data);
-    if (!isset($this->_magicProperties['id']) || !$this->_magicProperties['id']) {
-      $id = db()->lastInsertId();
-      $this->{'set' . $this->id_field}($id);
-    }
+
+    // if (!isset($this->_magicProperties['id']) || !$this->_magicProperties['id']) {
+    //   $id = db()->lastInsertId();
+    //   $this->{'set' . $this->id_field}($id);
+    // }
+
     $this->loaded = true;
     $this->_postcreate($result);
-    $this->load($id); // load all columns from db (also what not setted)
+    $this->load(db()->lastInsertId()); // load all columns from db (also what not setted)
     return $this->_id();
   }
 
@@ -434,6 +452,15 @@ abstract class BaseModel
 
   //! get/set
   /**
+   * Returns Original (From db) Value of a field (= attribute = prop = data)
+   * @return mixed
+   */
+  public function _getOriginalField($field)
+  {
+    return $this->_data[$field] ?? null;
+  }
+
+  /**
    * magic method to handle all unlisted calls. Currently binds set{$VAR}() and get{$VAR}() functions
    * @param  string $method    
    * @param  mixed $parameters 
@@ -449,15 +476,15 @@ abstract class BaseModel
     //take first 3 chars to determine if this is a get or set
     $prefix = substr($method, 0, 3);
 
-    //take last chars and convert to lower to get required property
-    $suffix = strtolower(substr($method, 3));
+    //take last chars !(and convert to lower) to get required property
+    $suffix = /*strtolower*/ (substr($method, 3));
 
     if (isset($this->translation[$suffix]))
       $suffix = $this->translation[$suffix];
 
     if ($prefix == 'get') {
       if ($this->_hasProperty($suffix) && count($parameters) == 0) {
-        return $this->_magicProperties[$suffix];
+        return $this->_mergedProps()[$suffix];
       } else {
         throw new Exception('Getter does not exist (' . $suffix . ')');
       }
@@ -497,10 +524,10 @@ abstract class BaseModel
     if (isset($this->translation[$property])) {
       $property = $this->translation[$property];
     }
-    if (!isset($this->_magicProperties[$property])) {
+    if (!isset($this->_mergedProps()[$property])) {
       return $this->loadRelations($property);
     }
-    return isset($this->_magicProperties[$property]) ? $this->_magicProperties[$property] : null;
+    return $this->_mergedProps()[$property] ?? null;
   }
 
   /**
@@ -513,7 +540,7 @@ abstract class BaseModel
     if (isset($this->translation[$name])) {
       $name = $this->translation[$name];
     }
-    return array_key_exists($name, $this->_magicProperties);
+    return array_key_exists($name, $this->_mergedProps());
   }
 
   /**
@@ -570,7 +597,7 @@ abstract class BaseModel
   public function toArray()
   {
     $output = array();
-    foreach ($this->_magicProperties as $key => $value) {
+    foreach ($this->_mergedProps as $key => $value) {
       if (in_array($key, $this->translation)) {
         $output[array_search($key, $this->translation)] = $value;
       } else {
@@ -590,7 +617,8 @@ abstract class BaseModel
     $this->_preload();
 
     // clear out saved data
-    $this->_magicProperties = $this->defaultData ?? [];
+    $this->_magicProperties = [];
+    $this->_data = $this->defaultData ?? [];
 
     // clear out cached relations
     $this->_related = array();
@@ -599,7 +627,7 @@ abstract class BaseModel
     $this->loaded = false;
     if (is_array($row) || is_object($row)) {
       foreach ($row as $k => $v) {
-        $this->$k = $v;
+        $this->_data[$k] = $v;
       }
       $this->loaded = true;
     }
@@ -635,7 +663,7 @@ abstract class BaseModel
         $h .= '<tr><th colspan=2>Fields</th></tr>';
       }
 
-      foreach ($this->_magicProperties as $key => $value) {
+      foreach ($this->_mergedProps() as $key => $value) {
         $h .= '<tr>';
         $h .= '<td style="font-weight: bold;" valign="top">' .
           e(in_array($key, $this->translation) ? array_search($key, $this->translation) : $key) .
