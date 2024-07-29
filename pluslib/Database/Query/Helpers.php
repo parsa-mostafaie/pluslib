@@ -47,9 +47,7 @@ final class Helpers
   public static function NormalizeArray($array)
   {
     return array_combine(
-      array_map(function ($v) {
-        return static::NormalizeColumnName($v);
-      }, array_keys($array)),
+      array_map(fn($k) => static::NormalizeColumnName($k), array_keys($array)),
       array_map(fn($v) => static::NormalizeValue($v), array_values($array)),
     );
   }
