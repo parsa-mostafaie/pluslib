@@ -240,6 +240,9 @@ abstract class BaseModel
    */
   protected function _precreate()
   {
+    if ($this->_timestamps && static::created_at) {
+      $this->{static::created_at} = expr('current_timestamp()');
+    }
   }
 
   /**
@@ -248,11 +251,6 @@ abstract class BaseModel
    */
   protected function _postcreate($result)
   {
-    if ($this->_timestamps && static::created_at) {
-      $this->_getTable()->UPDATE($this->id_field . '=?')->SET([
-        static::created_at => expr('current_timestamp()')
-      ])->Run([$this->_id()]);
-    }
   }
 
   /**
@@ -260,6 +258,9 @@ abstract class BaseModel
    */
   protected function _preupdate()
   {
+    if ($this->_timestamps && static::updated_at) {
+      $this->{static::updated_at} = expr('current_timestamp()');
+    }
   }
 
   /**
@@ -268,11 +269,6 @@ abstract class BaseModel
    */
   protected function _postupdate($result)
   {
-    if ($this->_timestamps && static::updated_at) {
-      $this->_getTable()->UPDATE($this->id_field . '=?')->SET([
-        static::updated_at => expr('current_timestamp()')
-      ])->Run([$this->_id()]);
-    }
   }
 
   /**
@@ -354,7 +350,8 @@ abstract class BaseModel
    * 
    * @return bool
    */
-  public function changed(){
+  public function changed()
+  {
     return $this->_mergedProps() !== $this->_data;
   }
 
