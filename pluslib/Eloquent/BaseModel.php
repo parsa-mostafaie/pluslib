@@ -477,7 +477,45 @@ abstract class BaseModel
    */
   public function _getOriginal($field)
   {
+    $field = $this->_getFieldName($field);
     return $this->_data[$field] ?? null;
+  }
+
+  /**
+   * Returns Value of a field (= attribute = prop = data)
+   * 
+   * @param string $field
+   * @return mixed
+   */
+  public function _get($field)
+  {
+    $field = $this->_getFieldName($field);
+    return $this->_mergedProps()[$field] ?? null;
+  }
+
+  /**
+   * Returns final name of field
+   * 
+   * @param string $name
+   * @return mixed
+   */
+  public function _getFieldName($name)
+  {
+    if (isset($this->translation[$name])) {
+      $name = $this->translation[$name];
+    }
+    return $name;
+  }
+
+
+  /**
+   * find if the object has a property
+   * @param  string  $name field name
+   * @return boolean       result
+   */
+  public function _hasProperty($name)
+  {
+    return array_key_exists($this->_getFieldName($name), $this->_mergedProps());
   }
 
   /**
@@ -486,6 +524,8 @@ abstract class BaseModel
    */
   public function _setField($field, $value)
   {
+    $field = $this->_getFieldName($field);
+
     $this->_magicProperties[$field] = $value;
 
     return $this;
@@ -510,12 +550,11 @@ abstract class BaseModel
     //take last chars !(and convert to lower) to get required property
     $suffix = /*strtolower*/ (substr($method, 3));
 
-    if (isset($this->translation[$suffix]))
-      $suffix = $this->translation[$suffix];
+    $suffix = $this->_getFieldName($suffix);
 
     if ($prefix == 'get') {
       if ($this->_hasProperty($suffix) && count($parameters) == 0) {
-        return $this->_mergedProps()[$suffix];
+        return $this->_get($suffix);
       } else {
         throw new Exception('Getter does not exist (' . $suffix . ')');
       }
@@ -536,9 +575,7 @@ abstract class BaseModel
    */
   public function __set($property, $value)
   {
-    if (isset($this->translation[$property])) {
-      $property = $this->translation[$property];
-    }
+    $property = $this->_getFieldName($property);
     if ($property == $this->id_field && $this->loaded) {
       throw new Exception(
         'Setting id (' . $this->id_field . ') In a loaded Model instance may cause bugs!'
@@ -552,26 +589,11 @@ abstract class BaseModel
    */
   public function __get($property)
   {
-    if (isset($this->translation[$property])) {
-      $property = $this->translation[$property];
-    }
+    $property = $this->_getFieldName($property);
     if (!isset($this->_mergedProps()[$property])) {
       return $this->loadRelations($property);
     }
     return $this->_mergedProps()[$property] ?? null;
-  }
-
-  /**
-   * find if the object has a property
-   * @param  string  $name field name
-   * @return boolean       result
-   */
-  public function _hasProperty($name)
-  {
-    if (isset($this->translation[$name])) {
-      $name = $this->translation[$name];
-    }
-    return array_key_exists($name, $this->_mergedProps());
   }
 
   /**
