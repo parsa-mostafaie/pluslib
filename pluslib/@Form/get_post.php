@@ -70,10 +70,11 @@ function request_field_sent($field)
 function parse_raw_http_request(array &$a_data)
 {
   // read incoming data
-  $input = file_get_contents('php://input');
+  $input = request_body();
 
   if (@($_SERVER['CONTENT_TYPE'] == 'application/json')) {
-    return json_decode($input, true);
+    $a_data = json_decode($input, true);
+    return;
   }
 
   // grab multipart boundary from content type header
