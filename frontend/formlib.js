@@ -20,8 +20,9 @@ class FormSubmitController {
       evt.preventDefault();
       fsc.waitTabs.forEach((e) => e.classList.remove("d-none"));
 
+      let df = new FormData(fsc.$);
       let button = evt.target;
-      let df = new FormData(fsc.$, button);
+      df.append(button.getAttribute("name"), button.getAttribute("value"));
 
       button.setAttribute("disabled", "disabled");
       submit(df);
