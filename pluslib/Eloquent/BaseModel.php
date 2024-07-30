@@ -112,7 +112,13 @@ abstract class BaseModel
    * Timestamps Enable State
    * @var bool
    */
-  protected $_timestamps = true;
+  public $_timestamps = true;
+
+  /**
+   * Timestamps Enable State Globally
+   * @var bool
+   */
+  protected static $timestamps = true;
 
   /**
    * relationship Constants
@@ -165,6 +171,12 @@ abstract class BaseModel
     return [$normal, $data];
   }
 
+  public static function withoutTimestamps(callable $c){
+    $t = static::$timestamps;
+    static::$timestamps = false;
+    $c();
+    static::$timestamps = $t;
+  }
   //! Selecting static methods
   /**
    * Returns a select query with initial where condition(s)
@@ -254,10 +266,10 @@ abstract class BaseModel
    */
   protected function _precreate()
   {
-    if ($this->_timestamps && static::created_at) {
+    if ($this->_timestamps && static::$timestamps && static::created_at) {
       $this->{static::created_at} = expr('current_timestamp()');
     }
-    if ($this->_timestamps && static::updated_at) {
+    if ($this->_timestamps && static::$timestamps && static::updated_at) {
       $this->{static::updated_at} = expr('current_timestamp()');
     }
   }
@@ -275,7 +287,7 @@ abstract class BaseModel
    */
   protected function _preupdate()
   {
-    if ($this->_timestamps && static::updated_at) {
+    if ($this->_timestamps && static::$timestamps && static::updated_at) {
       $this->{static::updated_at} = expr('current_timestamp()');
     }
   }
