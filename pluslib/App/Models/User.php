@@ -15,11 +15,12 @@ class User extends BaseModel
     if (!call_user_func([\pluslib\Config::$AuthClass, 'canlogin'])) {
       return optional(null);
     }
-    return optional(static::find(
-      \getCurrentUserInfo_prop(
-        (new static)->id_field
+    return optional(
+      static::find(
+        \getCurrentUserInfo_prop(
+          (new static)->id_field
+        )
       )
-    )
     );
   }
 }
