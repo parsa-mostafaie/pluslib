@@ -219,7 +219,7 @@ abstract class BaseModel
   }
 
   /**
-   * get all objects as an array from the database, optionally based on conditions
+   * get all objects as an collection from the database, optionally based on conditions
    * @param  string $conditions               conditions for a where statement eg `type=1`
    * @param  array  $data                     parameters for the conditions, eg `type=?` for conditions and array(1) for $data
    * @return \pluslib\Collections\Collection  array of objects
@@ -229,6 +229,16 @@ abstract class BaseModel
     $query = static::_newSelect()->where($conditions ?? '1=1');
     $rows = $query->get($data);
     return $rows;
+  }
+
+  /**
+   * get all objects as an collection from the database
+   * 
+   * @return \pluslib\Collections\Collection  collection of objects
+   */
+  public static function all()
+  {
+    return static::select()->get();
   }
 
   /**
