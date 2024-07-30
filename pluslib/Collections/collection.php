@@ -72,7 +72,7 @@ class Collection implements ArrayAccess, Iterator
 
   public function deepAll()
   {
-    return $this->map(fn($v) => collect($v)->deepAll())->all();
+    return $this->map(fn($v) => $v instanceof static ? collect($v)->deepAll() : $v)->all();
   }
 
   public function values()
