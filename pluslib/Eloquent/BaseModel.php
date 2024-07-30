@@ -257,6 +257,9 @@ abstract class BaseModel
     if ($this->_timestamps && static::created_at) {
       $this->{static::created_at} = expr('current_timestamp()');
     }
+    if ($this->_timestamps && static::updated_at) {
+      $this->{static::updated_at} = expr('current_timestamp()');
+    }
   }
 
   /**
