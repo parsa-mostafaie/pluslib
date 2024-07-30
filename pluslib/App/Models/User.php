@@ -10,6 +10,10 @@ class User extends BaseModel
   protected $table = 'users';
   protected $id_field = 'ID';
 
+  /**
+   * Returns current User
+   * @return static|null
+   */
   static function current()
   {
     if (!call_user_func([\pluslib\Config::$AuthClass, 'canlogin'])) {
