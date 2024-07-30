@@ -31,13 +31,13 @@ class Table
   {
     return new Select($this, $cols);
   }
-  public function INSERT(array $values)
+  public function INSERT(array $values = [])
   {
     return new Insert($this, $values);
   }
-  public function DELETE($condition)
+  public function DELETE($cond = "1 = 1", $operator = null, $value = null)
   {
-    return (new Delete($this))->Where($condition);
+    return (new Delete($this))->Where(cond(...func_get_args()));
   }
   public function primaryKey()
   {
@@ -48,8 +48,8 @@ WHERE TABLE_NAME = '$n'
 AND CONSTRAINT_NAME = 'PRIMARY'";
     return $this->db->execute_q($q, [], true)->fetchColumn();
   }
-  public function UPDATE($condition)
+  public function UPDATE($cond = "1 = 1", $operator = null, $value = null)
   {
-    return new Update($this, $condition);
+    return new Update($this, cond(...func_get_args()));
   }
 }
