@@ -27,4 +27,13 @@ class User extends BaseModel
       )
     );
   }
+
+  /**
+   * Fullname of user
+   * 
+   * @return string
+   */
+  function fullname(){
+    return $this->firstname . " " . $this->lastname;
+  }
 }
