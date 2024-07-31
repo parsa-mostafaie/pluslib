@@ -83,20 +83,45 @@ function number_format_short($n, $precision = 1)
   return $n_format . $suffix;
 }
 
-if (!function_exists('dump')) {
-  function dump($obj)
+if (!function_exists('hl_export')) {
+  // Combined of the highlight_string and var_export
+  function hl_dump()
   {
-    echo "<pre>";
-    var_dump($obj);
-    echo "</pre>";
+    try {
+      ini_set("highlight.comment", "#008000");
+      ini_set("highlight.default", "#FFFFFF");
+      ini_set("highlight.html", "#808080");
+      ini_set("highlight.keyword", "#0099FF; font-weight: bold");
+      ini_set("highlight.string", "#99FF99");
+
+      $vars = func_get_args();
+
+      foreach ($vars as $var) {
+        $output = var_export($var, true);
+        $output = trim($output);
+        $output = highlight_string("<?php " . $output, true);  // highlight_string() requires opening PHP tag or otherwise it will not colorize the text
+        $output = preg_replace("|\\<code\\>|", "<code style='background-color: #000000; padding: 10px; margin: 10px; display: block; font: 12px Consolas; border-radius: 5px;'>", $output, 1);  // edit prefix
+        $output = preg_replace("|(\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>)(&lt;\\?php&nbsp;)(.*?)(\\</span\\>)|", "\$1\$3\$4", $output);  // remove custom added "<?php "
+        echo $output;
+      }
+    } catch (Exception $e) {
+      echo $e->getMessage();
+    }
+  }
+}
+
+if (!function_exists('dump')) {
+  function dump(...$obj)
+  {
+    hl_dump(...$obj);
   }
 }
 
 
 if (!function_exists('dd')) {
-  function dd($obj)
+  function dd(...$obj)
   {
-    dump($obj);
+    dump(...$obj);
     die;
   }
 }
