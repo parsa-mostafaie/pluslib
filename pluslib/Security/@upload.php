@@ -44,7 +44,7 @@ function uploadFile_secure(
   $extension = $allowedTypes[$filetype];
   $targetDirectory = etc_urlOfUpload('/' . Config::$uploadDirectory); // loc
 
-  $newFilepath = $targetDirectory . $filename . "." . $extension;
+  $newFilepath = "$targetDirectory$filename.$extension";
 
   if (!copy($filepath, $newFilepath)) { // Copy the file, returns false if failed
     throw new Exception("Can't move file.");
@@ -62,10 +62,13 @@ function unlinkUpload($fname)
 
 function urlOfUpload($fname, $no_www = false)
 {
-  return $fname ? ($no_www ? c_url('/') . $fname : www_url(urlOfUpload($fname, true))) : null;
+  if(parse_url($fname, PHP_URL_HOST)){
+    return $fname;
+  }
+  return $fname ? ($no_www ? c_url("/$fname") : url(c_url("/$fname"))) : null;
 }
 
 function etc_urlOfUpload($fname)
 {
-  return $_SERVER['DOCUMENT_ROOT'] . urlOfUpload($fname, true);
+  return etc_url(urlOfUpload($fname, true));
 }
