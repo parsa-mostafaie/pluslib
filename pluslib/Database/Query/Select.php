@@ -29,8 +29,7 @@ class Select extends Conditional
       trigger_error("Pagination Select Queries Can't be have LIMIT/OFFSET", E_USER_WARNING);
     }
 
-    $stmt = $this->Run($params);
-    $count = $stmt->rowCount();
+    $count = $this->count($params);
 
     // Pagination Main
     $page = intval($page);
@@ -49,13 +48,16 @@ class Select extends Conditional
 
     $copy = clone $this;
 
-    $mn = $copy->LIMIT("$per_page OFFSET $off")->Run($params);
+    $res_q = $copy->LIMIT("$per_page OFFSET $off");
+    $mn = $res_q->Run($params);
 
     return [
       'page_count' => $pages,
       'current' => $page,
       'res' => $mn,
-      'result_count' => $mn->rowCount(),
+      'res_q' => $res_q,
+      'result' => $res_q->get($params),
+      'result_count' => $res_q->count($params),
       'count' => $count,
       'offset' => $off
     ];
@@ -159,11 +161,7 @@ class Select extends Conditional
 
   public function count($params = [])
   {
-    $clone = clone $this;
-
-    $clone->cols = ['COUNT(*)'];
-
-    return $clone->Run($params)->fetchColumn();
+    return $this->Run($params)->rowCount();
   }
 
   public function getFirstRow($params = [])
