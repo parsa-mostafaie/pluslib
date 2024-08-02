@@ -73,19 +73,19 @@ class Select extends Conditional
     $this->alsoSelect($cols);
   }
 
-  public function injoins()
+  public function joins()
   {
     $res = '';
     foreach ($this->joins as $t => $q) {
-      $res .= ' INNER JOIN ' . $t;
-      $res .= ' ON ' . $q;
+      $res .= ' ' . $q['type'] . ' JOIN ' . $t;
+      $res .= ' ON ' . $q['on'];
     }
     return $res;
   }
 
-  public function ON($jq, $jt = null)
+  public function ON($jq, $jt = null, $type = "inner")
   {
-    $this->joins[$jt] = $jq;
+    $this->joins[$jt] = ['type' => $type, 'on' => $jq];
     return $this;
   }
 
@@ -182,7 +182,7 @@ class Select extends Conditional
 
   public function Generate()
   {
-    $join = $this->injoins();
+    $join = $this->joins();
     $cond = $this->condition ? "WHERE " . $this->condition : '';
     $gb = $this->groupby ? "GROUP BY " . $this->groupby : '';
     $having = $this->having ? "HAVING " . $this->having : '';
