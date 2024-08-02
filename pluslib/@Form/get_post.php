@@ -1,10 +1,6 @@
 <?php
 defined('ABSPATH') || exit;
 
-//NOTE: THIS FILE IS ALWAYS PUBLIC
-//? Check Both Of POST and GET Methods
-
-
 // Check Sended
 function posted($name)
 {
@@ -34,8 +30,19 @@ function urlParam($name)
 
 function get_val($name)
 {
-  return urlParam_Sended($name) ? urlParam($name) : (is_post() ? posted_val($name) : get_request_field($name));
+  return urlParam_Sended($name) ? urlParam($name) : get_request_field($name);
 }
+
+function get_request_field($field)
+{
+  return e(decoded_request_body()[$field] ?? '');
+}
+
+function request_field_sent($field)
+{
+  return isset(decoded_request_body()[$field]);
+}
+
 
 // Method Managing
 function is_post()
@@ -52,30 +59,29 @@ function request_method($method = 'post')
   return in_array(strtoupper($_SERVER['REQUEST_METHOD']), $method);
 }
 
+/* customs */
 function request_body()
 {
   return file_get_contents('php://input');
 }
 
-function get_request_field($field)
+/**
+ * exploded trimed content type
+ * @return string
+ */
+function et_content_type()
 {
-  return decoded_request_body()[$field] ?? '';
+  $content_type_parts = explode(';', $_SERVER['CONTENT_TYPE'] ?? '');
+  $content_type_parts = array_trim($content_type_parts);
+
+  return $content_type_parts[0];
 }
 
-function request_field_sent($field)
+function parse_formdata_request()
 {
-  return isset(decoded_request_body()[$field]);
-}
-
-function parse_raw_http_request(array &$a_data)
-{
+  $a_data = [];
   // read incoming data
   $input = request_body();
-
-  if (@($_SERVER['CONTENT_TYPE'] == 'application/json')) {
-    $a_data = json_decode($input, true);
-    return;
-  }
 
   // grab multipart boundary from content type header
   preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
@@ -104,16 +110,27 @@ function parse_raw_http_request(array &$a_data)
     }
     $a_data[$matches[1]] = $matches[2];
   }
+  return $a_data;
 }
 
 function decoded_request_body()
 {
+  if (et_content_type() == 'application/json') {
+    return json_decode(request_body(), true, flags: JSON_BIGINT_AS_STRING);
+  }
+
   if (is_post()) {
     return $_POST;
   } elseif (request_method('GET')) {
     return $_GET;
   }
-  $v = [];
-  parse_raw_http_request($v);
-  return $v;
+
+  if (et_content_type() == 'application/x-www-form-urlencoded') {
+    $query = [];
+    parse_str(request_body(), $query);
+    return $query;
+  }
+
+  if (et_content_type() == 'multipart/form-data')
+    return parse_formdata_request();
 }
