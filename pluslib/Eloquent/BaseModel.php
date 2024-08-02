@@ -559,6 +559,18 @@ abstract class BaseModel
   }
 
   /**
+   * find if the object has a property
+   * 
+   * @param string
+   * 
+   * @return boolean
+   */
+  public function __isset($name)
+  {
+    return $this->_hasProperty($name);
+  }
+
+  /**
    * Sets a field
    * @return static $this
    */
