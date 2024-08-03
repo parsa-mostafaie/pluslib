@@ -90,11 +90,10 @@ class Condition
   // Construct
   public function __construct($cond = "1 = 1", $operator = null, $value = null)
   {
-    if ($cond instanceof Expression) {
-      $cond = $cond->raw;
-    }
-
     if ($cond instanceof static) {
+      if ($cond instanceof Expression) {
+        $cond = $cond->raw;
+      }
       $this->cond = $cond;
       return;
     }
