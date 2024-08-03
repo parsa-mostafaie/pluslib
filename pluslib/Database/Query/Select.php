@@ -76,8 +76,8 @@ class Select extends Conditional
   public function joins()
   {
     $res = '';
-    foreach ($this->joins as $t => $q) {
-      $res .= ' ' . $q['type'] . ' JOIN ' . $t;
+    foreach ($this->joins as $q) {
+      $res .= ' ' . $q['type'] . ' JOIN ' . $q['table'];
       $res .= ' ON ' . $q['on'];
     }
     return $res;
@@ -85,7 +85,7 @@ class Select extends Conditional
 
   public function ON($jq, $jt = null, $type = "inner")
   {
-    $this->joins[$jt] = ['type' => $type, 'on' => $jq];
+    $this->joins[] = ['type' => $type, 'on' => $jq, 'table'=>$jt];
     return $this;
   }
 
@@ -150,7 +150,8 @@ class Select extends Conditional
 
   public function first($params = [])
   {
-    return $this->getArray($params)[0];
+    $res = $this->getArray($params);
+    return reset($res);
   }
 
   public function last($params = [])
