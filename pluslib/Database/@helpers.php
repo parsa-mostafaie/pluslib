@@ -146,6 +146,14 @@ if (!function_exists('escape_col')) {
   }
 }
 
+if (!function_exists('escape_tbl')) {
+  function escape_tbl($raw, $alias = null)
+  {
+    return QB::NormalizeTableName($raw, $alias);
+  }
+}
+
+
 if (!function_exists('cond')) {
   function cond($cond = '1 = 1', $operator = null, $value = null)
   {
