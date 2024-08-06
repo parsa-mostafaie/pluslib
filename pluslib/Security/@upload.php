@@ -62,10 +62,10 @@ function unlinkUpload($fname)
 
 function urlOfUpload($fname, $no_www = false)
 {
-  if(parse_url($fname, PHP_URL_HOST)){
+  if(parse_url($fname, component: PHP_URL_HOST)){
     return $fname;
   }
-  return $fname ? ($no_www ? c_url("/$fname") : url(c_url("/$fname"))) : null;
+  return $fname ? ($no_www ? c_url("/$fname") : url(c_url("/$fname", false))) : null;
 }
 
 function etc_urlOfUpload($fname)
