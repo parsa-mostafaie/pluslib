@@ -49,3 +49,7 @@ function destroy_session()
   session_unset();
   session_destroy();
 }
+
+function &session($name){
+  return session_arr()[$name];
+}
