@@ -130,7 +130,7 @@ if (!function_exists('build_url')) {
 
     // Add the path
     if (!empty($url_components['path'])) {
-      $url .= $url_components['path'];
+      $url .= web_url($url_components['path']);
     }
 
     // Add the query string if it is set
