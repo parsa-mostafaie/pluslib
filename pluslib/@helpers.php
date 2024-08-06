@@ -1,4 +1,5 @@
 <?php
+use pluslib\SEO\MetaTags;
 
 defined('ABSPATH') || exit;
 
@@ -214,6 +215,18 @@ if (!function_exists('literal')) {
     }
 
     return (object) $arguments;
+  }
+}
+
+if(!function_exists('meta')){
+  function meta($tag_name = null, $default = null){
+    static $meta = null;
+
+    if(!$meta){
+      $meta = new MetaTags();
+    }
+
+    return is_null($tag_name)?$meta:$meta->{$tag_name} ?? $default;
   }
 }
 
