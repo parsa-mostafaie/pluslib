@@ -17,13 +17,17 @@ export function ajaxContentLoad(
     $contents.forEach(($content) => {
       let $lnk = $content.getAttribute("href") ?? "./";
       let $method = $content.getAttribute("http-method") ?? "GET";
-      let $loading = container.querySelector($content.getAttribute("loading"));
 
-      $loading.classList.remove("d-none");
-      $content.innerHTML = "";
+      let $loading = container.querySelector($content.getAttribute("loading"));
+      let hasLoading = !!$loading;
+
+      if (hasLoading) {
+        $loading.classList.remove("d-none");
+        $content.innerHTML = "";
+      }
 
       function loaded(response) {
-        $loading.classList.add("d-none");
+        if (hasLoading) $loading.classList.add("d-none");
         addJSX(response, $content);
       }
 
