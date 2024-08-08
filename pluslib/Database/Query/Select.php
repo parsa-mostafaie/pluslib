@@ -85,7 +85,7 @@ class Select extends Conditional
 
   public function ON($jq, $jt = null, $type = "inner")
   {
-    $this->joins[] = ['type' => $type, 'on' => $jq, 'table'=>$jt];
+    $this->joins[] = ['type' => $type, 'on' => $jq, 'table' => $jt];
     return $this;
   }
 
@@ -128,15 +128,20 @@ class Select extends Conditional
   }
   public function getArray($params = [], $nosql_row = false)
   {
+    $run = $this->Run($params)->fetchAll(PDO::FETCH_ASSOC);
+
     if ($this->modelType) {
       $mt = $this->modelType;
 
-      $run = $this->Run($params)->fetchAll(PDO::FETCH_COLUMN, 0);
+      return array_map(function ($v) use ($mt) {
+        $instance = new $mt;
+        
+        $instance->fromArray($v);
 
-      return array_map(fn($v) => new $mt($v), $run);
+        return $instance;
+      }, $run);
     }
 
-    $run = $this->Run($params)->fetchAll(PDO::FETCH_ASSOC);
     if ($nosql_row) {
       return $run;
     }
@@ -189,7 +194,7 @@ class Select extends Conditional
     $having = $this->having ? "HAVING " . $this->having : '';
     $ob = $this->order ? "ORDER BY " . $this->order : '';
     $lm = $this->lim ? "LIMIT " . $this->lim : '';
-    $cols = $this->modelType ? $this->table->primaryKey() : join(', ', $this->cols);
+    $cols = $this->modelType ? $this->table->name . '.*' : join(', ', $this->cols);
     $tbl = $this->table->name();
 
     $query = "SELECT $cols FROM $tbl $join $cond $gb $having $ob $lm";
