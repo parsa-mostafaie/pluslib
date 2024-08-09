@@ -1,5 +1,4 @@
 <?php
-use pluslib\SEO\MetaTags;
 
 defined('ABSPATH') || exit;
 
@@ -218,18 +217,6 @@ if (!function_exists('literal')) {
   }
 }
 
-if(!function_exists('meta')){
-  function meta($tag_name = null, $default = null){
-    static $meta = null;
-
-    if(!$meta){
-      $meta = new MetaTags();
-    }
-
-    return is_null($tag_name)?$meta:$meta->{$tag_name} ?? $default;
-  }
-}
-
 include_once '@info.php';
 include_once '@url.php';
 include_once '@path.php';
@@ -241,3 +228,4 @@ include_once '@User/@helpers.php';
 include_once 'Security/@helpers.php';
 include_once '@Form/@helpers.php';
 include_once 'Database/@helpers.php';
+include_once 'SEO/@helpers.php';
