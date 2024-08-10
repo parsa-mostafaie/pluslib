@@ -704,11 +704,10 @@ abstract class BaseModel
   {
     $output = array();
     foreach ($this->_mergedProps as $key => $value) {
-      if (in_array($key, $this->translation)) {
-        $output[array_search($key, $this->translation)] = $value;
-      } else {
-        $output[$key] = $value;
-      }
+      $output[$key] = $value;
+    }
+    foreach ($this->translation as $alias => $name) {
+      $output[$alias] = $this->_get($alias);
     }
     return $this->_postarray($output);
   }
