@@ -4,7 +4,6 @@ namespace pluslib\Database\Query;
 defined('ABSPATH') || exit;
 
 use pluslib\Database\Table;
-use pluslib\Database\Deprecated\sqlRow;
 use pluslib\Database\Query\Conditional;
 use \PDO;
 
@@ -135,17 +134,14 @@ class Select extends Conditional
 
       return array_map(function ($v) use ($mt) {
         $instance = new $mt;
-        
+
         $instance->fromArray($v);
 
         return $instance;
       }, $run);
     }
 
-    if ($nosql_row) {
-      return $run;
-    }
-    return array_map(fn($v) => new sqlRow($v), $run);
+    return $run;
   }
 
   public function get($params = [])
@@ -168,11 +164,6 @@ class Select extends Conditional
   public function count($params = [])
   {
     return $this->Run($params)->rowCount();
-  }
-
-  public function getFirstRow($params = [])
-  {
-    return new sqlRow($this->Run($params));
   }
 
   public function toBase($clone = false)
