@@ -7,11 +7,12 @@ use pluslib\Database\Table;
 use pluslib\Database\Query\Conditional;
 use \PDO;
 
-class Select extends Conditional
+class Select
 {
+  use Conditional;
+
   private $joins = [], $groupby = null, $having = null, $order
     = null, $lim = null, $p = [];
-
 
   private array $cols = [];
 
@@ -67,7 +68,7 @@ class Select extends Conditional
     string|array $cols = ['*'],
     private string|null $modelType = null
   ) {
-    parent::__construct();
+    $this->init_condition();
 
     $this->alsoSelect($cols);
   }

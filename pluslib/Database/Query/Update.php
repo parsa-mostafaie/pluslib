@@ -8,16 +8,19 @@ use pluslib\Database\Table;
 use pluslib\Database\Condition;
 use pluslib\Database\Query\Conditional;
 
-class Update extends Conditional
+class Update
 {
+  use Conditional;
+
   private array $arr = [];
 
   public function __construct(
     public readonly Table $table,
     Condition|string $cond
   ) {
-    parent::__construct();
-    $this->WHERE($cond);
+    $this->init_condition();
+
+    $this->where($cond);
   }
 
   private function toString($arr)

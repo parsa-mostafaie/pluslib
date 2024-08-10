@@ -4,11 +4,11 @@ namespace pluslib\Database\Query;
 use pluslib\Database\Table;
 use pluslib\Database\Condition;
 
-class Conditional
+trait Conditional
 {
   protected Condition $condition;
 
-  function __construct()
+  function init_condition()
   {
     $this->condition = new Condition();
   }

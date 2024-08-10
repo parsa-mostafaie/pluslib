@@ -8,11 +8,13 @@ use pluslib\Database\Table;
 use pluslib\Database\Condition;
 use pluslib\Database\Query\Conditional;
 
-class Delete extends Conditional
+class Delete
 {
+  use Conditional;
+
   public function __construct(public readonly Table $table)
   {
-    parent::__construct();
+    $this->init_condition();
   }
 
   public function Run($params = [])
