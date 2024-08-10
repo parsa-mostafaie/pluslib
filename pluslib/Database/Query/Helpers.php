@@ -14,8 +14,19 @@ final class Helpers
   {
     if ($rawName instanceof Expression) {
       return $rawName->raw;
-    } else if (!str_starts_with($rawName, '`') && is_string($rawName)) {
-      $rawName = "`" . addslashes($rawName) . "`";
+    } else if (is_string($rawName)) {
+      if (str_contains($rawName, '.')) {
+        [$f, $l] = explode('.', $rawName);
+        return escape_tbl($f) . '.' . escape_col($l);
+      }
+
+      if ($rawName == '*') {
+        return $rawName;
+      }
+
+      if (!str_starts_with($rawName, '`')) {
+        $rawName = "`" . addslashes($rawName) . "`";
+      }
     }
 
     return $rawName;

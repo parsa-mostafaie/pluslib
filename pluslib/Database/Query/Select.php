@@ -12,56 +12,9 @@ class Select
   use Conditional;
 
   private $joins = [], $groupby = null, $having = null, $order
-    = null, $lim = null, $p = [];
+    = [], $lim = null, $p = [];
 
   private array $cols = [];
-
-  public function alsoSelect(string|array $cols)
-  {
-    $cols = wrap($cols);
-    array_push($this->cols, ...$cols);
-    return $this;
-  }
-
-  function pagination($per_page, $page, $params = [])
-  {
-    if ($this->lim) {
-      trigger_error("Pagination Select Queries Can't be have LIMIT/OFFSET", E_USER_WARNING);
-    }
-
-    $count = $this->count($params);
-
-    // Pagination Main
-    $page = intval($page);
-
-    $pages = ceil($count / $per_page);
-
-    if ($page > $pages) {
-      $page = $pages;
-    }
-
-    if ($page < 1) {
-      $page = 1;
-    }
-
-    $off = ($page - 1) * $per_page;
-
-    $copy = clone $this;
-
-    $res_q = $copy->LIMIT("$per_page OFFSET $off");
-    $mn = $res_q->Run($params);
-
-    return [
-      'page_count' => $pages,
-      'current' => $page,
-      'res' => $mn,
-      'res_q' => $res_q,
-      'result' => $res_q->get($params),
-      'result_count' => $res_q->count($params),
-      'count' => $count,
-      'offset' => $off
-    ];
-  }
 
   public function __construct(
     public readonly Table $table,
@@ -89,9 +42,9 @@ class Select
     return $this;
   }
 
-  public function group_by($gb)
+  public function groupBy($gb)
   {
-    $this->groupby = $gb;
+    $this->groupby = escape_col($gb);
 
     return $this;
   }
@@ -102,9 +55,9 @@ class Select
     return $this;
   }
 
-  public function order_by($o, $s = "")
+  public function orderBy($o, $s = "")
   {
-    $this->order = $o . ($s ? " $s" : "");
+    $this->order[] = escape_col($o) . ($s ? " $s" : "");
 
     return $this;
   }
@@ -126,8 +79,8 @@ class Select
       true
     );
   }
-  
-  public function getArray($params = [], $nosql_row = false)
+
+  public function getArray($params = [])
   {
     $run = $this->Run($params)->fetchAll(PDO::FETCH_ASSOC);
 
@@ -150,6 +103,59 @@ class Select
   {
     return collect($this->getArray($params));
   }
+
+  public function alsoSelect($cols)
+  {
+    $cols = wrap($cols);
+    array_push($this->cols, ...array_map('escape_col', $cols));
+    return $this;
+  }
+
+  public function selectRaw($cols)
+  {
+    return $this->alsoSelect(array_map('expr', wrap($cols)));
+  }
+
+  function pagination($per_page, $page, $params = [])
+  {
+    if ($this->lim) {
+      trigger_error("Pagination Select Queries Can't be have LIMIT/OFFSET", E_USER_WARNING);
+    }
+
+    $count = $this->count($params);
+
+    // Pagination Main
+    $page = intval($page);
+
+    $pages = ceil($count / $per_page);
+
+    if ($page > $pages) {
+      $page = $pages;
+    }
+
+    if ($page < 1) {
+      $page = 1;
+    }
+
+    $off = ($page - 1) * $per_page;
+
+    $copy = clone $this;
+
+    $res_q = $copy->LIMIT($per_page, $off);
+    $mn = $res_q->Run($params);
+
+    return [
+      'page_count' => $pages,
+      'current' => $page,
+      'res' => $mn,
+      'res_q' => $res_q,
+      'result' => $res_q->get($params),
+      'result_count' => $res_q->count($params),
+      'count' => $count,
+      'offset' => $off
+    ];
+  }
+
 
   public function first($params = [])
   {
@@ -185,7 +191,7 @@ class Select
     $cond = $this->condition ? "WHERE " . $this->condition : '';
     $gb = $this->groupby ? "GROUP BY " . $this->groupby : '';
     $having = $this->having ? "HAVING " . $this->having : '';
-    $ob = $this->order ? "ORDER BY " . $this->order : '';
+    $ob = $this->order ? "ORDER BY " . implode(', ', $this->order) : '';
     $lm = $this->lim ? "LIMIT " . $this->lim : '';
     $cols = $this->modelType ? $this->table->name . '.*' : join(', ', $this->cols);
     $tbl = $this->table->name();
