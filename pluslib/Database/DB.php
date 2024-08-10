@@ -39,8 +39,8 @@ class DB extends PDO
     }
   }
 
-  public function TABLE($name, $nocheck = false, $alias = null)
+  public function table($name, $alias = null)
   {
-    return $this->hasTable($name) || $nocheck ? new Table($this, $name, $alias) : null;
+    return new Table($this, $name, $alias);
   }
 }
