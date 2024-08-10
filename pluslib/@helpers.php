@@ -217,6 +217,13 @@ if (!function_exists('literal')) {
   }
 }
 
+function minify_html($buffer)
+{
+  $buffer = preg_replace('/\s+/', ' ', $buffer);
+  $buffer = preg_replace('/<!--.*?-->/s', '', $buffer);
+  return $buffer;
+}
+
 include_once '@info.php';
 include_once '@url.php';
 include_once '@path.php';
