@@ -27,29 +27,34 @@ class Table
     }
     [$this->name, $this->alias] = [$name, $alias];
   }
-  public function SELECT($cols = '*')
+  public function select($cols = '*')
   {
     return new Select($this, $cols);
   }
-  public function INSERT(array $values = [])
+  public function insert(array $values = [])
   {
     return new Insert($this, $values);
   }
-  public function DELETE($cond = "1 = 1", $operator = null, $value = null)
+  public function delete($cond = "1 = 1", $operator = null, $value = null)
   {
     return (new Delete($this))->Where(cond(...func_get_args()));
   }
+  public function update($cond = "1 = 1", $operator = null, $value = null)
+  {
+    return new Update($this, cond(...func_get_args()));
+  }
+
   public function primaryKey()
   {
+    if (!$this->db->hasTable($this->name)) {
+      return NULL;
+    }
+
     $n = $this->name;
     $q = "SELECT COLUMN_NAME
 FROM information_schema.KEY_COLUMN_USAGE
 WHERE TABLE_NAME = '$n'
 AND CONSTRAINT_NAME = 'PRIMARY'";
     return $this->db->execute_q($q, [], true)->fetchColumn();
-  }
-  public function UPDATE($cond = "1 = 1", $operator = null, $value = null)
-  {
-    return new Update($this, cond(...func_get_args()));
   }
 }

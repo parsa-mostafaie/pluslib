@@ -36,7 +36,7 @@ class Update extends Conditional
     return $this;
   }
 
-  public function SET(array $v)
+  public function set(array $v)
   {
     $this->arr = array_merge($this->arr, $v);
 

@@ -24,7 +24,7 @@ class Insert
     return $this;
   }
 
-  public function VALUES(array $vals)
+  public function values(array $vals)
   {
     $this->fromArray($vals);
 

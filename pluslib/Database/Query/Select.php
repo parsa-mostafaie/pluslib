@@ -82,33 +82,33 @@ class Select extends Conditional
     return $res;
   }
 
-  public function ON($jq, $jt = null, $type = "inner")
+  public function on($jq, $jt = null, $type = "inner")
   {
     $this->joins[] = ['type' => $type, 'on' => $jq, 'table' => $jt];
     return $this;
   }
 
-  public function GROUP_BY($gb)
+  public function group_by($gb)
   {
     $this->groupby = $gb;
 
     return $this;
   }
 
-  public function HAVING($h)
+  public function having($h)
   {
     $this->having = $h;
     return $this;
   }
 
-  public function ORDER_BY($o, $s = "")
+  public function order_by($o, $s = "")
   {
     $this->order = $o . ($s ? " $s" : "");
 
     return $this;
   }
 
-  public function LIMIT($l, $o = "")
+  public function limit($l, $o = "")
   {
     $this->lim = $l . ($o ? " OFFSET $o" : "");
 
@@ -125,6 +125,7 @@ class Select extends Conditional
       true
     );
   }
+  
   public function getArray($params = [], $nosql_row = false)
   {
     $run = $this->Run($params)->fetchAll(PDO::FETCH_ASSOC);
