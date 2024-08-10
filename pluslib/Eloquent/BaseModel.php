@@ -26,6 +26,12 @@ abstract class BaseModel
    */
   protected $readonly = false;
 
+  /**
+   * Hidden fields from serialization
+   * @var array
+   */
+  protected $hidden = [];
+
   /** 
    * Table name
    * @var string
@@ -703,11 +709,15 @@ abstract class BaseModel
   public function toArray()
   {
     $output = array();
-    foreach ($this->_mergedProps as $key => $value) {
-      $output[$key] = $value;
+    foreach ($this->_mergedProps() as $key => $value) {
+      if (!in_array($key, $this->hidden)) {
+        $output[$key] = $value;
+      }
     }
     foreach ($this->translation as $alias => $name) {
-      $output[$alias] = $this->_get($alias);
+      $name = $this->_getFieldName($alias);
+      if (!in_array($name, $this->hidden))
+        $output[$alias] = $this->_get($name);
     }
     return $this->_postarray($output);
   }

@@ -10,6 +10,8 @@ class User extends BaseModel
   protected $table = 'users';
   protected $id_field = 'ID';
 
+  protected $hidden = ['password'];
+
   /**
    * Returns current User
    * @return static|null
@@ -33,7 +35,8 @@ class User extends BaseModel
    * 
    * @return string
    */
-  function fullname(){
+  function fullname()
+  {
     return $this->firstname . " " . $this->lastname;
   }
 }
