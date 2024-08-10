@@ -16,7 +16,7 @@ class Security
         set_session('fingerprint', $fp, true);
       else if ($fp_ses != $fp && $fp_ses) {
         destroy_session();
-        config::invalidSessionRedirect();
+        config::invalidSessionRedirect('fingerprnt');
       }
     }
   }
