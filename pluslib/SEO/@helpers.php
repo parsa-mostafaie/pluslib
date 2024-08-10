@@ -12,7 +12,7 @@ if (!function_exists('meta')) {
       $meta = new MetaTags();
     }
 
-    return is_null($tag_name) ? $meta : $meta->{$tag_name} ?? $default;
+    return is_null($tag_name) ? $meta : ($meta->{$tag_name} ?: $default);
   }
 }
 
