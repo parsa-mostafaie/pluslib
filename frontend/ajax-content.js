@@ -18,17 +18,40 @@ export function ajaxContentLoad(
       let $lnk = $content.getAttribute("href") ?? "./";
       let $method = $content.getAttribute("http-method") ?? "GET";
 
-      let $loading = container.querySelector($content.getAttribute("loading"));
+      let $loading = container.querySelector(
+        $content.getAttribute("loading" ?? ":not(*)")
+      );
+      let $fallback = container.querySelector(
+        $content.getAttribute("fallback") ?? ":not(*)"
+      );
+
       let hasLoading = !!$loading;
+      let hasFallback = !!$fallback;
+
+      $content.classList.remove("d-none");
 
       if (hasLoading) {
         $loading.classList.remove("d-none");
-        $content.innerHTML = "";
+        $content.classList.add("d-none");
+      }
+
+      if (hasFallback) {
+        $fallback.classList.add("d-none");
       }
 
       function loaded(response) {
-        if (hasLoading) $loading.classList.add("d-none");
+        $content.classList.remove("d-none");
+        $content.innerHTML = "";
         addJSX(response, $content);
+      }
+
+      function failed(err) {
+        if (hasFallback) {
+          $fallback.classList.remove("d-none");
+          $content.classList.add("d-none");
+        } else {
+          $content.classList.remove("d-none");
+        }
       }
 
       useAjax($lnk, dyn_data($content), $method, {}, $follow)
@@ -39,8 +62,14 @@ export function ajaxContentLoad(
           loaded(response);
           res(response);
         })
-        .catch(rej)
-        .finally(allway);
+        .catch((response) => {
+          failed(response);
+          rej(response);
+        })
+        .finally(() => {
+          if (hasLoading) $loading.classList.add("d-none");
+          allway();
+        });
     });
   });
 }
