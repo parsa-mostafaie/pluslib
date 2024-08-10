@@ -543,6 +543,7 @@ abstract class BaseModel
   {
     if (isset($this->translation[$name])) {
       $name = $this->translation[$name];
+      return $this->_getFieldName($name);
     }
     return $name;
   }
