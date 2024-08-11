@@ -437,7 +437,7 @@ abstract class BaseModel
       return false; // cancel delete
     }
 
-    $result = static::_getTable()->DELETE($this->id_field . ' = ?')->Run([$this->_id()]);
+    $result = static::_getTable()->DELETE($this->id_field . ' = ?')->Run([$this->_oid()]);
     $this->_postdelete($result);
     return $result;
   }
@@ -462,7 +462,7 @@ abstract class BaseModel
     [$mp, $data] = $this->_escapedMagicProps();
 
     $query = static::_getTable()->UPDATE($this->id_field . ' = ?')->fromArray($mp);
-    $data[] = $this->_getOriginal($this->id_field);
+    $data[] = $this->_oid();
 
     $result = $query->Run($data);
 
@@ -639,7 +639,7 @@ abstract class BaseModel
    */
   public function __set($property, $value)
   {
-    
+
     $this->_setField($property, $value);
   }
 
@@ -663,6 +663,16 @@ abstract class BaseModel
   public function _id()
   {
     return $this->{$this->id_field};
+  }
+
+  /**
+   * Returns original value of id field
+   * 
+   * @return mixed
+   */
+  public function _oid()
+  {
+    return $this->_getOriginal($this->id_field);
   }
 
   //! Relations
