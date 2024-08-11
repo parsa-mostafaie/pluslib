@@ -462,7 +462,7 @@ abstract class BaseModel
     [$mp, $data] = $this->_escapedMagicProps();
 
     $query = static::_getTable()->UPDATE($this->id_field . ' = ?')->fromArray($mp);
-    $data[] = $this->{'get' . $this->id_field}();
+    $data[] = $this->_getOriginal($this->id_field);
 
     $result = $query->Run($data);
 
@@ -584,6 +584,11 @@ abstract class BaseModel
   public function _setField($field, $value)
   {
     $field = $this->_getFieldName($field);
+    if ($field == $this->id_field && $this->loaded) {
+      throw new Exception(
+        'Setting id (' . $this->id_field . ') In a loaded Model instance may cause bugs!'
+      );
+    }
 
     $this->_magicProperties[$field] = $value;
 
@@ -634,12 +639,7 @@ abstract class BaseModel
    */
   public function __set($property, $value)
   {
-    $property = $this->_getFieldName($property);
-    if ($property == $this->id_field && $this->loaded) {
-      throw new Exception(
-        'Setting id (' . $this->id_field . ') In a loaded Model instance may cause bugs!'
-      );
-    }
+    
     $this->_setField($property, $value);
   }
 
