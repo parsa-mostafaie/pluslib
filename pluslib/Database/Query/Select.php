@@ -12,7 +12,7 @@ class Select
   use Conditional;
 
   private $joins = [], $groupby = null, $having = null, $order
-    = [], $lim = null, $p = [];
+    = [], $lim = null, $p = [], $offset = null;
 
   private array $cols = [];
 
@@ -62,11 +62,32 @@ class Select
     return $this;
   }
 
-  public function limit($l, $o = "")
+  public function limit($l, $o = null)
   {
-    $this->lim = $l . ($o ? " OFFSET $o" : "");
+    $this->lim = $l;
+
+    if ($o) {
+      $this->offset($o);
+    }
 
     return $this;
+  }
+
+  public function offset($o)
+  {
+    $this->offset = $o;
+
+    return $this;
+  }
+
+  public function take($count, $offset = null)
+  {
+    return $this->limit($count, $offset);
+  }
+
+  public function skip($offset)
+  {
+    return $this->offset($offset);
   }
 
   public function Run($params = [])
@@ -192,7 +213,8 @@ class Select
     $gb = $this->groupby ? "GROUP BY " . $this->groupby : '';
     $having = $this->having ? "HAVING " . $this->having : '';
     $ob = $this->order ? "ORDER BY " . implode(', ', $this->order) : '';
-    $lm = $this->lim ? "LIMIT " . $this->lim : '';
+    $os = $this->offset ? "OFFSET {$this->offset}" : '';
+    $lm = $this->lim ? "LIMIT {$this->lim} $os" : '';
     $cols = $this->modelType ? $this->table->name . '.*' : join(', ', $this->cols);
     $tbl = $this->table->name();
 
