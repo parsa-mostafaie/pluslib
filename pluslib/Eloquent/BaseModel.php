@@ -151,7 +151,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    */
   protected function _newSelect($cols = '*')
   {
-    return new Select(static::_getTable(), $cols,  static::class);
+    return new Select(static::_getTable(), $cols, static::class);
   }
 
   /**
@@ -567,10 +567,9 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   public function _setField($field, $value)
   {
     $field = $this->_getFieldName($field);
-    if ($field == $this->id_field && $this->loaded) {
-      throw new Exception(
-        'Setting id (' . $this->id_field . ') In a loaded Model instance may cause bugs!'
-      );
+
+    if (!in_array($field, $this->fillable)) {
+      throw new Exception("Setting field `$field` is not allowed in Models of type " . static::class);
     }
 
     $this->_magicProperties[$field] = $value;
@@ -665,7 +664,8 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    * @param  string|array $properties the fields
    * @return Select       
    */
-  public static function with($properties){
+  public static function with($properties)
+  {
     return static::select()->with(is_string($properties) ? func_get_args() : $properties);
   }
 
@@ -727,7 +727,8 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    *
    * @return array
    */
-  protected function eagerLoads(){
+  protected function eagerLoads()
+  {
     return $this->loadRelations($this->with);
   }
 
@@ -818,7 +819,8 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   }
 
   // Call static
-  public static function __callStatic($method, $args){
+  public static function __callStatic($method, $args)
+  {
     return (new static)->$method(...$args);
   }
 }
