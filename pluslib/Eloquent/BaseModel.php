@@ -60,14 +60,6 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    *    OR
    *    link => function ($this) { return $object }
    *
-   * <code>
-   * array(
-   *       'teacher' => array(self::HAS_ONE, 'Teacher', 'classroom_id'),
-   *       'students' => array(self::HAS_MANY, 'Student', 'classroom_id'),
-   *       'school' => array(self::BELONGS_TO, 'School', 'school_id'),
-   *       'parents' => function ($classroom) { $p = new Parent; $p->getWithWhere('SELECT * FROM parent ORDER BY rand()'); return $p; },
-   *   );     
-   * </code>
    * @var array
    */
   protected $relationships = array();
@@ -222,21 +214,6 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   }
 
   /**
-   * Load a record from the database with conditions
-   * @param  string $where conditions for a where statement eg `type=1`
-   * @param  array  $data  parameters for the conditions, eg `type=?` for conditions and array(1) for $data
-   * @return static       result of the load
-   */
-  public static function getWithWhere(string $where, $data = null)
-  {
-    $query = static::_newSelect()
-      ->where($where ?? '1=1');
-    $result = $query->LIMIT('1')->Run($data)->fetch()[(new static)->id_field];
-
-    return static::find($result);
-  }
-
-  /**
    * Load a record from the database with id
    * @param  $id id of record
    * @return static|null       result of the search
@@ -248,16 +225,13 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   }
 
   /**
-   * get all objects as an collection from the database, optionally based on conditions
-   * @param  string $conditions               conditions for a where statement eg `type=1`
-   * @param  array  $data                     parameters for the conditions, eg `type=?` for conditions and array(1) for $data
+   * alias for all()
+   * 
    * @return \pluslib\Collections\Collection  array of objects
    */
-  public static function getAll(string|null $conditions = null, $data = array())
+  public static function getAll()
   {
-    $query = static::_newSelect()->where($conditions ?? '1=1');
-    $rows = $query->get($data);
-    return $rows;
+    return static::all();
   }
 
   /**
@@ -398,12 +372,12 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
 
   public function fresh()
   {
-    return new static($this->_id());
+    return new static($this->_oid());
   }
 
   public function refresh()
   {
-    return $this->load($this->_id());
+    return $this->load($this->_oid());
   }
 
   //! crud
@@ -699,11 +673,11 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
             break;
           case self::HAS_MANY:
             $tmp = new $class;
-            $this->_related[$property] = $tmp->getAll($field . '=?', array($this->id));
+            $this->_related[$property] = $tmp->where($field, expr('?'))->get([$this->_oid()]);
             break;
           case self::HAS_ONE:
             $tmp = new $class;
-            $this->_related[$property] = $tmp->getWithWhere($field . '=?', array($this->id));
+            $this->_related[$property] = $tmp->where($field, expr('?'))->take(1)->first();
             break;
         }
       }
