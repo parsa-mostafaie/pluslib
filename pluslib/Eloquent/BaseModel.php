@@ -660,6 +660,16 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
 
   //! Relations
   /**
+   * Returns a select with a initial with
+   *
+   * @param  string|array $properties the fields
+   * @return Select       
+   */
+  public static function with($properties){
+    return static::select()->with(is_string($properties) ? func_get_args() : $properties);
+  }
+
+  /**
    * Return the specified relationship, either from the cache (if exists) or the db
    * @param  string $property the field / class
    * @return mixed            an object, array or null
@@ -697,7 +707,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
 
   /**
    * Eager Loads relationships
-   * @param  string|array $property the field / class
+   * @param  string|array $property the fields
    * @return array        array of loaded properties
    */
   public function loadRelations($properties)

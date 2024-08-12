@@ -8,6 +8,8 @@ use pluslib\Database\Table;
 
 class Select extends BaseSelect
 {
+  protected $with = [];
+
   public function __construct(
     Table $table,
     string|array $cols = ['*'],
@@ -21,12 +23,26 @@ class Select extends BaseSelect
     return $this;
   }
 
+  public function with($properties)
+  {
+    $properties = is_string($properties) ? func_get_args() : $properties;
+
+    $this->with = array_merge($this->with, $properties);
+
+    return $this;
+  }
+
   public function getArray($params = [])
   {
     return array_map(function ($v) {
+      /**
+       * @var Model
+       */
       $instance = new $this->model;
 
       $instance->fromArray($v);
+
+      $instance->loadRelations($this->with);
 
       return $instance;
     }, parent::getArray($params));
