@@ -19,7 +19,6 @@ class Select
   public function __construct(
     public readonly Table $table,
     string|array $cols = ['*'],
-    private string|null $modelType = null
   ) {
     $this->init_condition();
 
@@ -105,18 +104,6 @@ class Select
   {
     $run = $this->Run($params)->fetchAll(PDO::FETCH_ASSOC);
 
-    if ($this->modelType) {
-      $mt = $this->modelType;
-
-      return array_map(function ($v) use ($mt) {
-        $instance = new $mt;
-
-        $instance->fromArray($v);
-
-        return $instance;
-      }, $run);
-    }
-
     return $run;
   }
 
@@ -195,17 +182,6 @@ class Select
     return $this->Run($params)->rowCount();
   }
 
-  public function toBase($clone = false)
-  {
-    if ($clone) {
-      return (clone $this)->toBase();
-    }
-
-    $this->modelType = null;
-
-    return $this;
-  }
-
   public function Generate()
   {
     $join = $this->joins();
@@ -215,10 +191,11 @@ class Select
     $ob = $this->order ? "ORDER BY " . implode(', ', $this->order) : '';
     $os = $this->offset ? "OFFSET {$this->offset}" : '';
     $lm = $this->lim ? "LIMIT {$this->lim} $os" : '';
-    $cols = $this->modelType ? $this->table->name . '.*' : join(', ', $this->cols);
+    $cols = join(', ', $this->cols);
     $tbl = $this->table->name();
 
     $query = "SELECT $cols FROM $tbl $join $cond $gb $having $ob $lm";
+    
     return $query;
   }
 }

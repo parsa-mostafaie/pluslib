@@ -7,7 +7,6 @@ use Sql_DB;
 use pluslib\Database\Table;
 use \Exception;
 use JsonSerializable;
-use pluslib\Database\Query\Select;
 use pluslib\Database\Query\Helpers as QueryBuilding;
 
 defined('ABSPATH') || exit;
@@ -150,9 +149,9 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    * select query class instance of model
    * @return Select
    */
-  protected static function _newSelect()
+  protected function _newSelect($cols = '*')
   {
-    return new Select(static::_getTable(), static::_getTable()->primaryKey(), static::class);
+    return new Select(static::_getTable(), $cols,  static::class);
   }
 
   /**
@@ -256,9 +255,9 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    * select query class instance of model
    * @return Select
    */
-  public static function select()
+  public static function select($cols = '*')
   {
-    return static::_newSelect();
+    return (new static)->_newSelect($cols);
   }
 
 
