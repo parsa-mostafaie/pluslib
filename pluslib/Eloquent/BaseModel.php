@@ -679,7 +679,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
 
   //! Relations
   /**
-   * return the specified relationships, either from the cache (if exists) or the db
+   * Return the specified relationship, either from the cache (if exists) or the db
    * @param  string $property the field / class
    * @return mixed            an object, array or null
    */
@@ -712,6 +712,23 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     }
 
     return null;
+  }
+
+  /**
+   * Eager Loads relationships
+   * @param  string|array $property the field / class
+   * @return array        array of loaded properties
+   */
+  public function loadRelations($properties)
+  {
+    $properties = is_string($properties) ? func_get_args() : $properties;
+    $res = [];
+
+    foreach ($properties as $property) {
+      $res[$property] = $this->loadRelation($property);
+    }
+
+    return $res;
   }
 
   //! Convert from/to Array
