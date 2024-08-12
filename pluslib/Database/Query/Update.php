@@ -48,8 +48,12 @@ class Update
 
   public function Run($params = [])
   {
+    if (!($q = $this->Generate())) {
+      return;
+    }
+    
     return $this->table->db->execute_q(
-      $this->Generate(),
+      $q,
       $params
     );
   }
@@ -57,6 +61,8 @@ class Update
   public function Generate()
   {
     $arr = QueryBuilding::NormalizeArray($this->arr);
+    if (!$arr)
+      return;
     $tbl = $this->table->name();
     $v = $this->toString($arr);
     $condition = $this->condition;

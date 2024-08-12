@@ -33,8 +33,12 @@ class Insert
 
   public function Run($params = [])
   {
+    if (!($q = $this->Generate())) {
+      return;
+    }
+    
     return $this->table->db->execute_q(
-      $this->Generate(),
+      $q,
       $params
     );
   }
@@ -43,6 +47,8 @@ class Insert
   {
     $tbl = $this->table->name();
     $arr = QueryBuilding::NormalizeArray($this->arr);
+    if (!$arr)
+      return;
     $keys = array_keys($arr);
     $vals = array_values($arr);
     return "INSERT INTO $tbl (" . join(', ', $keys) . ") VALUES ( " . join(', ', $vals) . " )";
