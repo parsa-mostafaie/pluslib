@@ -4,8 +4,9 @@ namespace pluslib\Collections;
 defined('ABSPATH') || exit;
 
 use \ArrayAccess, \Iterator;
+use JsonSerializable;
 
-class Collection implements ArrayAccess, Iterator
+class Collection implements ArrayAccess, Iterator, JsonSerializable
 {
   private $items = array();
 
@@ -348,13 +349,13 @@ class Collection implements ArrayAccess, Iterator
   }
 
   #[\ReturnTypeWillChange]
-  public function current()
+  public function current(): mixed
   {
     return current($this->items);
   }
 
   #[\ReturnTypeWillChange]
-  public function key()
+  public function key(): int|string|null
   {
     return key($this->items);
   }
@@ -367,5 +368,11 @@ class Collection implements ArrayAccess, Iterator
   public function valid(): bool
   {
     return key($this->items) !== null;
+  }
+
+  // json
+  public function jsonSerialize(): mixed
+  {
+    return $this->items;
   }
 }
