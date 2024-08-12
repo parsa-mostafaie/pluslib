@@ -807,6 +807,11 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   {
     return $this->toArray();
   }
+
+  // Call static
+  public static function __callStatic($method, $args){
+    return (new static)->$method(...$args);
+  }
 }
 
 // TODO: Implement The Many-to-many
