@@ -7,6 +7,7 @@ use Sql_DB;
 use pluslib\Database\Table;
 use \Exception;
 use JsonSerializable;
+use pluslib\Collections\Arr;
 use pluslib\Database\Query\Helpers as QueryBuilding;
 
 defined('ABSPATH') || exit;
@@ -170,13 +171,27 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     return array_merge($this->_data, $this->_magicProperties);
   }
 
+  protected function _changes(){
+    $data = $this->_data;
+    $mp = $this->_mergedProps();
+
+    $comp = fn($a, $b) => $a == $b ? 0 : -1;
+
+    return array_diff_uassoc($mp, $data, $comp);
+  }
+
+  protected function _filtered_changes(){
+    return Arr::only($this->_changes(), $this->fillable);
+  }
+
   /**
    * Escapes keys/values of magic properties array
    * @return array       result of the load
    */
   protected function _escapedMagicProps()
   {
-    $props = $this->_mergedProps();
+    $props = $this->_filtered_changes();
+
     $normal = collect($props);
     $normal = $normal->map(fn($v) => $v instanceof Expression ? $v : expr('?'))->all();
 
