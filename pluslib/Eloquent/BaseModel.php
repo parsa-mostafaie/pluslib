@@ -28,6 +28,12 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    */
   protected $readonly = false;
 
+  /**
+   * dynamic Attributes that should be included in toArray's result
+   * 
+   * @var array
+   */
+  protected $appends = [];
 
   /**
    * Fillable fields
@@ -611,7 +617,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   {
     //for this to be a setSomething or getSomething, the name has to have
     //at least 4 chars as in, setX or getX
-    if (strlen($method) < 4){
+    if (strlen($method) < 4) {
       return $this->_newSelect()->$method(...$parameters);
     }
 
@@ -761,6 +767,26 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
 
   //! Convert from/to Array
   /**
+   * Calculates value of appends
+   *
+   * @return array
+   */
+  public function appendsToArray()
+  {
+    $result = [];
+
+    foreach ($this->appends as $name => $fn) {
+      if (is_numeric($name)) {
+        $name = $fn;
+      }
+
+      $result[$name] = $this->$fn();
+    }
+
+    return $result;
+  }
+
+  /**
    * convert the object to an array
    * @return array array of all fields in object
    */
@@ -778,7 +804,9 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
       }
     }
 
-    return $this->_postarray(array_merge($output, $this->_related));
+    $arr = array_merge($output, $this->_related, $this->appendsToArray());
+
+    return $this->_postarray($arr);
   }
 
   /**
