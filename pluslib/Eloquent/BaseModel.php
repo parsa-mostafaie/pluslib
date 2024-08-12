@@ -767,12 +767,12 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     foreach ($this->_mergedProps() as $key => $value) {
       if (!in_array($key, $this->hidden)) {
         $output[$key] = $value;
+
+        $aliases = array_keys($this->translation, $key);
+        foreach ($aliases as $alias) {
+          $output[$alias] = $value;
+        }
       }
-    }
-    foreach ($this->translation as $alias => $name) {
-      $name = $this->_getFieldName($alias);
-      if (!in_array($name, $this->hidden))
-        $output[$alias] = $this->_get($name);
     }
 
     return $this->_postarray(array_merge($output, $this->_related));
