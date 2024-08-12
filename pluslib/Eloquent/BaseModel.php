@@ -611,8 +611,9 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   {
     //for this to be a setSomething or getSomething, the name has to have
     //at least 4 chars as in, setX or getX
-    if (strlen($method) < 4)
-      throw new Exception('Method does not exist');
+    if (strlen($method) < 4){
+      return $this->_newSelect()->$method(...$parameters);
+    }
 
     //take first 3 chars to determine if this is a get or set
     $prefix = substr($method, 0, 3);
@@ -638,6 +639,8 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
         throw new Exception('Setter does not exist');
       }
     }
+
+    return $this->_newSelect()->$method(...$parameters);
   }
 
   /**
