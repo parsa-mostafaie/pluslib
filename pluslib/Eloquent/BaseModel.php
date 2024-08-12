@@ -29,6 +29,13 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
 
 
   /**
+   * Fillable fields
+   * 
+   * @var array
+   */
+  protected $fillable = [];
+
+  /**
    * Relations to eager load when hydrating
    * 
    * @var array
