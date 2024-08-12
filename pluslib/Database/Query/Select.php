@@ -168,13 +168,13 @@ class Select
   public function first($params = [])
   {
     $res = $this->getArray($params);
-    return reset($res);
+    return reset($res) ?: null;
   }
 
   public function last($params = [])
   {
     $res = $this->getArray($params);
-    return end($res);
+    return end($res) ?: null;
   }
 
   public function count($params = [])
