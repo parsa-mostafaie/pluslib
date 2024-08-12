@@ -3,12 +3,20 @@ namespace pluslib\Eloquent;
 
 use ArrayAccess;
 use pluslib\Database\Expression;
+use pluslib\Eloquent\Traits\HasAttributes;
+use pluslib\Eloquent\Traits\HasFilteredAttributes;
 use Sql_DB;
 use pluslib\Database\Table;
 use \Exception;
+use pluslib\Eloquent\Traits\HasRelations;
 use JsonSerializable;
 use pluslib\Collections\Arr;
 use pluslib\Database\Query\Helpers as QueryBuilding;
+use pluslib\Eloquent\Traits\HasAppends;
+use pluslib\Eloquent\Traits\HasEloquentEvents;
+use pluslib\Eloquent\Traits\HasTimestamps;
+use pluslib\Eloquent\Traits\HasTranslation;
+use pluslib\Eloquent\Traits\HidesAttributes;
 
 defined('ABSPATH') || exit;
 /**
@@ -22,6 +30,16 @@ defined('ABSPATH') || exit;
  */
 abstract class BaseModel implements ArrayAccess, JsonSerializable
 {
+  use
+    HasAttributes,
+    HasTranslation,
+    HasEloquentEvents,
+    HasAppends,
+    HidesAttributes,
+    HasFilteredAttributes,
+    HasRelations,
+    HasTimestamps;
+
   /**
    * when enabled, delete/insert/update will denied!
    * @var bool 
@@ -29,31 +47,11 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   protected $readonly = false;
 
   /**
-   * dynamic Attributes that should be included in toArray's result
-   * 
-   * @var array
-   */
-  protected $appends = [];
-
-  /**
-   * Fillable fields
-   * 
-   * @var array
-   */
-  protected $fillable = [];
-
-  /**
    * Relations to eager load when hydrating
    * 
    * @var array
    */
   protected $with = [];
-
-  /**
-   * Hidden fields from serialization
-   * @var array
-   */
-  protected $hidden = [];
 
   /** 
    * Table name
@@ -68,86 +66,10 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   protected $id_field = 'id';
 
   /**
-   * Translation of fields
-   * array('table_id' => 'id') will allow you to map $obj->id calls to $obj->table_id
-   * @var array
-   */
-  protected $translation = array();
-
-  /**
-   * Define the relationships between table fields and other objects to allow for autoloading
-   * an array of links defined as below
-   *    link => array(relationship, class, id_field)
-   *    OR
-   *    link => function ($this) { return $object }
-   *
-   * @var array
-   */
-  protected $relationships = array();
-
-  /**
-   * Default data for a model instance that not loaded from database
-   * @var array
-   */
-  protected $defaultData = array();
-
-  /**
-   * related records (loaded through relationships)
-   * @var array
-   */
-  protected $_related;
-
-  /**
    * Whether or not the object has been loaded from the database
    * @var boolean
    */
   public $loaded = false;  // a record/object is loaded
-
-  /**
-   * The objects attributes
-   * @var array
-   */
-  protected $_data = array();
-
-  /**
-   * The objects attributes (changes)
-   * @var array
-   */
-  protected $_magicProperties = array();
-
-
-  /**
-   * Last Entity's Update Field Name
-   * @var string|null
-   */
-  const updated_at = 'updated_at';
-
-  /**
-   * Entity's Creation Date Field Name
-   * @var string|null
-   */
-  const created_at = 'created_at';
-
-
-  /**
-   * Timestamps Enable State
-   * @var bool
-   */
-  public $_timestamps = true;
-
-  /**
-   * Timestamps Enable State Globally
-   * @var bool
-   */
-  protected static $timestamps = true;
-
-  /**
-   * relationship Constants
-   */
-  const BELONGS_TO = 1;
-  const HAS_ONE = 2;
-  const HAS_MANY = 3;
-  const MANY_MANY = 4; // NOT YET IMPLEMENTED
 
   //! Static Methods
   /**
@@ -168,73 +90,6 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     return new Select(static::_getTable(), $cols, static::class);
   }
 
-  /**
-   * Apply changes to data
-   * @return array
-   */
-  protected function _mergedProps()
-  {
-    return array_merge($this->_data, $this->_magicProperties);
-  }
-
-  protected function _changes()
-  {
-    $data = $this->_data;
-    $mp = $this->_mergedProps();
-
-    $comp = fn($a, $b) => $a == $b ? 0 : -1;
-
-    return array_diff_uassoc($mp, $data, $comp);
-  }
-
-  protected function _filtered_changes()
-  {
-    return Arr::only($this->_changes(), $this->fillable);
-  }
-
-  /**
-   * Escapes keys/values of magic properties array
-   * @return array       result of the load
-   */
-  protected function _escapedMagicProps()
-  {
-    $props = $this->_filtered_changes();
-
-    $normal = collect($props);
-    $normal = $normal->map(fn($v) => $v instanceof Expression ? $v : expr('?'))->all();
-
-    $data = array_values(array_filter($props, fn($val) => !$val instanceof Expression));
-
-    return [$normal, $data];
-  }
-
-  // Working with timestamps
-  public static function withoutTimestamps(callable $c)
-  {
-    $t = static::$timestamps;
-    static::$timestamps = false;
-    $c();
-    static::$timestamps = $t;
-  }
-
-  protected function usesTimestamps()
-  {
-    return $this->_timestamps && static::$timestamps;
-  }
-
-  protected function _setCreateTimestamp()
-  {
-    if ($this->usesTimestamps() && static::created_at) {
-      $this->{static::created_at} = expr('current_timestamp()');
-    }
-  }
-
-  protected function _setUpdateTimestamp()
-  {
-    if ($this->usesTimestamps() && static::updated_at) {
-      $this->{static::updated_at} = expr('current_timestamp()');
-    }
-  }
   //! Selecting static methods
   /**
    * Returns a select query with initial where condition(s)
@@ -310,79 +165,6 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     }
   }
 
-  //! Events
-  /**
-   * function to be run prior to db insert
-   */
-  protected function _precreate()
-  {
-    $this->_setCreateTimestamp();
-    $this->_setUpdateTimestamp();
-  }
-
-  /**
-   * function to be run after db insert
-   * @param boolean $result result of the db query
-   */
-  protected function _postcreate($result)
-  {
-  }
-
-  /**
-   * function to be run before a db update
-   */
-  protected function _preupdate()
-  {
-    $this->_setUpdateTimestamp();
-  }
-
-  /**
-   * function to be run after a db update
-   * @param  boolean $result db query result
-   */
-  protected function _postupdate($result)
-  {
-  }
-
-  /**
-   * function to be run prior to db delete
-   */
-  protected function _predelete()
-  {
-  }
-
-  /**
-   * function to be run after the db delete
-   * @param  boolean $result result of the db query
-   */
-  protected function _postdelete($result)
-  {
-  }
-
-  /**
-   * function to rewrite the output of toArray() if required
-   * @param  array $output array from toArray()
-   * @return array         
-   */
-  protected function _postarray($output)
-  {
-    return $output;
-  }
-
-  /**
-   * function to be run prior to loading data
-   */
-  protected function _preload()
-  {
-  }
-  /**
-   * function to be run prior to loading data
-   * @param boolean $result result of the load
-   */
-  protected function _postload($result)
-  {
-  }
-
   //! loading state
   /**
    * load a specific row from the database
@@ -418,16 +200,6 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   }
 
   //! crud
-  /**
-   * Returns: model instance is changed?
-   * 
-   * @return bool
-   */
-  public function changed()
-  {
-    return $this->_mergedProps() !== $this->_data;
-  }
-
   /**
    * delete the object from the database
    * 
@@ -504,11 +276,6 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
 
     $result = static::_getTable()->INSERT([])->fromArray($mp)->Run($data);
 
-    // if (!isset($this->_magicProperties['id']) || !$this->_magicProperties['id']) {
-    //   $id = db()->lastInsertId();
-    //   $this->{'set' . $this->id_field}($id);
-    // }
-
     $this->loaded = true;
     $this->_postcreate($result);
     $this->load(db()->lastInsertId()); // load all columns from db (also what not setted)
@@ -531,54 +298,6 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
 
   //! get/set
   /**
-   * Returns Original (From db) Value of a field (= attribute = prop = data)
-   * @return mixed
-   */
-  public function _getOriginal($field)
-  {
-    $field = $this->_getFieldName($field);
-    return $this->_data[$field] ?? null;
-  }
-
-  /**
-   * Returns Value of a field (= attribute = prop = data)
-   * 
-   * @param string $field
-   * @return mixed
-   */
-  public function _get($field)
-  {
-    $field = $this->_getFieldName($field);
-    return $this->_mergedProps()[$field] ?? null;
-  }
-
-  /**
-   * Returns final name of field
-   * 
-   * @param string $name
-   * @return mixed
-   */
-  public function _getFieldName($name)
-  {
-    if (isset($this->translation[$name])) {
-      $name = $this->translation[$name];
-      return $this->_getFieldName($name);
-    }
-    return $name;
-  }
-
-
-  /**
-   * find if the object has a property
-   * @param  string  $name field name
-   * @return boolean       result
-   */
-  public function _hasProperty($name)
-  {
-    return array_key_exists($this->_getFieldName($name), $this->_mergedProps());
-  }
-
-  /**
    * find if the object has a property
    * 
    * @param string
@@ -588,23 +307,6 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   public function __isset($name)
   {
     return $this->_hasProperty($name);
-  }
-
-  /**
-   * Sets a field
-   * @return static $this
-   */
-  public function _setField($field, $value)
-  {
-    $field = $this->_getFieldName($field);
-
-    if (!in_array($field, $this->fillable)) {
-      throw new Exception("Setting field `$field` is not allowed in Models of type " . static::class);
-    }
-
-    $this->_magicProperties[$field] = $value;
-
-    return $this;
   }
 
   /**
@@ -667,7 +369,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     if (!isset($this->_mergedProps()[$property])) {
       return $this->loadRelation($property);
     }
-    return $this->_mergedProps()[$property] ?? null;
+    return $this->_get($property);
   }
 
   /**
@@ -703,59 +405,6 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   }
 
   /**
-   * Return the specified relationship, either from the cache (if exists) or the db
-   * @param  string $property the field / class
-   * @return mixed            an object, array or null
-   */
-  public function loadRelation($property)
-  {
-    if (isset($this->_related[$property])) {
-      return $this->_related[$property];
-    }
-    if (isset($this->relationships[$property])) {
-      if (is_callable($this->relationships[$property])) {
-        $this->_related[$property] = $this->relationships[$property]($this);
-      } else {
-        list($relation, $class, $field) = $this->relationships[$property];
-        switch ($relation) {
-          case self::BELONGS_TO:
-            $this->_related[$property] = new $class($this->$field);
-            break;
-          case self::HAS_MANY:
-            $tmp = new $class;
-            $this->_related[$property] = $tmp->where($field, expr('?'))->get([$this->_oid()]);
-            break;
-          case self::HAS_ONE:
-            $tmp = new $class;
-            $this->_related[$property] = $tmp->where($field, expr('?'))->take(1)->first();
-            break;
-        }
-      }
-
-      return $this->_related[$property] ?? null;
-    }
-
-    return null;
-  }
-
-  /**
-   * Eager Loads relationships
-   * @param  string|array $property the fields
-   * @return array        array of loaded properties
-   */
-  public function loadRelations($properties)
-  {
-    $properties = is_string($properties) ? func_get_args() : $properties;
-    $res = [];
-
-    foreach ($properties as $property) {
-      $res[$property] = $this->loadRelation($property);
-    }
-
-    return $res;
-  }
-
-  /**
    * Eager Loads relation within `with` Array
    *
    * @return array
@@ -766,25 +415,6 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   }
 
   //! Convert from/to Array
-  /**
-   * Calculates value of appends
-   *
-   * @return array
-   */
-  public function appendsToArray()
-  {
-    $result = [];
-
-    foreach ($this->appends as $name => $fn) {
-      if (is_numeric($name)) {
-        $name = $fn;
-      }
-
-      $result[$name] = $this->$fn();
-    }
-
-    return $result;
-  }
 
   /**
    * convert the object to an array
@@ -792,19 +422,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    */
   public function toArray()
   {
-    $output = array();
-    foreach ($this->_mergedProps() as $key => $value) {
-      if (!in_array($key, $this->hidden)) {
-        $output[$key] = $value;
-
-        $aliases = array_keys($this->translation, $key);
-        foreach ($aliases as $alias) {
-          $output[$alias] = $value;
-        }
-      }
-    }
-
-    $arr = array_merge($output, $this->_related, $this->appendsToArray());
+    $arr = array_merge($this->translationsToArray(false), $this->_related, $this->appendsToArray());
 
     return $this->_postarray($arr);
   }
