@@ -1,10 +1,12 @@
 <?php
 namespace pluslib\Eloquent;
 
+use ArrayAccess;
 use pluslib\Database\Expression;
 use Sql_DB;
 use pluslib\Database\Table;
 use \Exception;
+use JsonSerializable;
 use pluslib\Database\Query\Select;
 use pluslib\Database\Query\Helpers as QueryBuilding;
 
@@ -18,7 +20,7 @@ defined('ABSPATH') || exit;
 /**
  * A Base database model to extend with tables
  */
-abstract class BaseModel
+abstract class BaseModel implements ArrayAccess, JsonSerializable
 {
   /**
    * when enabled, delete/insert/update will denied!
@@ -650,7 +652,7 @@ abstract class BaseModel
   {
     $property = $this->_getFieldName($property);
     if (!isset($this->_mergedProps()[$property])) {
-      return $this->loadRelations($property);
+      return $this->loadRelation($property);
     }
     return $this->_mergedProps()[$property] ?? null;
   }
@@ -681,7 +683,7 @@ abstract class BaseModel
    * @param  string $property the field / class
    * @return mixed            an object, array or null
    */
-  protected function loadRelations($property)
+  public function loadRelation($property)
   {
     if (isset($this->_related[$property])) {
       return $this->_related[$property];
@@ -705,7 +707,8 @@ abstract class BaseModel
             break;
         }
       }
-      return isset($this->_related[$property]) ? $this->_related[$property] : null;
+
+      return $this->_related[$property] ?? null;
     }
 
     return null;
@@ -729,7 +732,8 @@ abstract class BaseModel
       if (!in_array($name, $this->hidden))
         $output[$alias] = $this->_get($name);
     }
-    return $this->_postarray($output);
+
+    return $this->_postarray(array_merge($output, $this->_related));
   }
 
   /**
@@ -760,46 +764,36 @@ abstract class BaseModel
     return $this->loaded;
   }
 
-  //! dumping
-  /**
-   * dump the object in a nice readable way
-   */
-  public function dump($nice = true)
+  // Array Access
+  function offsetExists(mixed $offset): bool
   {
-    if (!$nice) {
-      echo '<pre>', var_dump($this), '</pre>';
-    } else {
-      $h = '<table style="margin: 5px 10px; border: solid 1px;" width="50%"><caption style="font-size: 1.2em; color: #666;">' . e($this->table) . ' (' . get_class($this) . ') #' . $this->id . '</caption>';
-      if (count($this->relationships)) {
-        $h .= '<tr><th colspan=2>Relationships</th></tr>';
-        if (count($this->_related)) {
-          foreach ($this->_related as $prop => $r) {
-            $h .= '<tr><td style="font-weight: bold;" valign="top">' . e($prop) . '</td><td>' . (is_array($r) ? count($r) . ' records' . (count($r) ? ' (' . get_class($r[0]) . ')' : '') : get_class($r)) . '</td></tr>';
-          }
-        }
-        if (count($this->relationships) > count($this->_related)) {
+    return $this->_hasProperty($offset);
+  }
 
-          foreach ($this->relationships as $prop => $r) {
-            if (!isset($this->_related[$prop])) {
-              $h .= '<tr><td style="font-weight: bold;" valign="top">' . e($prop) . '</td><td>' . (is_callable($r) ? 'Unknown Function' : $r[1]) . '</td></tr>';
-            }
-          }
-        }
-        $h .= '<tr><th colspan=2>Fields</th></tr>';
-      }
+  function offsetGet(mixed $offset): mixed
+  {
+    return $this->$offset;
+  }
 
-      foreach ($this->_mergedProps() as $key => $value) {
-        $h .= '<tr>';
-        $h .= '<td style="font-weight: bold;" valign="top">' .
-          e(in_array($key, $this->translation) ? array_search($key, $this->translation) : $key) .
-          '</td><td><pre>' .
-          ($value instanceof Expression ? '<b>Expression</b> ' . e($value->raw) : e($value))
-          . '</pre></td>';
-        $h .= '</tr>';
-      }
-      $h .= '</table>';
-    }
-    echo $h;
+  function offsetSet(mixed $offset, mixed $value): void
+  {
+    $this->_setField($offset, $value);
+  }
+
+  function offsetUnset(mixed $offset): void
+  {
+    unset($this->_magicProperties[$offset]);
+  }
+
+  function __unset(mixed $offset)
+  {
+    $this->offsetUnset($offset);
+  }
+
+  // Json Serialize
+  function jsonSerialize(): mixed
+  {
+    return $this->toArray();
   }
 }
 
