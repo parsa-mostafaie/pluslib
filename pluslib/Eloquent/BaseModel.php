@@ -28,6 +28,14 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    */
   protected $readonly = false;
 
+
+  /**
+   * Relations to eager load when hydrating
+   * 
+   * @var array
+   */
+  protected $with = [];
+
   /**
    * Hidden fields from serialization
    * @var array
@@ -705,6 +713,15 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     return $res;
   }
 
+  /**
+   * Eager Loads relation within `with` Array
+   *
+   * @return array
+   */
+  protected function eagerLoads(){
+    return $this->loadRelations($this->with);
+  }
+
   //! Convert from/to Array
   /**
    * convert the object to an array
@@ -751,7 +768,11 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
       }
       $this->loaded = true;
     }
+
+    $this->eagerLoads();
+
     $this->_postload($this->loaded);
+
     return $this->loaded;
   }
 
