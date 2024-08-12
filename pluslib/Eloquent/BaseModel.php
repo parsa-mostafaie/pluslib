@@ -171,7 +171,8 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     return array_merge($this->_data, $this->_magicProperties);
   }
 
-  protected function _changes(){
+  protected function _changes()
+  {
     $data = $this->_data;
     $mp = $this->_mergedProps();
 
@@ -180,7 +181,8 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     return array_diff_uassoc($mp, $data, $comp);
   }
 
-  protected function _filtered_changes(){
+  protected function _filtered_changes()
+  {
     return Arr::only($this->_changes(), $this->fillable);
   }
 
