@@ -14,7 +14,7 @@ function ap_header_(
   die();
 }
 
-function redirect($url, $back = false, $backURL = null, $gen = false)
+function redirect($url, $back = false, $backURL = null, $gen = false, $status=301)
 {
   $params = [];
   if ($back) {
@@ -24,6 +24,7 @@ function redirect($url, $back = false, $backURL = null, $gen = false)
   $url = url($url, $params);
   if ($gen)
     return $url;
+  http_response_code($status);
   header('Location: ' . $url);
   die();
 }
