@@ -139,4 +139,30 @@ trait HasAttributes
 
     return $this;
   }
+
+  /**
+   * Increments a attribute
+   * 
+   * @param string $attribute
+   * @param int $amount
+   */
+  public function increment($attribute, $amount = 1)
+  {
+    $this->$attribute = expr(escape_col($attribute) . " + $amount");
+
+    return $this;
+  }
+
+  /**
+   * Decrement a attribute
+   * 
+   * @param string $attribute
+   * @param int $amount
+   */
+  public function decrement($attribute, $amount = 1)
+  {
+    $this->$attribute = expr(escape_col($attribute) . " - $amount");
+
+    return $this;
+  }
 }
