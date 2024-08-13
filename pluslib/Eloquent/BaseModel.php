@@ -71,6 +71,13 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    */
   public $loaded = false;  // a record/object is loaded
 
+  /**
+   * Indicates that model is created within object's lifecycle
+   * 
+   * @var boolean
+   */
+  public $wasRecentlyCreated = false;
+
   //! Static Methods
   /**
    * Sql_Table instance of table (null if not found!)
@@ -277,8 +284,13 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     $result = static::_getTable()->INSERT([])->fromArray($mp)->Run($data);
 
     $this->loaded = true;
+
+    $this->wasRecentlyCreated = true;
+
     $this->_postcreate($result);
+
     $this->load(db()->lastInsertId()); // load all columns from db (also what not setted)
+
     return $this->_id();
   }
 
