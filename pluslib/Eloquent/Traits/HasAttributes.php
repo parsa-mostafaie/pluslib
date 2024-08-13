@@ -37,27 +37,12 @@ trait HasAttributes
   }
 
   /**
-   * Return Diffrence of _data and merged_props
-   * 
-   * @return array
-   */
-  protected function _changes()
-  {
-    $data = $this->_data;
-    $mp = $this->_mergedProps();
-
-    $comp = fn($a, $b) => $a == $b ? 0 : -1;
-
-    return array_diff_uassoc($mp, $data, $comp);
-  }
-
-  /**
    * Escapes keys/values of magic properties array
    * @return array       result of the load
    */
   protected function _escapedMagicProps()
   {
-    $props = $this->_filtered_changes();
+    $props = $this->_magicProperties;
 
     $normal = collect($props);
     $normal = $normal->map(fn($v) => $v instanceof Expression ? $v : expr('?'))->all();
