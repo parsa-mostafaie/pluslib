@@ -6,16 +6,26 @@ defined('ABSPATH') || exit;
 use pluslib\Database\Query\Select as BaseSelect;
 use pluslib\Database\Table;
 
+/**
+ * @template TModel of BaseModel
+ */
 class Select extends BaseSelect
 {
   protected $with = [];
 
+  /**
+   * @var TModel
+   */
+  protected $model;
+
   public function __construct(
     Table $table,
     string|array $cols = ['*'],
-    protected string $model
+    $model
   ) {
     parent::__construct($table, $cols);
+
+    $this->model = $model;
   }
 
   public function toBase()
@@ -32,19 +42,16 @@ class Select extends BaseSelect
     return $this;
   }
 
+  /**
+   * Fetchs array of models
+   * 
+   * @param array $params
+   * @return TModel[]
+   */
   public function getArray($params = [])
   {
     return array_map(function ($v) {
-      /**
-       * @var BaseModel
-       */
-      $instance = new $this->model;
-
-      $instance->fromArray($v);
-
-      $instance->loadRelations($this->with);
-
-      return $instance;
+      return $this->model->newFromArray($v);
     }, parent::getArray($params));
   }
 
@@ -52,7 +59,7 @@ class Select extends BaseSelect
    * Save a new model and return the instance.
    *
    * @param  array  $attributes
-   * @return BaseModel
+   * @return TModel
    */
   public function create(array $attributes = [])
   {
@@ -66,7 +73,7 @@ class Select extends BaseSelect
    *
    * @param  array  $attributes
    * @param  array  $values
-   * @return BaseModel
+   * @return TModel
    */
   public function firstOrCreate(array $attributes = [], array $values = [])
   {
@@ -82,7 +89,7 @@ class Select extends BaseSelect
    *
    * @param  array  $attributes
    * @param  array  $values
-   * @return BaseModel
+   * @return TModel
    */
   public function updateOrCreate(array $attributes, array $values = [])
   {
@@ -93,8 +100,8 @@ class Select extends BaseSelect
     });
   }
 
-  public function newModelInstance($attributes): BaseModel
+  public function newModelInstance($attributes)
   {
-    return (new $this->model)->fill($attributes);
+    return $this->model->newInstance($attributes);
   }
 }

@@ -94,7 +94,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    */
   protected function _newSelect($cols = '*')
   {
-    return new Select(static::_getTable(), $cols, static::class);
+    return new Select(static::_getTable(), $cols, $this);
   }
 
   //! Selecting static methods
@@ -170,6 +170,16 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
         $this->{$this->id_field} = $id;
       }
     }
+  }
+
+  function newInstance($attributes = [])
+  {
+    return (new static)->fill($attributes);
+  }
+
+  function newFromArray($attributes = [])
+  {
+    return tap(new static, fn($instance) => $instance->fromArray($attributes));
   }
 
   //! loading state
