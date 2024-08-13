@@ -36,13 +36,25 @@ trait HasAttributes
     return array_merge($this->_data, $this->_magicProperties);
   }
 
+  protected function _changes()
+  {
+    $data = $this->_data;
+    $mp = $this->_magicProperties;
+
+    $comp = function ($a, $b) {
+      return $a === $b ? 0 : 1;
+    };
+
+    return array_udiff_assoc($mp, $data, $comp);
+  }
+
   /**
    * Escapes keys/values of magic properties array
    * @return array       result of the load
    */
   protected function _escapedMagicProps()
   {
-    $props = $this->_magicProperties;
+    $props = $this->_changes();
 
     $normal = collect($props);
     $normal = $normal->map(fn($v) => $v instanceof Expression ? $v : expr('?'))->all();
@@ -90,7 +102,7 @@ trait HasAttributes
   {
     $field = $this->_getFieldName($field);
 
-    if (!in_array($field, $this->fillable)) {
+    if ($this->loaded && $field == $this->id_field) {
       throw new \Exception("Setting field `$field` is not allowed in Models of type " . static::class);
     }
 
