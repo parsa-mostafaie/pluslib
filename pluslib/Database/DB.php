@@ -43,4 +43,9 @@ class DB extends PDO
   {
     return new Table($this, $name, $alias);
   }
+
+  public static function __callStatic($method, $args)
+  {
+    return db()->$method(...$args);
+  }
 }
