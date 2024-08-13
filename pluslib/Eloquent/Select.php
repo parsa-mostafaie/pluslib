@@ -36,7 +36,7 @@ class Select extends BaseSelect
   {
     return array_map(function ($v) {
       /**
-       * @var Model
+       * @var BaseModel
        */
       $instance = new $this->model;
 
