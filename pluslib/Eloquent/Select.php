@@ -47,4 +47,9 @@ class Select extends BaseSelect
       return $instance;
     }, parent::getArray($params));
   }
+
+  public function newModelInstance($attributes): BaseModel
+  {
+    return (new $this->model)->fill($attributes);
+  }
 }
