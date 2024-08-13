@@ -44,6 +44,21 @@ class DB extends PDO
     return new Table($this, $name, $alias);
   }
 
+  public function transaction(callable $callback)
+  {
+    try {
+      $this->beginTransaction();
+
+      $callback();
+
+      $this->commit();
+    } catch (Exception $exception) {
+      $this->rollBack();
+
+      throw $exception;
+    }
+  }
+
   public static function __callStatic($method, $args)
   {
     return db()->$method(...$args);
