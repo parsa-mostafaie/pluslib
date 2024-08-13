@@ -76,6 +76,23 @@ class Select extends BaseSelect
 
     return $this->create(array_merge($attributes, $values));
   }
+
+  /**
+   * Create or update a record matching the attributes, and fill it with values.
+   *
+   * @param  array  $attributes
+   * @param  array  $values
+   * @return BaseModel
+   */
+  public function updateOrCreate(array $attributes, array $values = [])
+  {
+    return tap($this->firstOrCreate($attributes, $values), function ($instance) use ($values) {
+      if (!$instance->wasRecentlyCreated) {
+        $instance->fill($values)->save();
+      }
+    });
+  }
+
   public function newModelInstance($attributes): BaseModel
   {
     return (new $this->model)->fill($attributes);
