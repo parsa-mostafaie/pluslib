@@ -26,7 +26,7 @@ class Update
   private function toString($arr)
   {
     return join(
-      ',',
+      ', ',
       array_map(function ($k, $v) {
         return "$k = $v";
       }, array_keys($arr), $arr)
