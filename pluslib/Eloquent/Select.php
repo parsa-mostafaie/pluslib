@@ -48,6 +48,18 @@ class Select extends BaseSelect
     }, parent::getArray($params));
   }
 
+  /**
+   * Save a new model and return the instance.
+   *
+   * @param  array  $attributes
+   * @return BaseModel
+   */
+  public function create(array $attributes = [])
+  {
+    return tap($this->newModelInstance($attributes), function ($instance) {
+      $instance->save();
+    });
+  }
   public function newModelInstance($attributes): BaseModel
   {
     return (new $this->model)->fill($attributes);
