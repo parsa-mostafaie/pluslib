@@ -224,6 +224,14 @@ function minify_html($buffer)
   return $buffer;
 }
 
+if(!function_exists('tap')){
+  function tap($value, $callback){
+    $callback($value);
+
+    return $value;
+  }
+}
+
 include_once '@info.php';
 include_once '@url.php';
 include_once '@path.php';
