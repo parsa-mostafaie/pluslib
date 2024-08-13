@@ -15,12 +15,12 @@ trait HasFilteredAttributes
   protected $fillable = [];
 
   /**
-   * Filters Changes using $fillable and $guardeds (IN FUTURE)
+   * Filters using $fillable and $guardeds (IN FUTURE)
    *
    *  @return array
    */
-  protected function _filtered_changes()
+  protected function _filter($arr = [])
   {
-    return Arr::only($this->_changes(), $this->fillable);
+    return Arr::only($arr, $this->fillable);
   }
 }

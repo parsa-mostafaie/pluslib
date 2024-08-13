@@ -111,4 +111,20 @@ trait HasAttributes
     $field = $this->_getFieldName($field);
     return $this->_mergedProps()[$field] ?? null;
   }
+
+  /**
+   * Fills (Mass Assign) Model Using Attributes
+   * @param array $attributes
+   * @return static $this
+   */
+  public function fill($attributes)
+  {
+    $filtered = $this->_filter($attributes);
+
+    foreach ($filtered as $n => $v) {
+      $this->$n = $v;
+    }
+
+    return $this;
+  }
 }
