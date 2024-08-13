@@ -60,6 +60,22 @@ class Select extends BaseSelect
       $instance->save();
     });
   }
+
+  /**
+   * Get the first record matching the attributes. If the record is not found, create it.
+   *
+   * @param  array  $attributes
+   * @param  array  $values
+   * @return BaseModel
+   */
+  public function firstOrCreate(array $attributes = [], array $values = [])
+  {
+    if (!is_null($instance = (clone $this)->where($attributes)->first())) {
+      return $instance;
+    }
+
+    return $this->create(array_merge($attributes, $values));
+  }
   public function newModelInstance($attributes): BaseModel
   {
     return (new $this->model)->fill($attributes);
