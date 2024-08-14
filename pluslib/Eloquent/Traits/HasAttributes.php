@@ -29,15 +29,6 @@ trait HasAttributes
   protected $_magicProperties = array();
 
   /* Methods */
-  /**
-   * Apply changes to data
-   * @return array
-   */
-  protected function _mergedAttributes()
-  {
-    return array_merge($this->_data, $this->_magicProperties);
-  }
-
   protected function _changes()
   {
     $data = $this->_data;
@@ -93,7 +84,7 @@ trait HasAttributes
    */
   public function changed()
   {
-    return $this->_mergedAttributes() !== $this->_data;
+    return $this->_magicProperties !== $this->_data;
   }
 
   /**
@@ -128,8 +119,8 @@ trait HasAttributes
 
     $attribute = $this->_getFieldName($attribute);
 
-    if (isset($this->_mergedAttributes()[$attribute])) {
-      return $this->_mergedAttributes()[$attribute] ?? null;
+    if (isset($this->_magicProperties[$attribute])) {
+      return $this->_magicProperties[$attribute] ?? null;
     }
 
     if ($this->hasAccessor($attribute)) {

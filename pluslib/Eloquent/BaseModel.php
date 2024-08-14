@@ -442,6 +442,8 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
       $this->loaded = true;
     }
 
+    $this->_magicProperties = $this->_data;
+
     $this->eagerLoads();
 
     $this->_postload($this->loaded);

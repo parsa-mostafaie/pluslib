@@ -38,7 +38,7 @@ trait HasTranslation
   {
     $output = [];
 
-    foreach ($this->_mergedAttributes() as $key => $value) {
+    foreach ($this->_magicProperties as $key => $value) {
       if (!$this->is_hidden($key) && !$withoutReals) {
         $output[$key] = $value;
       }
