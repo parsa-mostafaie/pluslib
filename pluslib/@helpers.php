@@ -224,21 +224,34 @@ function minify_html($buffer)
   return $buffer;
 }
 
-if(!function_exists('tap')){
-  function tap($value, $callback){
+if (!function_exists('tap')) {
+  function tap($value, $callback)
+  {
     $callback($value);
 
     return $value;
   }
 }
 
-if(!function_exists('pascalcase')){
-  function pascalcase($str){
-    $sep = '-_ \t\r';
+if (!function_exists('pascalcase')) {
+  function pascalcase($str)
+  {
+    $sep = '-_';
 
     $str = ucwords($str, $sep);
 
     return str_replace(str_split($sep), '', $str);
+  }
+}
+
+if (!function_exists('camelcase')) {
+  function camelcase($str)
+  {
+    $sep = '-_';
+
+    $str = ucwords($str, $sep);
+
+    return lcfirst(str_replace(str_split($sep), '', $str));
   }
 }
 
