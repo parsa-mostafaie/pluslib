@@ -1,0 +1,17 @@
+{
+  "name": "parsa/pluslib",
+  "description": "Simple, Object Oriented, Secure, Compatible",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "files": ["init.php"]
+  },
+  "authors": [
+    {
+      "name": "Parsa Mostafaie",
+      "email": "pmostafaie1390@gmail.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {}
+}
