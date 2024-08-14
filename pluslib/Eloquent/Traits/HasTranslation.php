@@ -39,14 +39,15 @@ trait HasTranslation
     $output = [];
 
     foreach ($this->_mergedAttributes() as $key => $value) {
-      if (!$this->is_hidden($key)) {
-        $withoutReals || ($output[$key] = $value);
+      if (!$this->is_hidden($key) && !$withoutReals) {
+        $output[$key] = $value;
+      }
 
-        $aliases = array_keys($this->translation, $key);
+      $aliases = array_keys($this->translation, $key);
 
-        foreach ($aliases as $alias) {
+      foreach ($aliases as $alias) {
+        if (!$this->is_hidden($alias))
           $output[$alias] = $value;
-        }
       }
     }
 
