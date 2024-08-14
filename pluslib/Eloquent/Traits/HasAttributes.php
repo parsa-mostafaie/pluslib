@@ -3,6 +3,9 @@ namespace pluslib\Eloquent\Traits;
 
 use pluslib\Collections\Arr;
 use pluslib\Database\Expression;
+use ReflectionMethod;
+use ReflectionNamedType;
+use pluslib\Eloquent\Attribute;
 
 defined('ABSPATH') || exit;
 
@@ -15,6 +18,13 @@ trait HasAttributes
    * @var array
    */
   protected $defaultData = array();
+
+  /**
+   * Cache for attribute Mutators
+   * 
+   * @var array
+   */
+  protected static $attributeMutatorCache = [];
 
   /**
    * The objects attributes
@@ -99,6 +109,10 @@ trait HasAttributes
       throw new \Exception("Setting field `$field` is not allowed in Models of type " . static::class);
     }
 
+    if ($this->hasSetMutator($field)) {
+      return $this->getAttributeMutator($field)->set($value);
+    }
+
     $this->_magicProperties[$field] = $value;
 
     return $this;
@@ -113,7 +127,7 @@ trait HasAttributes
    */
   public function getAttribute($attribute)
   {
-    if(!$attribute){
+    if (!$attribute) {
       return null;
     }
 
@@ -121,6 +135,10 @@ trait HasAttributes
 
     if (isset($this->_magicProperties[$attribute])) {
       return $this->_magicProperties[$attribute] ?? null;
+    }
+
+    if ($this->hasGetMutator($attribute)) {
+      return $this->getAttributeMutator($attribute)->get();
     }
 
     if ($this->hasAccessor($attribute)) {
@@ -171,5 +189,49 @@ trait HasAttributes
     $this->$attribute = expr(escape_col($attribute) . " - $amount");
 
     return $this;
+  }
+
+  public function hasAttributeMutator($key, $echo=false)
+  {
+    if (isset(static::$attributeMutatorCache[get_class($this)][$key])) {
+      return static::$attributeMutatorCache[get_class($this)][$key];
+    }
+
+    if (!method_exists($this, $method = camelcase($key))) {
+      return static::$attributeMutatorCache[get_class($this)][$key] = false;
+    }
+
+    $returnType = (new ReflectionMethod($this, $method))->getReturnType();
+
+    return static::$attributeMutatorCache[get_class($this)][$key] =
+      $returnType instanceof ReflectionNamedType &&
+      $returnType->getName() === Attribute::class;
+  }
+
+  public function getAttributeMutator($key): ?Attribute
+  {
+    if (!$this->hasAttributeMutator($key)) {
+      return null;
+    }
+
+    return $this->$key();
+  }
+
+  public function hasSetMutator($key)
+  {
+    if (!$this->hasAttributeMutator($key)) {
+      return false;
+    }
+
+    return $this->getAttributeMutator($key)->hasSetter();
+  }
+
+  public function hasGetMutator($key)
+  {
+    if (!$this->hasAttributeMutator($key)) {
+      return false;
+    }
+
+    return $this->getAttributeMutator($key)->hasGetter();
   }
 }

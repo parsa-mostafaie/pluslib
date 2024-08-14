@@ -3,6 +3,7 @@ namespace pluslib\App\Models;
 
 defined('ABSPATH') || exit;
 
+use pluslib\Eloquent\Attribute;
 use pluslib\Eloquent\BaseModel;
 
 class User extends BaseModel
@@ -30,13 +31,8 @@ class User extends BaseModel
     );
   }
 
-  /**
-   * Fullname of user
-   * 
-   * @return string
-   */
-  function fullname()
+  function fullname(): Attribute
   {
-    return $this->firstname . " " . $this->lastname;
+    return Attribute::make(get: fn() => $this->firstname . ' ' . $this->lastname);
   }
 }
