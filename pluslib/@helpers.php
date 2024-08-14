@@ -232,6 +232,16 @@ if(!function_exists('tap')){
   }
 }
 
+if(!function_exists('pascalcase')){
+  function pascalcase($str){
+    $sep = '-_ \t\r';
+
+    $str = ucwords($str, $sep);
+
+    return str_replace(str_split($sep), '', $str);
+  }
+}
+
 include_once '@info.php';
 include_once '@url.php';
 include_once '@path.php';
