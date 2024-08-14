@@ -6,7 +6,7 @@ defined('ABSPATH') || exit;
 trait HasAppends
 {
   /**
-   * dynamic Attributes that should be included in toArray's result
+   * Attributes that should be included in toArray's result
    * 
    * @var array
    */
@@ -26,7 +26,7 @@ trait HasAppends
         $name = $fn;
       }
 
-      $result[$name] = $this->$fn();
+      $result[$name] = $this->$fn;
     }
 
     return $result;
