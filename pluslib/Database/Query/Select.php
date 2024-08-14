@@ -123,6 +123,11 @@ class Select
   {
     return $this->alsoSelect(array_map('expr', wrap($cols)));
   }
+  public function onlySelect($select)
+  {
+    $this->cols = [];
+    return $this->alsoSelect($select);
+  }
 
   function pagination($per_page, $page, $params = [])
   {
