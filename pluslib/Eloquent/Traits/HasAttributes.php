@@ -8,6 +8,8 @@ defined('ABSPATH') || exit;
 
 trait HasAttributes
 {
+  use HasAccessors;
+
   /**
    * Default data for a model instance that not loaded from database
    * @var array
@@ -122,11 +124,15 @@ trait HasAttributes
   {
     $attribute = $this->_getFieldName($attribute);
 
-    if (!isset($this->_mergedAttributes()[$attribute])) {
-      return $this->loadRelation($attribute);
+    if (isset($this->_mergedAttributes()[$attribute])) {
+      return $this->_mergedAttributes()[$attribute] ?? null;
     }
 
-    return $this->_mergedAttributes()[$attribute] ?? null;
+    if ($this->hasAccessor($attribute)) {
+      return $this->callAccessor($attribute);
+    }
+
+    return $this->loadRelation($attribute);
   }
 
   /**

@@ -408,7 +408,12 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    */
   public function toArray()
   {
-    $arr = array_merge($this->translationsToArray(false), $this->_related, $this->appendsToArray());
+    $arr = array_merge(
+      $this->translationsToArray(false),
+      $this->_related, 
+      $this->appendsToArray(),
+      $this->accessorsToArray(),
+    );
 
     return $this->_postarray($arr);
   }
