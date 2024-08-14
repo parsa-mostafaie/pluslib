@@ -51,7 +51,10 @@ class Select extends BaseSelect
   public function getArray($params = [])
   {
     return array_map(function ($v) {
-      return $this->model->newFromArray($v);
+      return tap(
+        $this->model->newFromArray($v),
+        fn($model) => $model->loadRelations($this->with)
+      );
     }, parent::getArray($params));
   }
 
