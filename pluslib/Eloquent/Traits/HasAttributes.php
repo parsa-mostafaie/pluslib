@@ -122,6 +122,10 @@ trait HasAttributes
    */
   public function getAttribute($attribute)
   {
+    if(!$attribute){
+      return null;
+    }
+
     $attribute = $this->_getFieldName($attribute);
 
     if (isset($this->_mergedAttributes()[$attribute])) {
