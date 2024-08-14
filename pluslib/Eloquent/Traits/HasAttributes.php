@@ -31,7 +31,7 @@ trait HasAttributes
    * Apply changes to data
    * @return array
    */
-  protected function _mergedProps()
+  protected function _mergedAttributes()
   {
     return array_merge($this->_data, $this->_magicProperties);
   }
@@ -52,7 +52,7 @@ trait HasAttributes
    * Escapes keys/values of magic properties array
    * @return array       result of the load
    */
-  protected function _escapedMagicProps()
+  protected function _escapedAttributes()
   {
     $props = $this->_changes();
 
@@ -68,7 +68,7 @@ trait HasAttributes
    * Returns Original (From db) Value of a field (= attribute = prop = data)
    * @return mixed
    */
-  public function _getOriginal($field)
+  public function getOriginal($field)
   {
     $field = $this->_getFieldName($field);
     return $this->_data[$field] ?? null;
@@ -79,9 +79,9 @@ trait HasAttributes
    * @param  string  $name field name
    * @return boolean       result
    */
-  public function _hasProperty($name)
+  public function hasAttribute($name)
   {
-    return array_key_exists($this->_getFieldName($name), $this->_mergedProps());
+    return $this->$name !== null;
   }
 
   /**
@@ -91,14 +91,14 @@ trait HasAttributes
    */
   public function changed()
   {
-    return $this->_mergedProps() !== $this->_data;
+    return $this->_mergedAttributes() !== $this->_data;
   }
 
   /**
    * Sets a field
    * @return static $this
    */
-  public function _setField($field, $value)
+  public function setAttribute($field, $value)
   {
     $field = $this->_getFieldName($field);
 
@@ -113,19 +113,25 @@ trait HasAttributes
 
 
   /**
-   * Returns Value of a field (= attribute = prop = data)
+   * Returns Value of a attribute
    * 
-   * @param string $field
+   * @param string $attribute
    * @return mixed
    */
-  public function _get($field)
+  public function getAttribute($attribute)
   {
-    $field = $this->_getFieldName($field);
-    return $this->_mergedProps()[$field] ?? null;
+    $attribute = $this->_getFieldName($attribute);
+
+    if (!isset($this->_mergedAttributes()[$attribute])) {
+      return $this->loadRelation($attribute);
+    }
+
+    return $this->_mergedAttributes()[$attribute] ?? null;
   }
 
   /**
    * Fills (Mass Assign) Model Using Attributes
+   * 
    * @param array $attributes
    * @return static $this
    */

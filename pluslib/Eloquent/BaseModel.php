@@ -261,7 +261,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
       return false; // cancel update;
     }
 
-    [$mp, $data] = $this->_escapedMagicProps();
+    [$mp, $data] = $this->_escapedAttributes();
 
     $query = static::_getTable()->UPDATE($this->id_field . ' = ?')->fromArray($mp);
     $data[] = $this->_oid();
@@ -289,7 +289,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
 
     $this->_precreate();
 
-    [$mp, $data] = $this->_escapedMagicProps();
+    [$mp, $data] = $this->_escapedAttributes();
 
     $result = static::_getTable()->INSERT([])->fromArray($mp)->Run($data);
 
@@ -328,7 +328,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    */
   public function __isset($name)
   {
-    return $this->_hasProperty($name);
+    return $this->hasAttribute($name);
   }
 
   /**
@@ -339,59 +339,23 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    */
   public function __call($method, $parameters)
   {
-    //for this to be a setSomething or getSomething, the name has to have
-    //at least 4 chars as in, setX or getX
-    if (strlen($method) < 4) {
-      return $this->_newSelect()->$method(...$parameters);
-    }
-
-    //take first 3 chars to determine if this is a get or set
-    $prefix = substr($method, 0, 3);
-
-    //take last chars !(and convert to lower) to get required property
-    $suffix = /*strtolower*/ (substr($method, 3));
-
-    $suffix = $this->_getFieldName($suffix);
-
-    if ($prefix == 'get') {
-      if ($this->_hasProperty($suffix) && count($parameters) == 0) {
-        return $this->_get($suffix);
-      } else {
-        throw new Exception('Getter does not exist (' . $suffix . ')');
-      }
-    }
-
-    if ($prefix == 'set') {
-      if (count($parameters) < 3) {
-        $this->_setField($suffix, $parameters[0]);
-        return $this;
-      } else {
-        throw new Exception('Setter does not exist');
-      }
-    }
-
     return $this->_newSelect()->$method(...$parameters);
   }
 
   /**
    * handles the magic setting of parameters
    */
-  public function __set($property, $value)
+  public function __set($attribute, $value)
   {
-
-    $this->_setField($property, $value);
+    $this->setAttribute($attribute, $value);
   }
 
   /**
    * handles the magic getting of parameters
    */
-  public function __get($property)
+  public function __get($attribute)
   {
-    $property = $this->_getFieldName($property);
-    if (!isset($this->_mergedProps()[$property])) {
-      return $this->loadRelation($property);
-    }
-    return $this->_get($property);
+    return $this->getAttribute($attribute);
   }
 
   /**
@@ -411,7 +375,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
    */
   public function _oid()
   {
-    return $this->_getOriginal($this->id_field);
+    return $this->getOriginal($this->id_field);
   }
 
   //! Relations
@@ -484,7 +448,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   // Array Access
   function offsetExists(mixed $offset): bool
   {
-    return $this->_hasProperty($offset);
+    return $this->hasAttribute($offset);
   }
 
   function offsetGet(mixed $offset): mixed
@@ -494,7 +458,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
 
   function offsetSet(mixed $offset, mixed $value): void
   {
-    $this->_setField($offset, $value);
+    $this->$offset = $value;
   }
 
   function offsetUnset(mixed $offset): void
