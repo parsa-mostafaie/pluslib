@@ -58,9 +58,4 @@ class DB extends PDO
       throw $exception;
     }
   }
-
-  public static function __callStatic($method, $args)
-  {
-    return db()->$method(...$args);
-  }
 }
