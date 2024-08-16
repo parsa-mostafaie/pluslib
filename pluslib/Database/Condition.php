@@ -52,23 +52,15 @@ class Condition
 
   public static function TextSearch($searchInput, ...$cols)
   {
-    $OBJ = new static();
-    $qm = 0; //? question Mark Count
-    $sval = ''; //? What to Like
+    $instance = new static(static::False);
 
-    if ($searchInput && $searchInput != '') {
-      $sval = '%' . $searchInput . '%';
-      $COBJ = new static(static::False);
-      foreach ($cols as $col) {
-        $COBJ->OR(" $col LIKE ? ");
-      }
-      $OBJ->AND($COBJ->Generate());
-      $qm = count($cols);
+    foreach ($cols as $col) {
+      $instance->or($col, 'like', $searchInput);
     }
-
-    return [$OBJ->Generate(), array_fill(0, $qm, $sval)];
+    
+    return $instance;
   }
-  private string $cond;
+  protected string $cond;
   public static function Objectify($val)
   {
     if ($val instanceof static) {
