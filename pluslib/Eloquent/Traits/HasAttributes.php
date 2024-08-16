@@ -214,7 +214,7 @@ trait HasAttributes
       return null;
     }
 
-    return $this->$key();
+    return $this->{camelcase($key)}();
   }
 
   public function hasSetMutator($key)
