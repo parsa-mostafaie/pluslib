@@ -11,10 +11,12 @@ class Select
 {
   use Conditional;
 
-  private $joins = [], $groupby = null, $having = null, $order
+  protected $joins = [], $groupby = null, $having = null, $order
     = [], $lim = null, $p = [], $offset = null;
 
-  private array $cols = [];
+  protected array $cols = [];
+
+  protected $default = null;
 
   public function __construct(
     public readonly Table $table,
@@ -173,13 +175,13 @@ class Select
   public function first($params = [])
   {
     $res = $this->getArray($params);
-    return reset($res) ?: null;
+    return reset($res) ?: $this->default;
   }
 
   public function last($params = [])
   {
     $res = $this->getArray($params);
-    return end($res) ?: null;
+    return end($res) ?: $this->default;
   }
 
   public function count($params = [])
@@ -202,5 +204,11 @@ class Select
     $query = "SELECT $cols FROM $tbl $join $cond $gb $having $ob $lm";
     
     return $query;
+  }
+
+  public function withDefault($value){
+    $this->default = $value;
+
+    return $this;
   }
 }

@@ -86,7 +86,7 @@ trait HasRelations
     $foreign_key ??= strtolower(basename($class) . '_' . $tmp->id_field);
     $owner_key ??= strtolower($tmp->id_field);
 
-    return (new $class)->where($owner_key, $this->$foreign_key)->take(1);
+    return $tmp->where($owner_key, $this->$foreign_key)->take(1);
   }
 
   /**
