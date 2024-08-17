@@ -11,8 +11,6 @@ trait HasEloquentEvents
    */
   protected function _precreate()
   {
-    $this->_setCreateTimestamp();
-    $this->_setUpdateTimestamp();
   }
 
   /**
@@ -28,7 +26,6 @@ trait HasEloquentEvents
    */
   protected function _preupdate()
   {
-    $this->_setUpdateTimestamp();
   }
 
   /**

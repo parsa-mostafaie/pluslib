@@ -261,6 +261,8 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
       return false; // cancel update;
     }
 
+    $this->_setUpdateTimestamp();
+
     [$mp, $data] = $this->_escapedAttributes();
 
     $query = static::_getTable()->UPDATE($this->id_field . ' = ?')->fromArray($mp);
@@ -288,6 +290,8 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
     }
 
     $this->_precreate();
+
+    $this->_setTimestamps();
 
     [$mp, $data] = $this->_escapedAttributes();
 
