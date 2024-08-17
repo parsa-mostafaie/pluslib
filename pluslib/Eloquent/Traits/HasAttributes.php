@@ -1,6 +1,7 @@
 <?php
 namespace pluslib\Eloquent\Traits;
 
+use Closure;
 use pluslib\Collections\Arr;
 use pluslib\Database\Expression;
 use ReflectionMethod;
@@ -151,11 +152,16 @@ trait HasAttributes
   /**
    * Fills (Mass Assign) Model Using Attributes
    * 
-   * @param array $attributes
+   * @param array|Closure $attributes
    * @return static $this
    */
   public function fill($attributes)
   {
+    if ($attributes instanceof Closure) {
+      $attributes($this);
+      return $this;
+    }
+
     $filtered = $this->_filter($attributes);
 
     foreach ($filtered as $n => $v) {
@@ -191,7 +197,7 @@ trait HasAttributes
     return $this;
   }
 
-  public function hasAttributeMutator($key, $echo=false)
+  public function hasAttributeMutator($key, $echo = false)
   {
     if (isset(static::$attributeMutatorCache[get_class($this)][$key])) {
       return static::$attributeMutatorCache[get_class($this)][$key];
