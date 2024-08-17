@@ -83,7 +83,7 @@ function number_format_short($n, $precision = 1)
   return $n_format . $suffix;
 }
 
-if (!function_exists('hl_export')) {
+if (!function_exists('hl_dump')) {
   // Combined of the highlight_string and var_export
   function hl_dump()
   {
