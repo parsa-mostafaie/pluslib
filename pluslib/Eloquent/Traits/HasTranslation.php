@@ -39,15 +39,14 @@ trait HasTranslation
     $output = [];
 
     foreach ($this->_magicProperties as $key => $value) {
-      if (!$this->is_hidden($key) && !$withoutReals) {
+      if (!$withoutReals) {
         $output[$key] = $value;
       }
 
       $aliases = array_keys($this->translation, $key);
 
       foreach ($aliases as $alias) {
-        if (!$this->is_hidden($alias))
-          $output[$alias] = $value;
+        $output[$alias] = $value;
       }
     }
 
