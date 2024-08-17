@@ -40,15 +40,13 @@ trait HasRelations
         list($relation, $class, $field) = $this->relationships[$property];
         switch ($relation) {
           case self::BELONGS_TO:
-            $this->_related[$property] = new $class($this->$field);
+            $this->_related[$property] = $this->belongsTo($class, $field)->first();
             break;
           case self::HAS_MANY:
-            $tmp = new $class;
-            $this->_related[$property] = $tmp->where($field, expr('?'))->get([$this->_oid()]);
+            $this->_related[$property] = $this->hasMany($class, $field)->get();
             break;
           case self::HAS_ONE:
-            $tmp = new $class;
-            $this->_related[$property] = $tmp->where($field, expr('?'))->take(1)->first();
+            $this->_related[$property] = $this->hasOne($class, $field)->first();
             break;
         }
       }
@@ -74,6 +72,51 @@ trait HasRelations
     }
 
     return $res;
+  }
+
+  /**
+   * Returns an belongs-to relations select query
+   * 
+   * @return \pluslib\Eloquent\Select
+   */
+  public function belongsTo($class, $foreign_key = null, $owner_key = null)
+  {
+    $tmp = new $class;
+
+    $foreign_key ??= strtolower(basename($class) . '_' . $tmp->id_field);
+    $owner_key ??= strtolower($tmp->id_field);
+
+    return (new $class)->where($owner_key, $this->$foreign_key)->take(1);
+  }
+
+  /**
+   * Returns an has-one relations select query
+   * 
+   * @return \pluslib\Eloquent\Select
+   */
+  public function hasOne($class, $foreign_key = null, $local_key = null)
+  {
+    return $this->hasOneOrMany($class, $foreign_key, $local_key)->take(1);
+  }
+
+  /**
+   * Returns an has-many relations select query
+   * 
+   * @return \pluslib\Eloquent\Select
+   */
+  public function hasMany($class, $foreign_key = null, $local_key = null)
+  {
+    return $this->hasOneOrMany($class, $foreign_key, $local_key);
+  }
+
+  public function hasOneOrMany($class, $foreign_key = null, $local_key = null)
+  {
+    $tmp = new $class;
+
+    $foreign_key ??= strtolower(basename(static::class) . '_' . $this->id_field);
+    $local_key ??= $this->id_field;
+
+    return $tmp->where($foreign_key, $this->$local_key);
   }
 
 
