@@ -8,14 +8,11 @@ date_default_timezone_set('Asia/Tehran');
 use pluslib\Database\DB;
 use pluslib\Database\Expression;
 
+use pluslib\Support\Facades\DB as dbFacade;
+
 function db(...$args)
 {
-  static $db;
-  if (!isset($db) || count($args) > 0) {
-    // $db = new PDO('mysql:dbname=plus;charset=utf8', 'root', ''); // *
-    $db = new DB(...$args);
-  }
-  return $db;
+  return dbFacade::singleton(...$args);
 }
 
 //! Only for strings search

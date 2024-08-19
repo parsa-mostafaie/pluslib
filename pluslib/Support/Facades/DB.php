@@ -1,10 +1,9 @@
 <?php
 namespace pluslib\Support\Facades;
 
-class DB
+use pluslib\Database\DB as _DB;
+
+class DB extends Facade
 {
-  public static function __callStatic($method, $args)
-  {
-    return db()->$method(...$args);
-  }
+  protected static $class = _DB::class;
 }
