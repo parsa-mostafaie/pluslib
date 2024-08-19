@@ -9,7 +9,8 @@ export function ajaxContentLoad(
   $follow = true
 ) {
   let __args__ = [res, rej, allway, dyn_data, $follow];
-  document.querySelectorAll($selector).forEach((container) => {
+
+  [...document.querySelectorAll($selector)].forEach((container) => {
     let $contents = container.querySelectorAll("[ajax-content]");
 
     ajaxContentReLoads(container, __args__);
@@ -74,8 +75,6 @@ export function ajaxContentLoad(
   });
 }
 
-window.addEventListener("load", () => ajaxContentLoad());
-
 window.ajaxContentLoad = ajaxContentLoad;
 
 function addJSX($html, $content) {
@@ -119,3 +118,5 @@ function ajaxContentReLoads(container = undefined, args = undefined) {
 }
 
 window.ajaxContentReLoads = ajaxContentReLoads;
+
+window.addEventListener("load", ()=>ajaxContentLoad());

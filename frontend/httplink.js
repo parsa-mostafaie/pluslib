@@ -42,4 +42,4 @@ export function httplinksInit(
 
 window.httplinksInit = httplinksInit;
 
-httplinksInit();
+window.addEventListener("load", () => httplinksInit());
