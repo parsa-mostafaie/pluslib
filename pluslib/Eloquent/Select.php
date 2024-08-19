@@ -111,7 +111,8 @@ class Select extends BaseSelect
     return $this->model->newInstance($attributes);
   }
 
-  public function withDefault($attributes){
+  public function withDefault($attributes = [])
+  {
     $this->default = $this->newModelInstance($attributes);
 
     return $this;

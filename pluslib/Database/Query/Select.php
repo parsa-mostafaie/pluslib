@@ -202,11 +202,12 @@ class Select
     $tbl = $this->table->name();
 
     $query = "SELECT $cols FROM $tbl $join $cond $gb $having $ob $lm";
-    
+
     return $query;
   }
 
-  public function withDefault($value){
+  public function withDefault($value = null)
+  {
     $this->default = $value;
 
     return $this;
