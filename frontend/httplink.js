@@ -9,7 +9,7 @@ export function httplinksInit(
   dyn_data = (el) => ({}),
   $follow = true
 ) {
-  document.querySelectorAll(`:is(${$selector}):not(hl-eh)`).forEach((el) => {
+  document.querySelectorAll(`:is(${$selector}):not([hl-eh])`).forEach((el) => {
     let $method = el.getAttribute("http-method") ?? "GET";
     let $lnk = el.getAttribute("href") ?? "./";
 
