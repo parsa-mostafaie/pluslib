@@ -124,6 +124,19 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   }
 
   /**
+   * Load a record from the database with id
+   * 
+   * @throws ModelNotFoundException
+   * 
+   * @param  $id id of record
+   * @return static       result of the search
+   */
+  public static function findOrFail($id)
+  {
+    return tap(static::find($id), fn($v) => $v || (throw new ModelNotFoundException('Model Of Type ' . static::class . ' Was Not Found!')));
+  }
+
+  /**
    * alias for all()
    * 
    * @return \pluslib\Collections\Collection  array of objects

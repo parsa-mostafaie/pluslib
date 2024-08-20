@@ -1,4 +1,5 @@
 <?php
+use pluslib\Eloquent\ModelNotFoundException;
 
 defined('ABSPATH') || exit;
 
@@ -257,6 +258,9 @@ if (!function_exists('camelcase')) {
 
 function pls_exception_handler(Throwable $throwable)
 {
+  if ($throwable instanceof ModelNotFoundException) {
+    _404_();
+  }
   $pre = "color: whitesmoke; background-color: blue; font-family: Consolas; padding: 5px; border-radius: 3px";
   $pre_ = "color: white; background-color: darkblue; font-family: Consolas; padding: 5px; border-radius: 3px";
   ?>
