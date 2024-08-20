@@ -7,8 +7,8 @@ use pluslib\Collections\Collection;
 //NOTE: THIS IS ALWAYS PUBLIC
 function array_any(array $array, callable $fn)
 {
-  foreach ($array as $value) {
-    if ($fn($value)) {
+  foreach ($array as $i => $value) {
+    if ($fn($value, $i)) {
       return true;
     }
   }
@@ -17,8 +17,8 @@ function array_any(array $array, callable $fn)
 
 function array_every(array $array, callable $fn)
 {
-  foreach ($array as $value) {
-    if (!$fn($value)) {
+  foreach ($array as $i => $value) {
+    if (!$fn($value, $i)) {
       return false;
     }
   }
