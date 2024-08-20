@@ -17,6 +17,7 @@ use pluslib\Eloquent\Traits\HasEloquentEvents;
 use pluslib\Eloquent\Traits\HasTimestamps;
 use pluslib\Eloquent\Traits\HasTranslation;
 use pluslib\Eloquent\Traits\HidesAttributes;
+use pluslib\Router\RouteParameterable;
 
 defined('ABSPATH') || exit;
 /**
@@ -28,7 +29,7 @@ defined('ABSPATH') || exit;
 /**
  * A Base database model to extend with tables
  */
-abstract class BaseModel implements ArrayAccess, JsonSerializable
+abstract class BaseModel implements ArrayAccess, JsonSerializable, RouteParameterable
 {
   use
     HasAttributes,
@@ -134,6 +135,11 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable
   public static function findOrFail($id)
   {
     return tap(static::find($id), fn($v) => $v || (throw new ModelNotFoundException('Model Of Type ' . static::class . ' Was Not Found!')));
+  }
+
+  public static function fromRoute($id): static
+  {
+    return static::findOrFail($id);
   }
 
   /**

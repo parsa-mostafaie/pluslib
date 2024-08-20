@@ -1,6 +1,9 @@
 <?php
 namespace pluslib\Router;
 
+use InvalidArgumentException;
+use ReflectionFunction;
+
 class Router
 {
   protected $routes = [];
@@ -117,7 +120,7 @@ class Router
   public function run()
   {
     if (($res = $this->compareRoutesAndURL())) {
-      $res['route']['callback']($res['params']);
+      $this->callFunctionWithArray($res['route']['callback'], $res['params']);
     } else {
       _404_();
     }
@@ -128,6 +131,49 @@ class Router
     $this->routes[] = ['path' => $route, 'callback' => $callback, 'method' => $method];
 
     return $this;
+  }
+
+
+  function callFunctionWithArray($f, $params)
+  {
+    $reflection = new ReflectionFunction($f);
+    $parameters = $reflection->getParameters();
+
+    $args = [];
+
+    foreach ($parameters as $parameter) {
+      $paramName = $parameter->getName();
+
+      // Check if the parameter exists in the array
+      if (!array_key_exists($paramName, $params)) {
+        // Check if the parameter is optional or has a default value
+        if (!$parameter->isOptional()) {
+          throw new InvalidArgumentException("Missing parameter: $paramName");
+        }
+        continue; // If the parameter is optional, continue
+      }
+
+      $paramType = $parameter->getType();
+
+      if ($paramType && !$paramType->isBuiltin()) {
+        // If the parameter type is a class
+        $className = $paramType->getName();
+        if ((new $className) instanceof RouteParameterable)
+          $args[] = $className::fromRoute($params[$paramName]);
+        else
+          $args[] = new $className($params[$paramName]);
+      } elseif ($paramType && $paramType->isBuiltin()) {
+        // If the parameter type is a built-in type
+        settype($params[$paramName], (string) $paramType);
+        $args[] = $params[$paramName];
+      } else {
+        // If the parameter type is not defined, treat it as a generic type
+        $args[] = $params[$paramName];
+      }
+    }
+
+    // Call the function with the specified arguments
+    return $f(...$args);
   }
 
   // methods
