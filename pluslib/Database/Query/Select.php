@@ -11,12 +11,10 @@ class Select
 {
   use Conditional;
 
-  protected $joins = [], $groupby = null, $having = null, $order
+  private $joins = [], $groupby = null, $having = null, $order
     = [], $lim = null, $p = [], $offset = null;
 
-  protected array $cols = [];
-
-  protected $default = null;
+  private array $cols = [];
 
   public function __construct(
     public readonly Table $table,
@@ -140,6 +138,7 @@ class Select
     $count = $this->count($params);
 
     // Pagination Main
+    $per_page = max(intval($per_page), 1);
     $page = intval($page);
 
     $pages = ceil($count / $per_page);
@@ -157,15 +156,14 @@ class Select
     $copy = clone $this;
 
     $res_q = $copy->LIMIT($per_page, $off);
-    $mn = $res_q->Run($params);
+
+    $mn = $res_q->get($params);
 
     return [
       'page_count' => $pages,
       'current' => $page,
-      'res' => $mn,
-      'res_q' => $res_q,
-      'result' => $res_q->get($params),
-      'result_count' => $res_q->count($params),
+      'result' => $mn,
+      'result_count' => $mn->count(),
       'count' => $count,
       'offset' => $off
     ];
@@ -175,13 +173,13 @@ class Select
   public function first($params = [])
   {
     $res = $this->getArray($params);
-    return reset($res) ?: $this->default;
+    return reset($res) ?: null;
   }
 
   public function last($params = [])
   {
     $res = $this->getArray($params);
-    return end($res) ?: $this->default;
+    return end($res) ?: null;
   }
 
   public function count($params = [])
@@ -204,12 +202,5 @@ class Select
     $query = "SELECT $cols FROM $tbl $join $cond $gb $having $ob $lm";
 
     return $query;
-  }
-
-  public function withDefault($value = null)
-  {
-    $this->default = $value;
-
-    return $this;
   }
 }
