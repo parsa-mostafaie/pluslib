@@ -1,8 +1,6 @@
 <?php
 defined('ABSPATH') || exit;
 
-use pluslib\Config;
-
 function uploadTemp_secure(
   $filepath,
   $max_size = 3145728,
@@ -31,7 +29,7 @@ function uploadTemp_secure(
   $filename = uniqid($prefix, true) . '_' . basename($filepath);
 
   $extension = $allowedTypes[$filetype];
-  $targetDirectory = etc_urlOfUpload('/' . Config::$uploadDirectory); // loc
+  $targetDirectory = etc_urlOfUpload('/' . app()->upload_dir); // loc
 
   $newFilepath = "$targetDirectory$filename.$extension";
 
@@ -39,7 +37,7 @@ function uploadTemp_secure(
     throw new Exception("Can't move file.", 500);
   }
 
-  return Config::$uploadDirectory . $filename . '.' . $extension;
+  return app()->upload_dir . $filename . '.' . $extension;
 }
 
 function uploadFile_secure(

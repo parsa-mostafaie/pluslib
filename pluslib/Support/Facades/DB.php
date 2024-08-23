@@ -5,5 +5,6 @@ use pluslib\Database\DB as _DB;
 
 class DB extends Facade
 {
-  protected static $class = _DB::class;
+  protected $class = _DB::class;
+  protected $accessor = 'db';
 }

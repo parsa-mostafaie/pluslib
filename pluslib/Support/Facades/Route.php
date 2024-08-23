@@ -5,5 +5,6 @@ use pluslib\Router\Router;
 
 class Route extends Facade
 {
-  protected static $class = Router::class;
+  protected $class = Router::class;
+  protected $accessor = 'route';
 }

@@ -31,7 +31,7 @@ function redirect($url, $back = false, $backURL = null, $gen = false, $status=30
 
 function API_ORIGIN_header()
 {
-  $accepted_origins = [www_url(''), ...pluslib\Config::$allowedOrigins];
+  $accepted_origins = [www_url(''), ...app()->friend_origins];
 
   if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $accepted_origins)) {
     header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);

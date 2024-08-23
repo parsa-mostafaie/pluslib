@@ -10,15 +10,6 @@
 
 const ABSPATH = __DIR__ . '/';
 
-function HOME_URL($set = null)
-{
-  static $hu = '';
-  if ($set) {
-    $hu = $set;
-  }
-  return $hu;
-}
-
 // AutoLoad: Fix #2
 include_once '__autoload.php';
 include_once 'pluslib/@helpers.php';

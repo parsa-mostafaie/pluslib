@@ -3,16 +3,25 @@ namespace pluslib\Support\Facades;
 
 class Facade
 {
-  protected static $class = "";
+  protected $class;
+  protected $accessor;
   protected static $singleton = [];
 
   public static function singleton(...$args)
   {
-    if (empty(static::$singleton[static::class])) {
-      static::$singleton[static::class] = new static::$class(...$args);
+    $class = (new static)->class;
+    $accessor = (new static)->accessor;
+
+    if (empty(static::$singleton[$accessor])) {
+      static::$singleton[$accessor] = new $class(...$args);
     }
 
-    return static::$singleton[static::class];
+    return static::$singleton[$accessor];
+  }
+
+  public static function singleton_of($accessor)
+  {
+    return static::$singleton[$accessor] ?? null;
   }
 
   public static function __callStatic($method, $args)

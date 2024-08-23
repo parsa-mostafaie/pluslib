@@ -5,5 +5,6 @@ use pluslib\HTTP\RestAPI;
 
 class Rest extends Facade
 {
-  protected static $class = RestAPI::class;
+  protected $class = RestAPI::class;
+  protected $accessor = 'rest';
 }
