@@ -14,6 +14,7 @@ class Application
   public $friend_origins = [];
   public $anti_xss_header = true;
   public $login_path;
+  public $assets = '/assets';
 
   public int $regenerate_session_request_counts = 100;
   public bool $session_fingerprint = true;

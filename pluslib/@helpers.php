@@ -301,7 +301,7 @@ if (!function_exists('join_paths')) {
 if (!function_exists('asset')) {
   function asset($path)
   {
-    return url(c_url(join_paths('/assets', $path)));
+    return url(c_url(join_paths(app()->assets, $path)));
   }
 }
 
