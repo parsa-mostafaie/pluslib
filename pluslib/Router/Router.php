@@ -20,12 +20,21 @@ class Router
       return '';
     }
 
-    return '/' . trim($url, '/');
+    return '/' . trim($url, '/') . '/';
   }
 
   public function getPath($path)
   {
-    return web_url(c_url(join_paths($this->base_path, $this->normalizeURL($path))));
+    return $this->normalizeURL(
+      web_url(
+        c_url(
+          join_paths(
+            $this->base_path,
+            $path
+          )
+        )
+      )
+    );
   }
 
   public function getURL()
@@ -72,9 +81,9 @@ class Router
 
     $urlParts = [];
 
-    if (!is_array($url)) {
-      $url ??= $this->getURL();
+    $url ??= $this->getURL();
 
+    if (!is_array($url)) {
       $urlParts = $this->getParts($url);
     } else {
       $urlParts = $url;
@@ -89,7 +98,7 @@ class Router
         if ($segment == '*' || $this->isOParamSegment($segment))
           return true;
 
-        if (!empty($urlParts[$i]))
+        if (isset($urlParts[$i]))
           return $segment === $urlParts[$i] || $this->isParamSegment($segment);
 
         return false;
@@ -110,7 +119,7 @@ class Router
   public function compareRoutesAndURL($url = null)
   {
     foreach ($this->routes as $name => $route) {
-      if (!request_method($route['method'])) {
+      if (!empty($route['method']) && !request_method($route['method'])) {
         continue;
       }
       if (($res = $this->compareRouteAndURL($route['path'], $url))['match']) {
@@ -182,6 +191,11 @@ class Router
 
   // methods
   protected $allowed_directs = ['get', 'post', 'delete', 'put', 'head'];
+
+  public function any($route, $callback, $named = null)
+  {
+    return $this->addRoute($route, $callback, null, $named);
+  }
 
   public function __call($method, $args)
   {
