@@ -14,15 +14,23 @@ class Router
     $this->base_path = $base_path;
     return $this;
   }
+  public function normalizeURL($url)
+  {
+    if ($url == '' || $url == '/') {
+      return '';
+    }
+
+    return '/' . trim($url, '/');
+  }
 
   public function getPath($path)
   {
-    return web_url(c_url($this->base_path . $path));
+    return web_url(c_url(join_paths($this->base_path, $this->normalizeURL($path))));
   }
 
   public function getURL()
   {
-    return web_url(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    return $this->normalizeURL(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
   }
 
   public function getParts($url)
@@ -66,10 +74,6 @@ class Router
 
     if (!is_array($url)) {
       $url ??= $this->getURL();
-
-      if (str_ends_with($url, '/')) {
-        $url = str_replace("/\/$/", '', $url);
-      }
 
       $urlParts = $this->getParts($url);
     } else {
@@ -128,7 +132,7 @@ class Router
 
   public function addRoute($route, $callback, $method = 'GET', $named = null)
   {
-    $this->routes[] = ['path' => $route, 'callback' => $callback, 'method' => $method];
+    $this->routes[] = ['path' => $this->normalizeURL($route), 'callback' => $callback, 'method' => $method];
 
     return $this;
   }
