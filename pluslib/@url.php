@@ -3,7 +3,7 @@ defined('ABSPATH') || exit;
 
 function c_url($url, $regularIt = true)
 {
-  return $regularIt ? regular_url(c_url($url, false)) : web_url(HOME_URL() . $url);
+  return $regularIt ? regular_url(c_url($url, false)) : web_url(join_paths(HOME_URL(), $url));
 }
 function web_url($url)
 {
@@ -29,7 +29,7 @@ function http_baseurl()
 
 function etc_url($url)
 {
-  return $_SERVER['DOCUMENT_ROOT'] . $url;
+  return join_paths($_SERVER['DOCUMENT_ROOT'], $url);
 }
 
 function www_url($url)
@@ -43,33 +43,6 @@ function form_processor_url($path, $dir = '/libs/custom/@form', $base = '')
   $full = $base . $dir . $path;
   return $full;
 }
-
-// function slugify($text, string $divider = '-')
-// {
-//   // replace non letter or digits by divider
-//   $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
-
-//   // transliterate
-//   $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-
-//   // remove unwanted characters
-//   $text = preg_replace('~[^-\w]+~', '', $text);
-
-//   // trim
-//   $text = trim($text, $divider);
-
-//   // remove duplicate divider
-//   $text = preg_replace('~-+~', $divider, $text);
-
-//   // lowercase
-//   $text = strtolower($text);
-
-//   if (empty($text)) {
-//     return 'n-a';
-//   }
-
-//   return $text;
-// }
 
 function slugify($string, $separator = '-')
 {
