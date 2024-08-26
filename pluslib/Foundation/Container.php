@@ -5,6 +5,7 @@ use ArrayAccess;
 use Closure;
 use Exception;
 use pluslib\Database\DB;
+use pluslib\HTTP\Response;
 use pluslib\HTTP\RestAPI;
 use pluslib\Support\Application;
 use pluslib\Router\Router as Route;

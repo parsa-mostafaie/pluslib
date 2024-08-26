@@ -2,6 +2,7 @@
 namespace pluslib\Router;
 
 use InvalidArgumentException;
+use pluslib\HTTP\Response;
 use ReflectionFunction;
 
 class Router
@@ -133,9 +134,9 @@ class Router
   public function run()
   {
     if (($res = $this->compareRoutesAndURL())) {
-      $this->callFunctionWithArray($res['route']['callback'], $res['params']);
+      Response::from($this->callFunctionWithArray($res['route']['callback'], $res['params']))->send();
     } else {
-      _404_();
+      response()->status(404)->send();
     }
   }
 
