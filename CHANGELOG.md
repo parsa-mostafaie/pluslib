@@ -4,7 +4,7 @@
 
 * Add Response Class
 * Implement Service Container
-* Cache in facades
+* Cache facades by getFacadeAccessor
 
 ## [v0.0.02](https://github.com/parsa-mostafaie/pluslib/compare/v0.0.01...v0.0.02) - 8/26/2024
 

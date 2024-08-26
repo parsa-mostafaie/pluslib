@@ -16,7 +16,7 @@ class Facade
 
   public static function resolveFacadeInstance(...$args)
   {
-    $key = static::class;
+    $key = static::getFacadeAccessor();
 
     if (isset(static::$resolvedInstances[$key])) {
       return static::$resolvedInstances[$key];
