@@ -2,9 +2,11 @@
 namespace pluslib\Support;
 
 use pluslib\Auth;
+use pluslib\Foundation\Container;
 use pluslib\Security\Security;
+use pluslib\Support\Facades\Facade;
 
-class Application
+class Application extends Container
 {
   public $basepath = '';
   public $use_sha = true;
@@ -66,14 +68,18 @@ class Application
     }
   }
 
-  function configure(...$args)
+  static function configure(...$args)
   {
+    $instance = (new static)->make('application');
+
     foreach ($args as $n => $v) {
-      if (property_exists($this, $n)) {
-        $this->$n = $v;
+      if (property_exists($instance, $n)) {
+        $instance->$n = $v;
       }
     }
 
-    return $this;
+    Facade::setFacadeApplication($instance);
+
+    return $instance;
   }
 }

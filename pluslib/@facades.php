@@ -9,7 +9,7 @@ function app($accessor = 'application')
     return Application::singleton();
   }
 
-  return Facade::singleton_of($accessor);
+  return Application::make($accessor);
 }
 
 function HOME_URL($set = null)
