@@ -5,9 +5,7 @@ use ArrayAccess;
 use Closure;
 use Exception;
 use pluslib\Database\DB;
-use pluslib\HTTP\Response;
 use pluslib\HTTP\RestAPI;
-use pluslib\Support\Application;
 use pluslib\Router\Router as Route;
 
 class Container implements ArrayAccess
@@ -69,7 +67,7 @@ class Container implements ArrayAccess
     $binding = &$this->bindings[$accessor];
 
     if (!is_array($binding)) {
-      $binding = $this->bind($accessor, $binding, true);
+      $binding = $this->bind($accessor, $binding);
     }
 
     return $binding;

@@ -6,11 +6,23 @@ use pluslib\Support\Application;
 class Facade
 {
   protected static $app;
+  protected static $resolvedInstances = [];
   protected $accessor;
 
   public static function singleton(...$args)
   {
-    return static::getApp()->make(static::getFacadeAccessor(), $args);
+    return static::resolveFacadeInstance(...$args);
+  }
+
+  public static function resolveFacadeInstance(...$args)
+  {
+    $key = static::class;
+
+    if (isset(static::$resolvedInstances[$key])) {
+      return static::$resolvedInstances[$key];
+    }
+
+    return static::$resolvedInstances[$key] = static::getApp()->make(static::getFacadeAccessor(), $args);
   }
 
   public static function getFacadeAccessor()
