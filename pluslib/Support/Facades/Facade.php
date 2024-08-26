@@ -30,8 +30,19 @@ class Facade
     return (new static)->accessor;
   }
 
+  public static function unresolveInstances()
+  {
+    static::$resolvedInstances = [];
+  }
+
+  public static function unresolveInstance($accessor)
+  {
+    unset(static::$resolvedInstances[$accessor]);
+  }
+
   public static function setFacadeApplication($app)
   {
+    static::unresolveInstances();
     static::$app = $app;
     return $app;
   }

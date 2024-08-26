@@ -12,7 +12,8 @@ use pluslib\Support\Facades\DB as dbFacade;
 
 function db(...$args)
 {
-  return dbFacade::singleton(...$args);
+  app()->db(...$args);
+  return dbFacade::singleton();
 }
 
 //! Only for strings search

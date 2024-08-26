@@ -6,6 +6,10 @@ use pluslib\Foundation\Container;
 use pluslib\Security\Security;
 use pluslib\Support\Facades\Facade;
 
+use pluslib\Database\DB;
+use pluslib\HTTP\RestAPI;
+use pluslib\Router\Router as Route;
+
 class Application extends Container
 {
   public $basepath = '';
@@ -23,6 +27,16 @@ class Application extends Container
   public int $session_expire_time = 3600;
 
   public string $auth_class = Auth::class;
+
+  function getDefaultBindings()
+  {
+    return [
+      'application' => [fn($container) => $container, true],
+      'database' => DB::class,
+      'rest' => RestAPI::class,
+      'route' => Route::class
+    ];
+  }
 
   function getBasePath()
   {
@@ -47,7 +61,12 @@ class Application extends Container
 
   function db(...$args)
   {
-    return tap($this, fn() => db(...$args));
+    if (!empty($args) || !isset($this['database'])) {
+      Facade::unresolveInstance('database');
+      $this['database'] = new DB(...$args);
+    }
+
+    return $this;
   }
 
   public function invalidSessionRedirect($why = 'invses')
