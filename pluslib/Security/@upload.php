@@ -29,15 +29,15 @@ function uploadTemp_secure(
   $filename = uniqid($prefix, true) . '_' . basename($filepath);
 
   $extension = $allowedTypes[$filetype];
-  $targetDirectory = etc_urlOfUpload('/' . app()->upload_dir); // loc
+  $newFile = web_url(join_paths(app()->upload_dir, "$filename.$extension"));
 
-  $newFilepath = "$targetDirectory$filename.$extension";
+  $newFilepath = regular_url(etc_url(c_url($newFile)));
 
   if (!move_uploaded_file($filepath, $newFilepath)) { // Copy the file, returns false if failed
     throw new Exception("Can't move file.", 500);
   }
 
-  return app()->upload_dir . $filename . '.' . $extension;
+  return $newFile;
 }
 
 function uploadFile_secure(
