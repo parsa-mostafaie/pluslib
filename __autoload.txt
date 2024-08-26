@@ -1,2 +1,0 @@
-`@` Prefix: For Helper files
-"@helpers.php" File: Includes all Helper Files!
