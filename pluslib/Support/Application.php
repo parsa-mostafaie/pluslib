@@ -34,7 +34,7 @@ class Application extends Container
   function getDefaultBindings()
   {
     return [
-      'application' => [fn($container) => $container, true],
+      'application' => static::class,
       'database' => DB::class,
       'rest' => RestAPI::class,
       'route' => Route::class
@@ -92,7 +92,8 @@ class Application extends Container
 
   static function configure(...$args)
   {
-    $instance = (new static)->make('application');
+    $instance = new static;
+    $instance->instance('application', $instance);
 
     foreach ($args as $n => $v) {
       if (property_exists($instance, $n)) {
