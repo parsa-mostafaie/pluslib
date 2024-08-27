@@ -48,10 +48,13 @@ trait CallResolver
     foreach ($parameters as $parameter) {
       $dependency = $parameter->getType();
 
-      if (!$dependency || $dependency->isBuiltin()) {
-        $dependencies[] = $this->resolveNonClass($parameter, $alternatives);
+      if(isset($alternatives[$parameter->name])){
+        $dependencies[] = $alternatives[$parameter->name];
+      }
+      elseif (!$dependency || $dependency->isBuiltin()) {
+        $dependencies[] = $this->resolveNonClass($parameter);
       } else {
-        $dependencies[] = $this->resolveClass($parameter, $alternatives);
+        $dependencies[] = $this->resolveClass($parameter);
       }
     }
 
@@ -62,14 +65,11 @@ trait CallResolver
    * Resolve a non-class hinted dependency.
    *
    * @param  ReflectionParameter  $parameter
-   * @param $parameters Alt Params
    * @return mixed
    */
-  protected function resolveNonClass(ReflectionParameter $parameter, $parameters = [])
+  protected function resolveNonClass(ReflectionParameter $parameter)
   {
-    if ($parameters && isset($parameters[$parameter->getName()])) {
-      return settype($parameters[$parameter->getName()], $parameter->getType()->getName());
-    } elseif ($parameter->isDefaultValueAvailable()) {
+    if ($parameter->isDefaultValueAvailable()) {
       return $parameter->getDefaultValue();
     }
     $message = "Unresolvable dependency resolving [$parameter].";
@@ -81,18 +81,15 @@ trait CallResolver
    * Resolve a class based dependency from the container.
    *
    * @param  \ReflectionParameter  $parameter
-   * @param $parameters Alternative parameters
    * @return mixed
    */
-  protected function resolveClass(ReflectionParameter $parameter, $parameters = [])
+  protected function resolveClass(ReflectionParameter $parameter)
   {
     try {
       echo "notClass {$parameter->name}";
       return $this->make($parameter->getType()->getName());
     } catch (BindingException $e) {
-      if ($parameters && isset($parameters[$parameter->getName()])) {
-        return $parameters[$parameter->getName()];
-      } elseif ($parameter->isOptional()) {
+      if ($parameter->isOptional()) {
         return $parameter->getDefaultValue();
       } else {
         throw $e;
