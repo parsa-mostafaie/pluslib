@@ -64,7 +64,7 @@ class Application extends Container
 
   function db(...$args)
   {
-    if (!empty($args) || !isset($this['database'])) {
+    if (!empty($args) || empty($this['database'])) {
       Facade::unresolveInstance('database');
       $this['database'] = new DB(...$args);
     }
@@ -93,7 +93,7 @@ class Application extends Container
   static function configure(...$args)
   {
     $instance = new static;
-    $instance->instance('application', $instance);
+    $instance['application'] = $instance;
 
     foreach ($args as $n => $v) {
       if (property_exists($instance, $n)) {

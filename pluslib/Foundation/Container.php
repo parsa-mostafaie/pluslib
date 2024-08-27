@@ -57,7 +57,7 @@ class Container implements ArrayAccess
   public function __construct()
   {
     foreach ($this->getDefaultBindings() as $abstract => $creator) {
-      $this->bind($abstract, ...wrap($creator));
+      $this->bind([$creator => $abstract], $creator);
     }
   }
 
@@ -69,13 +69,14 @@ class Container implements ArrayAccess
    */
   public function bound($abstract)
   {
-    return isset($this[$abstract]) or isset($this->instances[$abstract]);
+    $abstract = $this->getAlias($abstract);
+    return isset($this->bindings[$abstract]) or isset($this->instances[$abstract]);
   }
 
   /**
    * Register a binding with the container.
    *
-   * @param  string               $abstract
+   * @param  string|array               $abstract
    * @param  Closure|string|null  $creator
    * @param  bool                 $shared
    * @return void
@@ -87,6 +88,8 @@ class Container implements ArrayAccess
 
       $this->alias($abstract, $alias);
     }
+
+    $abstract = $this->getAlias($abstract);
 
     unset($this->instances[$abstract]);
 
@@ -122,7 +125,7 @@ class Container implements ArrayAccess
   /**
    * Register a shared binding in the container.
    *
-   * @param  string               $abstract
+   * @param  string|array               $abstract
    * @param  Closure|string|null  $creator
    * @return void
    */
@@ -159,7 +162,9 @@ class Container implements ArrayAccess
    */
   public function extend($abstract, Closure $closure)
   {
-    if (!isset($this->bindings[$abstract])) {
+    $abstract = $this->getAlias($abstract);
+
+    if (!$this->bound($abstract)) {
       throw new \InvalidArgumentException("Type $abstract is not bound.");
     }
 
@@ -174,7 +179,7 @@ class Container implements ArrayAccess
   /**
    * Register an existing instance as shared in the container.
    *
-   * @param  string  $abstract
+   * @param  string|array  $abstract
    * @param  mixed   $instance
    * @return void
    */
@@ -185,6 +190,8 @@ class Container implements ArrayAccess
 
       $this->alias($abstract, $alias);
     }
+
+    $abstract = $this->getAlias($abstract);
 
     $this->instances[$abstract] = $instance;
   }
@@ -252,6 +259,7 @@ class Container implements ArrayAccess
    */
   protected function getCreator($abstract)
   {
+    $abstract = $this->getAlias($abstract);
     if (!isset($this->bindings[$abstract])) {
       return $abstract;
     } else {
@@ -302,6 +310,7 @@ class Container implements ArrayAccess
    */
   public function resolving($abstract, Closure $callback)
   {
+    $abstract = $this->getAlias($abstract);
     $this->resolvingCallbacks[$abstract][] = $callback;
   }
 
@@ -324,6 +333,8 @@ class Container implements ArrayAccess
    */
   protected function fireResolvingCallbacks($abstract, $object)
   {
+    $abstract = $this->getAlias($abstract);
+
     if (isset($this->resolvingCallbacks[$abstract])) {
       $this->fireCallbackArray($object, $this->resolvingCallbacks[$abstract]);
     }
@@ -352,6 +363,7 @@ class Container implements ArrayAccess
    */
   protected function isShared($abstract)
   {
+    $abstract = $this->getAlias($abstract);
     $set = isset($this->bindings[$abstract]['shared']);
 
     return $set and $this->bindings[$abstract]['shared'] === true;
@@ -398,7 +410,7 @@ class Container implements ArrayAccess
    */
   public function offsetExists($key): bool
   {
-    return isset($this->bindings[$key]);
+    return $this->bound($key);
   }
 
   /**
