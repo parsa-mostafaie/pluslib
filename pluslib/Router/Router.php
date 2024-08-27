@@ -175,7 +175,7 @@ class Router
         if ((new $className) instanceof RouteParameterable)
           $args[] = $className::fromRoute($params[$paramName]);
         else
-          $args[] = new $className($params[$paramName]);
+          $args[] = app()->make($parameters[$paramName]);
       } elseif ($paramType && $paramType->isBuiltin()) {
         // If the parameter type is a built-in type
         settype($params[$paramName], (string) $paramType);

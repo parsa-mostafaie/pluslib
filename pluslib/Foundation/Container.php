@@ -13,7 +13,7 @@ class BindingException extends Exception
 
 class Container implements ArrayAccess
 {
-
+  use CallResolver;
   /**
    * The container's bindings.
    *
@@ -286,70 +286,11 @@ class Container implements ArrayAccess
       return new $creator;
     }
 
-    $parameters = $constructor->getParameters();
+    $cparameters = $constructor->getParameters();
 
-    $dependencies = $this->getDependencies($parameters);
+    $dependencies = $this->getDependencies($cparameters, $parameters);
 
     return $reflector->newInstanceArgs($dependencies);
-  }
-
-  /**
-   * Resolve all of the dependencies from the ReflectionParameters.
-   *
-   * @param  array  $parameters
-   * @return array
-   */
-  protected function getDependencies($parameters)
-  {
-    $dependencies = array();
-
-    foreach ($parameters as $parameter) {
-      $dependency = $parameter->getClass();
-
-      if (is_null($dependency)) {
-        $dependencies[] = $this->resolveNonClass($parameter);
-      } else {
-        $dependencies[] = $this->resolveClass($parameter);
-      }
-    }
-
-    return (array) $dependencies;
-  }
-
-  /**
-   * Resolve a non-class hinted dependency.
-   *
-   * @param  ReflectionParameter  $parameter
-   * @return mixed
-   */
-  protected function resolveNonClass(ReflectionParameter $parameter)
-  {
-    if ($parameter->isDefaultValueAvailable()) {
-      return $parameter->getDefaultValue();
-    } else {
-      $message = "Unresolvable dependency resolving [$parameter].";
-
-      throw new BindingException($message);
-    }
-  }
-
-  /**
-   * Resolve a class based dependency from the container.
-   *
-   * @param  \ReflectionParameter  $parameter
-   * @return mixed
-   */
-  protected function resolveClass(ReflectionParameter $parameter)
-  {
-    try {
-      return $this->make($parameter->getType()->getName());
-    } catch (BindingException $e) {
-      if ($parameter->isOptional()) {
-        return $parameter->getDefaultValue();
-      } else {
-        throw $e;
-      }
-    }
   }
 
   /**
