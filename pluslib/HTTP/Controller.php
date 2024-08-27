@@ -1,5 +1,5 @@
 <?php
-namespace pluslib\HTTP\Controller;
+namespace pluslib\HTTP;
 
 abstract class Controller
 {
