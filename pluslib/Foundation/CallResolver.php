@@ -1,35 +1,41 @@
 <?php
 namespace pluslib\Foundation;
 
-use Closure;
 use InvalidArgumentException;
-use ReflectionFunction;
-use ReflectionMethod;
+use pluslib\Support\Traits\CallMethod;
 use ReflectionParameter;
 
 trait CallResolver
 {
-  public function call($method, $alternatives = [])
+  use CallMethod;
+
+  /**
+   * Call the given Closure / class@method and inject its dependencies.
+   *
+   * @param  callable|string  $callback
+   * @param  array  $parameters
+   * @param  string|null  $defaultMethod
+   * @return mixed
+   */
+  public function call($callback, array $parameters = [], $defaultMethod = '__invoke')
   {
-    $reflection = null;
+    $callback = $this->toCallable($callback, $defaultMethod);
 
-    if (is_string($method) && !is_callable(value: $method)) {
-      $method = [$method, '__invoke'];
-    } else if ($method instanceof Closure) {
-      $reflection = new ReflectionFunction($method);
-    }
+    $dependencies = $this->getMethodDependencies($callback, $parameters);
 
-    if (!is_callable($method)) {
-      throw new InvalidArgumentException("Argument `method` of " . static::class . "::call should be callable");
-    }
+    return $callback(...$dependencies);
+  }
 
-    if (!$reflection) {
-      $reflection = new ReflectionMethod($method);
-    }
-
-    $parameters = $reflection->getParameters();
-
-    return $method($this->getDependencies($parameters, $alternatives));
+  /**
+   * Get all dependencies for a given method.
+   *
+   * @param  callable|string  $callback
+   * @param  array  $parameters
+   * @return array
+   */
+  protected function getMethodDependencies($callback, array $parameters = [])
+  {
+    return $this->getDependencies($this->getCallReflector($callback)->getParameters(), $parameters);
   }
 
   /**
@@ -48,10 +54,9 @@ trait CallResolver
     foreach ($parameters as $parameter) {
       $dependency = $parameter->getType();
 
-      if(isset($alternatives[$parameter->name])){
+      if (isset($alternatives[$parameter->name])) {
         $dependencies[] = $alternatives[$parameter->name];
-      }
-      elseif (!$dependency || $dependency->isBuiltin()) {
+      } elseif (!$dependency || $dependency->isBuiltin()) {
         $dependencies[] = $this->resolveNonClass($parameter);
       } else {
         $dependencies[] = $this->resolveClass($parameter);
@@ -86,7 +91,6 @@ trait CallResolver
   protected function resolveClass(ReflectionParameter $parameter)
   {
     try {
-      echo "notClass {$parameter->name}";
       return $this->make($parameter->getType()->getName());
     } catch (BindingException $e) {
       if ($parameter->isOptional()) {

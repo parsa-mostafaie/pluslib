@@ -3,10 +3,12 @@ namespace pluslib\Router;
 
 use InvalidArgumentException;
 use pluslib\HTTP\Response;
+use pluslib\Support\Traits\CallMethod;
 use ReflectionFunction;
 
 class Router
 {
+  use CallMethod;
   protected $routes = [];
   protected $base_path = '';
 
@@ -150,7 +152,8 @@ class Router
 
   function callFunctionWithArray($f, $params)
   {
-    $reflection = new ReflectionFunction($f);
+    $f = $this->toCallable($f);
+    $reflection = $this->getCallReflector($f);
     $parameters = $reflection->getParameters();
 
     $args = [];
