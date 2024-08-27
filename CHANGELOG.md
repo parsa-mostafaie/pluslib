@@ -9,6 +9,7 @@
 * Fix Version in init.php
 * Add `version` constant to Application Class
 * Simplify `Application::invalidSessionRedirect`
+* Add Abstract Class `Controller`
 
 ## [v0.0.02](https://github.com/parsa-mostafaie/pluslib/compare/v0.0.01...v0.0.02) - 8/26/2024
 
