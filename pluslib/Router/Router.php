@@ -2,6 +2,7 @@
 namespace pluslib\Router;
 
 use InvalidArgumentException;
+use pluslib\Foundation\BindingException;
 use pluslib\HTTP\Response;
 use pluslib\Support\Traits\CallMethod;
 use ReflectionFunction;
@@ -160,17 +161,25 @@ class Router
 
     foreach ($parameters as $parameter) {
       $paramName = $parameter->getName();
+      $paramType = $parameter->getType();
 
       // Check if the parameter exists in the array
       if (!array_key_exists($paramName, $params)) {
         // Check if the parameter is optional or has a default value
-        if (!$parameter->isOptional()) {
+        if (!$parameter->isDefaultValueAvailable()) {
+          if ($paramType && !$paramType->isBuiltin()) {
+            $args[] = app()->make($paramType->getName());
+            continue;
+          }
+
           throw new InvalidArgumentException("Missing parameter: $paramName");
+        } else {
+          $args[] = $parameter->getDefaultValue();
         }
+
         continue; // If the parameter is optional, continue
       }
 
-      $paramType = $parameter->getType();
 
       if ($paramType && !$paramType->isBuiltin()) {
         // If the parameter type is a class
@@ -179,12 +188,8 @@ class Router
           $args[] = $className::fromRoute($params[$paramName]);
         else
           $args[] = app()->make($parameters[$paramName]);
-      } elseif ($paramType && $paramType->isBuiltin()) {
-        // If the parameter type is a built-in type
-        settype($params[$paramName], (string) $paramType);
-        $args[] = $params[$paramName];
       } else {
-        // If the parameter type is not defined, treat it as a generic type
+        // If the parameter type is a built-in typez
         $args[] = $params[$paramName];
       }
     }
