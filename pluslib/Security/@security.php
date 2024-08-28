@@ -106,10 +106,12 @@ if (!function_exists('e')) {
   /**
    * Alias for htmlspecialchars
    * @param string $html
+   * @param bool $doubleEncode
+   * 
    * @return string
    */
-  function e($html)
+  function e(?string $html = null, $doubleEncode = true)
   {
-    return htmlspecialchars($html);
+    return htmlspecialchars($html ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', $doubleEncode);
   }
 }
