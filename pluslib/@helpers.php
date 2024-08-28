@@ -316,9 +316,9 @@ if (!function_exists('loadenv')) {
 }
 
 if (!function_exists('env')) {
-  function env($variable)
+  function env($variable=null, $default=null)
   {
-    return data_get(loadenv(load: false), $variable);
+    return data_get(loadenv(load: false), $variable, $default);
   }
 }
 
