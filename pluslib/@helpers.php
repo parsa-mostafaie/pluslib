@@ -297,6 +297,31 @@ if (!function_exists('asset')) {
   }
 }
 
+
+if (!function_exists('loadenv')) {
+  function loadenv($path = '.env', $load = true)
+  {
+    static $env = [];
+    static $loaded = [];
+
+    if ($load || !in_array($path, $loaded)) {
+      $fpath = etc_url(c_url($path));
+      $res = parse_ini_file($fpath, true);
+      $env = [...$env, ...$res];
+      $loaded[] = $path;
+    }
+
+    return $env;
+  }
+}
+
+if (!function_exists('env')) {
+  function env($variable)
+  {
+    return data_get(loadenv(load: false), $variable);
+  }
+}
+
 include_once '@info.php';
 include_once '@url.php';
 include_once '@path.php';
