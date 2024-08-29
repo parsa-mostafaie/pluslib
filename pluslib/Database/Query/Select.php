@@ -174,7 +174,7 @@ class Select
 
   public function first($params = [])
   {
-    return (clone $this)->take(1)->get($params)->first();
+    return (clone $this)->take(1)->get($params)->first() ?: $this->default;
   }
 
   public function count($params = [])
