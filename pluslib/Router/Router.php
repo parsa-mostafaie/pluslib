@@ -111,7 +111,7 @@ class Router
 
     if ($match) {
       foreach ($routeParts as $i => $v) {
-        if ($this->isOParamSegment($v))
+        if ($this->isOParamSegment($v) && isset($urlParts[$i]))
           $params[$this->getOParamName($v)] = $urlParts[$i];
         elseif ($this->isParamSegment($v))
           $params[$this->getParamName($v)] = $urlParts[$i];
