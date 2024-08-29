@@ -49,7 +49,26 @@ class Container implements ArrayAccess
    */
   protected $globalResolvingCallbacks = array();
 
+  /**
+   * List of Service Providers
+   * 
+   * @var array
+   */
+  protected $providers = [];
+
+  /**
+   * determins that application is booted?
+   * 
+   * @var bool
+   */
+  protected $booted = false;
+
   function getDefaultBindings()
+  {
+    return [];
+  }
+
+  function getDefaultProviders()
   {
     return [];
   }
@@ -59,6 +78,8 @@ class Container implements ArrayAccess
     foreach ($this->getDefaultBindings() as $abstract => $creator) {
       $this->bind([$creator => $abstract]);
     }
+
+    $this->providers = $this->getDefaultProviders();
   }
 
   /**
@@ -229,7 +250,9 @@ class Container implements ArrayAccess
   {
     $abstract = $this->getAlias($abstract);
 
-    if (isset($this->instances[$abstract])) {
+    $needsBuild = !empty($parameters);
+
+    if (isset($this->instances[$abstract]) && !$needsBuild) {
       return $this->instances[$abstract];
     }
 
@@ -448,5 +471,44 @@ class Container implements ArrayAccess
   public function offsetUnset($key): void
   {
     unset($this->bindings[$key], $this->instances[$key]);
+  }
+
+  public function withProvider($class)
+  {
+    $this->providers[] = $class;
+    return $this;
+  }
+
+  public function withProviders($classes)
+  {
+    if (is_string($classes))
+      $classes = func_get_args();
+
+    $this->providers = [...$this->providers, ...$classes];
+
+    return $this;
+  }
+
+  public function boot()
+  {
+    $this->booted = false;
+    $instances = [];
+
+
+    foreach ($this->providers as $provider) {
+      $instances[] = $this->make($provider);
+    }
+
+    foreach ($instances as $instance) {
+      $this->call([$instance, 'register']);
+    }
+
+    foreach ($instances as $instance) {
+      $this->call([$instance, 'boot']);
+    }
+
+    $this->booted = true;
+
+    return $this;
   }
 }

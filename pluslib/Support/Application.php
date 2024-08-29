@@ -9,6 +9,7 @@ use pluslib\Support\Facades\Facade;
 use pluslib\Database\DB;
 use pluslib\HTTP\RestAPI;
 use pluslib\Router\Router as Route;
+use pluslib\Support\Facades\Application as FacadesApplication;
 
 class Application extends Container
 {
@@ -38,6 +39,14 @@ class Application extends Container
       'database' => DB::class,
       'rest' => RestAPI::class,
       'route' => Route::class
+    ];
+  }
+
+  function getDefaultProviders()
+  {
+    return [
+      Providers\Database::class,
+      Providers\Security::class,
     ];
   }
 
@@ -79,8 +88,6 @@ class Application extends Container
 
   function init()
   {
-    Security::init();
-
     if (!$this->devmode) {
       // Product mode
       ini_set('display_errors', '0');
@@ -88,6 +95,8 @@ class Application extends Container
       // Dev Mode
       ini_set('display_errors', 'On');
     }
+
+    $this->boot();
   }
 
   static function configure(...$args)
