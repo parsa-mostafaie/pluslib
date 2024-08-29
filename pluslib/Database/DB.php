@@ -12,10 +12,11 @@ class DB extends PDO
     public readonly string $username = 'root',
     public readonly string $password = '',
     public readonly string $host = 'localhost',
-    public readonly string $charset = "utf8mb4"
+    public readonly string $charset = "utf8mb4",
+    public readonly string $engine = 'mysql'
   ) {
     parent::__construct(
-      'mysql:hostname=' . $this->host . ';dbname=' . $this->db . ';charset=' . $this->charset,
+      "$engine:hostname=$host;dbname=$db;charset=$charset",
       $this->username,
       $this->password
     );
