@@ -172,7 +172,6 @@ class Container implements ArrayAccess
 
     $this->bind($abstract, function ($container) use ($resolver, $closure) {
       return $closure($resolver($container), $container);
-
     }, $this->isShared($abstract));
   }
 
@@ -186,7 +185,7 @@ class Container implements ArrayAccess
   public function instance($abstract, $instance)
   {
     if (is_array($abstract)) {
-      list($abstract, $alias) = $this->extractAlias($abstract);
+      [$abstract, $alias] = $this->extractAlias($abstract);
 
       $this->alias($abstract, $alias);
     }
