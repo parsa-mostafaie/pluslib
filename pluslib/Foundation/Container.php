@@ -57,7 +57,7 @@ class Container implements ArrayAccess
   public function __construct()
   {
     foreach ($this->getDefaultBindings() as $abstract => $creator) {
-      $this->bind([$creator => $abstract], $creator);
+      $this->bind([$creator => $abstract]);
     }
   }
 
@@ -389,7 +389,7 @@ class Container implements ArrayAccess
    */
   protected function getAlias($abstract)
   {
-    return $this->aliases[$abstract] ?? $abstract;
+    return isset($this->aliases[$abstract]) ? $this->getAlias($this->aliases[$abstract]) : $abstract;
   }
 
   /**
