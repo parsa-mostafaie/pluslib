@@ -3,7 +3,7 @@ function pls_autoload(string|null $namespace = null, string|null $dir = null)
 {
   static $structures = [];
 
-  if(!is_null($namespace) && !is_null($dir)){
+  if (!is_null($namespace) && !is_null($dir)) {
     $structures[$namespace] = $dir;
   }
 
@@ -18,8 +18,10 @@ spl_autoload_register(function ($class) {
       continue;
     }
 
-    $classPath = $dir . "/$class.php";
-    $classPathDefault = $dir . "/$class/" . basename($class) . ".php";
+
+    $classPath = join_paths($dir, "/$class.php");
+    $classPathDefault = join_paths($dir, $class, basename($class) . ".php");
+
     $classPath = regular_url($classPath);
     $classPathDefault = regular_url($classPathDefault);
 
