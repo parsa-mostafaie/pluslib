@@ -10,4 +10,4 @@ composer require parsa/pluslib
 ```
 
 > [!IMPORTANT]
-> Currently there is no specified project structure but we are We are planning for a project structure package
+> Currently there is no specified project structure but we are planning for a project structure package
