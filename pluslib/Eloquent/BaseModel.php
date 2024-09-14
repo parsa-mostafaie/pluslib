@@ -355,7 +355,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable, RouteParamete
   }
 
   /**
-   * magic method to handle all unlisted calls. Currently binds set{$VAR}() and get{$VAR}() functions
+   * magic method to handle all unlisted calls.
    * @param  string $method    
    * @param  mixed $parameters 
    * @return mixed             
