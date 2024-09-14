@@ -1,6 +1,6 @@
 <?php
 /**
- * pluslib [BETA]: init.php v0.0.03
+ * pluslib [BETA]: init.php v0.0.04
  * 
  * @author Parsa Mostafaie <pmostafaie1390@gmail.com>
  * @copyright 2024 Parsa Mostafaie
