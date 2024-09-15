@@ -54,17 +54,6 @@ abstract class UploadBaseColumn
     }
   }
 
-  public static function get_img(
-    $id,
-    $cattrs = '',
-    $echo = false,
-  ) {
-    $_ = new static;
-    $purl =
-      static::get_url($id);
-    return imageComponent($purl, $_->customAttrs . $cattrs, $_->altImage, $echo, $_->srcAttr);
-  }
-
   static function has($id)
   {
     $_purl = static::get_url($id);

@@ -33,42 +33,6 @@ function is_username(array $data, string $field): bool
 //ENDPART
 
 //NOTE THIS PART IS CUSTOMIZED
-function set_prof_image($tid, $name)
-{
-  $file = uploadFile_secure($name, prefix: 'user_profile_');
-  if ($file) {
-    rem_prof_img($tid);
-    return update_users(condition: "id='$tid'", set: "profile = ?", params: [$file]);
-  }
-}
-
-function get_prof_url($tid)
-{
-  return urlOfUpload(get_users(cols: 'profile', condition: "id = '$tid'")->fetchColumn());
-}
-
-function rem_prof_img($tid)
-{
-  unlinkUpload(get_prof_url($tid));
-  return update_users(condition: "id = ?", set: "profile = NULL", params: [$tid]);
-}
-
-function get_prof_img($uname, $cattrs = '')
-{
-  $purl =
-    get_prof_url(get_users(cols: 'id', condition: "username = '$uname'")->fetchColumn());
-  return imageComponent($purl, 'class="avatar-xxl rounded-circle" ' . $cattrs);
-}
-
-function hasprofimg($tid)
-{
-  $_purl = get_prof_url($tid);
-  $purl = $_SERVER['DOCUMENT_ROOT'] . regular_url($_purl);
-  return file_exists($purl) && get_prof_url($tid);
-}
-//ENDPART
-
-//NOTE THIS PART IS CUSTOMIZED
 function add_user($fname, $lname, $uname, $pword)
 {
   $hashed = hash_pass($pword);
@@ -91,7 +55,7 @@ function update_users(...$args)
 function delete_users($id)
 {
   $id = intval($id);
-  rem_prof_img($id);
+  // rem_prof_img($id);
   if ($id) {
     return delete_q("users", "id = ?", [$id]);
   }
