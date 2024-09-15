@@ -4,6 +4,9 @@
 
 - Remove `ABSPATH` and `RELPATH`
 - Remove not-needed class and helpers
+- Remove `use_sha`
+- `WithPaths` Trait
+- Remove `secure_redirect`
 
 ## [v0.0.04](https://github.com/parsa-mostafaie/pluslib/compare/v0.0.03...v0.0.0.04)
 
