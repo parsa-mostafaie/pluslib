@@ -16,10 +16,7 @@ function usePassword()
 
 function hash_pass(string $str)
 {
-  global $__unsafe__hash__pass__disable;
-  if ($__unsafe__hash__pass__disable || app()->hash_pass_disable)
-    return $str;
-  return app()->use_sha ? hash('sha256', $str) : password_hash($str, PASSWORD_DEFAULT);
+  return password_hash($str, PASSWORD_DEFAULT);
 }
 
 function rand_hex($len = 4)
@@ -29,7 +26,7 @@ function rand_hex($len = 4)
 
 function pass_verify($input, $hash)
 {
-  return app()->use_sha ? hash_pass($input) == $hash : password_verify($input, $hash);
+  return password_verify($input, $hash);
 }
 
 enum secure_form_enum

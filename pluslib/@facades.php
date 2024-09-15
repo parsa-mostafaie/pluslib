@@ -13,11 +13,6 @@ function app($accessor = 'application')
   return Application::make($accessor);
 }
 
-function HOME_URL($set = null)
-{
-  return app()->basepath($set);
-}
-
 function response()
 {
   return new Response;

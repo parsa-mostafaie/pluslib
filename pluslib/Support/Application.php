@@ -7,11 +7,11 @@ use pluslib\Support\Facades\Facade;
 
 use pluslib\Database\DB;
 use pluslib\Router\Router as Route;
+use pluslib\Support\Traits\WithPaths;
 
 class Application extends Container
 {
-  public $basepath = '';
-  public $use_sha = true;
+  use WithPaths;
   public $upload_dir = '/uploads';
   public $hash_pass_disable = false;
   public $devmode = true;
@@ -46,27 +46,6 @@ class Application extends Container
     ];
   }
 
-  function getBasePath()
-  {
-    return $this->basepath;
-  }
-
-  function setBasePath($newValue)
-  {
-    $this->basepath = $newValue;
-
-    return $this;
-  }
-
-  function basepath($value = null)
-  {
-    if (!is_null($value)) {
-      $this->setBasePath($value);
-    }
-
-    return $this->getBasePath();
-  }
-
   function db(...$args)
   {
     if (!empty($args) || empty($this['database'])) {
@@ -95,16 +74,12 @@ class Application extends Container
     $this->boot();
   }
 
-  static function configure(...$args)
+  static function configure($basepath)
   {
     $instance = new static;
     $instance['application'] = $instance;
 
-    foreach ($args as $n => $v) {
-      if (property_exists($instance, $n)) {
-        $instance->$n = $v;
-      }
-    }
+    $instance->withBasePath($basepath);
 
     Facade::setFacadeApplication($instance);
 
