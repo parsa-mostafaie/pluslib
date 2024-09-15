@@ -3,13 +3,10 @@ namespace pluslib\Support;
 
 use pluslib\Auth;
 use pluslib\Foundation\Container;
-use pluslib\Security\Security;
 use pluslib\Support\Facades\Facade;
 
 use pluslib\Database\DB;
-use pluslib\HTTP\RestAPI;
 use pluslib\Router\Router as Route;
-use pluslib\Support\Facades\Application as FacadesApplication;
 
 class Application extends Container
 {
@@ -30,14 +27,13 @@ class Application extends Container
   /**
    * @var string Pluslib Version
    */
-  const VERSION = '0.0.04';
+  const VERSION = '0.0.05';
 
   function getDefaultBindings()
   {
     return [
       'application' => static::class,
       'database' => DB::class,
-      'rest' => RestAPI::class,
       'route' => Route::class
     ];
   }
