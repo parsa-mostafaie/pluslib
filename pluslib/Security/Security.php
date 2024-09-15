@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Security;
 
-defined('ABSPATH') || exit;
-
 class Security
 {
   public static function check_fingerprint()

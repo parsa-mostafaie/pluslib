@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\App\Models;
 
-defined('ABSPATH') || exit;
-
 use pluslib\Eloquent\Attribute;
 use pluslib\Eloquent\BaseModel;
 

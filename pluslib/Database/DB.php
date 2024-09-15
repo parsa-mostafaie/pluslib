@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Database;
 
-defined('ABSPATH') || exit;
-
 use \PDO, \Exception, pluslib\Database\Table;
 
 class DB extends PDO

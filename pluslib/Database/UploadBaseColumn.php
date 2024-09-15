@@ -1,7 +1,6 @@
 <?php
 namespace pluslib\Database;
 
-defined('ABSPATH') || exit;
 
 abstract class UploadBaseColumn
 {

@@ -1,7 +1,5 @@
 <?php
 
-defined('ABSPATH') || exit;
-
 if (!function_exists('abs2rel')) {
   function abs2rel($from, $to)
   {

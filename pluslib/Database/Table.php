@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Database;
 
-defined('ABSPATH') || exit;
-
 use pluslib\Database\Query\Select;
 use pluslib\Database\Query\Insert;
 use pluslib\Database\Query\Delete;

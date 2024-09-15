@@ -4,8 +4,6 @@ namespace pluslib\Eloquent\Traits;
 use pluslib\Collections\Arr;
 use pluslib\Database\Expression;
 
-defined('ABSPATH') || exit;
-
 use function ucwords;
 
 trait HasAccessors

@@ -1,6 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
-
 // Check Sended
 function posted($name)
 {

@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Eloquent;
 
-defined('ABSPATH') || exit;
-
 use pluslib\Database\Query\Select as BaseSelect;
 use pluslib\Database\Table;
 

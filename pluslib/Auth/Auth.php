@@ -1,8 +1,6 @@
 <?php
 namespace pluslib;
 
-defined('ABSPATH') || exit;
-
 use pluslib\App\Models\User as BaseUser;
 
 class Auth

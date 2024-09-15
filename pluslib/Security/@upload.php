@@ -1,5 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
 
 function uploadTemp_secure(
   $filepath,

@@ -1,7 +1,5 @@
 <?php
 
-defined('ABSPATH') || exit;
-
 function usePassword()
 {
   $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';

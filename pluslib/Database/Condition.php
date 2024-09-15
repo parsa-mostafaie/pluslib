@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Database;
 
-defined('ABSPATH') || exit;
-
 use pluslib\Database\Query\Helpers as QueryBuilding;
 
 class Condition

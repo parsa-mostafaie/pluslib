@@ -1,5 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
 
 function _404_()
 {

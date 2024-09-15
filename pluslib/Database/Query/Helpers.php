@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Database\Query;
 
-defined('ABSPATH') || exit;
-
 use pluslib\Database\Expression;
 
 final class Helpers

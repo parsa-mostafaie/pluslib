@@ -1,6 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
-
 use pluslib\Collections\Arr;
 use pluslib\Collections\Collection;
 

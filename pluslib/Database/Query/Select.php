@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Database\Query;
 
-defined('ABSPATH') || exit;
-
 use pluslib\Database\Table;
 use pluslib\Database\Query\Conditional;
 use \PDO;

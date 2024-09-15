@@ -8,8 +8,6 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use pluslib\Eloquent\Attribute;
 
-defined('ABSPATH') || exit;
-
 trait HasAttributes
 {
   use HasAccessors;

@@ -1,5 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
 
 //NOTE: THIS LIB IS PUBLIC ONLY IF getUserInfo BE PUBLIC
 

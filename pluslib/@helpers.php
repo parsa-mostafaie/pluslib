@@ -1,8 +1,6 @@
 <?php
 use pluslib\Eloquent\ModelNotFoundException;
 
-defined('ABSPATH') || exit;
-
 function truncate($string, $chars = 50, $terminator = ' …')
 {
   if (mb_strlen($string) < $chars) {

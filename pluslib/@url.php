@@ -1,5 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
 
 function c_url($url, $regularIt = true)
 {

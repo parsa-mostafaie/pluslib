@@ -1,5 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
 
 function ap_header_(
   string $header,

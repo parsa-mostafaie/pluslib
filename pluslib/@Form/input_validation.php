@@ -1,6 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
-
 // VALIDATION
 const DEFAULT_VALIDATION_ERRORS = [
   'required' => 'Please enter the %s',

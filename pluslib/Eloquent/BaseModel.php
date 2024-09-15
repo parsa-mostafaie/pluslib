@@ -19,7 +19,6 @@ use pluslib\Eloquent\Traits\HasTranslation;
 use pluslib\Eloquent\Traits\HidesAttributes;
 use pluslib\Router\RouteParameterable;
 
-defined('ABSPATH') || exit;
 /**
  * BaseModel class
  *

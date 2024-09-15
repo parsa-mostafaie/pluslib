@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Collections;
 
-defined('ABSPATH') || exit;
-
 use \ArrayAccess, \Iterator;
 use JsonSerializable;
 

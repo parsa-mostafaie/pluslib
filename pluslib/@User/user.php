@@ -1,6 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
-
 //NOTE THIS FILE REQUIRES:
 // A users TABLE WITH {id, last_activity_time}
 

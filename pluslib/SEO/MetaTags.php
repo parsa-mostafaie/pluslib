@@ -3,8 +3,6 @@ namespace pluslib\SEO;
 
 use Exception;
 
-defined('ABSPATH') || exit;
-
 const METATAGS_FORMAT_title = '<title>%2$s</title>';
 const METATAGS_FORMAT_mn = '<meta name="%s" content="%s"/>';
 const METATAGS_FORMAT_charset = '<meta charset="%2$s"/>';

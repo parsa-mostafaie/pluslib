@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Eloquent\Traits;
 
-defined('ABSPATH') || exit;
-
 trait HasAppends
 {
   /**

@@ -3,7 +3,6 @@ namespace pluslib\Eloquent;
 
 use pluslib\Eloquent\BaseModel;
 
-defined('ABSPATH') || exit;
 /**
  * Model class
  *

@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Database\Query;
 
-defined('ABSPATH') || exit;
-
 use pluslib\Database\Query\Helpers as QueryBuilding;
 use pluslib\Database\Table;
 

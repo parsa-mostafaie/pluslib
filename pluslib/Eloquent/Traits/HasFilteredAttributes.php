@@ -3,8 +3,6 @@ namespace pluslib\Eloquent\Traits;
 
 use pluslib\Collections\Arr;
 
-defined('ABSPATH') || exit;
-
 trait HasFilteredAttributes
 {
   /**

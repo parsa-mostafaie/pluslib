@@ -1,6 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
-
 //NOTE: THIS PART/FILE IS PUBLIC ONLY WHEN:
 //------ DB HAS:
 //------- A users Table With {username, password, mail, lu_browser}

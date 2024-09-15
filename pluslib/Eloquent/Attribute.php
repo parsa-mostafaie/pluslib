@@ -1,8 +1,6 @@
 <?php
 namespace pluslib\Eloquent;
 
-defined('ABSPATH') || exit;
-
 class Attribute
 {
   protected $getter, $setter;

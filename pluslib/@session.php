@@ -1,5 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
 
 // NOTE THAT's ALWAYS PUBLIC
 session_start();

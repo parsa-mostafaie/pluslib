@@ -1,6 +1,4 @@
 <?php
-defined('ABSPATH') || exit;
-
 //NOTE THIS FILE IS CUSTOMIZED
 
 function follows($follower, $followed)
