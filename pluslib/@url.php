@@ -2,7 +2,7 @@
 
 function c_url($url, $regularIt = true)
 {
-  return $regularIt ? regular_url(c_url($url, false)) : web_url(join_paths(HOME_URL(), $url));
+  return $regularIt ? regular_url(c_url($url, false)) : web_url(app()->basepath($url));
 }
 function web_url($url)
 {
