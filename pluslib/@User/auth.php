@@ -24,7 +24,7 @@ function canlogin()
   $id = get_session('uid');
   $pass = get_session('pass');
 
-  return canLoginWith($id, $pass) ? user_actived($id) : false;
+  return canLoginWith($id, $pass) ? /*user_actived($id)*/ true : false;
 }
 
 function canLoginWith($id, $pass)
