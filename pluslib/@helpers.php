@@ -346,7 +346,6 @@ include_once '@path.php';
 include_once '@session.php';
 include_once 'HTTP/@helpers.php';
 include_once 'Collections/@helpers.php';
-include_once '@Admin/@helpers.php';
 include_once '@User/@helpers.php';
 include_once 'Security/@helpers.php';
 include_once '@Form/@helpers.php';
