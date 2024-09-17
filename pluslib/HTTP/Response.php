@@ -199,9 +199,24 @@ class Response
 
   public function removeHeaders(array $headers): self
   {
-    foreach ($headers as $header => $value) {
-      $this->remove_headers[$header] = $value;
+    foreach ($headers as $header) {
+      $this->remove_headers[] = $header;
     }
+
+    return $this;
+  }
+
+  /**
+   * Sets header values to be removed with the response.
+   *
+   * @param $header
+   *
+   * @return self
+   */
+
+  public function removeHeader($header): self
+  {
+    $this->remove_headers[] = $header;
 
     return $this;
   }
@@ -221,6 +236,23 @@ class Response
     foreach ($headers as $header => $value) {
       $this->headers[$header] = $value;
     }
+
+    return $this;
+
+  }
+
+  /**
+   * Sets header values to be sent with the response.
+   *
+   * @param $header
+   * @param $value
+   *
+   * @return self
+   */
+
+  public function setHeader($header, $value): self
+  {
+    $this->headers[$header] = $value;
 
     return $this;
 
@@ -355,12 +387,12 @@ class Response
    * @param string $url
    * @param int $status (HTTP status code to return)
    *
-   * @return void
+   * @return static
    *
    * @throws InvalidStatusCodeException
    */
 
-  public function redirect(string $url, int $status = 302): void
+  public function redirect(string $url, int $status = 302): static
   {
     if (!$this->_isValidRedirect($status)) {
       throw new InvalidStatusCodeException('Unable to redirect: invalid status code');
@@ -368,11 +400,9 @@ class Response
 
     $this->reset(); // Reset anything that may be set
 
-    $this->setHeaders([
+    return $this->setHeaders([
       'Location' => $url
-    ])->send();
-
-    exit; // Ensure nothing else loads, just to be safe
+    ])->status($status);
   }
 
   public static function from($value)
