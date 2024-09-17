@@ -187,7 +187,7 @@ class Router
       if ($paramType && !$paramType->isBuiltin()) {
         // If the parameter type is a class
         $className = $paramType->getName();
-        if ((new $className) instanceof RouteParameterable)
+        if ((new $className) instanceof RouteParameterable || method_exists($className, 'fromRoute'))
           $args[] = $className::fromRoute($params[$paramName]);
         else
           $args[] = app()->make($parameters[$paramName]);
