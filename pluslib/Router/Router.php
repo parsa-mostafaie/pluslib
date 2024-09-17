@@ -21,7 +21,7 @@ class Router
   public function normalizeURL($url)
   {
     if ($url == '' || $url == '/') {
-      return '';
+      return '/';
     }
 
     return '/' . trim($url, '/') . '/';
@@ -31,12 +31,10 @@ class Router
   {
     return $this->normalizeURL(
       web_url(
-        c_url(
           join_paths(
             $this->base_path,
             $path
           )
-        )
       )
     );
   }
@@ -96,9 +94,14 @@ class Router
     $route = $this->getPath($route);
     $routeParts = $this->getParts($route);
 
+    $ignore = false;
+
     $match = array_every(
       $routeParts,
-      function ($segment, $i) use ($urlParts) {
+      function ($segment, $i) use ($urlParts, &$ignore) {
+        if ($segment == '**')
+          return $ignore = true;
+
         if ($segment == '*' || $this->isOParamSegment($segment))
           return true;
 
@@ -107,7 +110,7 @@ class Router
 
         return false;
       }
-    );
+    ) || $ignore;
 
     if ($match) {
       foreach ($routeParts as $i => $v) {

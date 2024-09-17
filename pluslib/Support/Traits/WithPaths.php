@@ -15,7 +15,7 @@ trait WithPaths
     return $this->public_path ?? $this->basepath('public');
   }
 
-  public function public_path($path)
+  public function public_path($path = '')
   {
     return join_paths($this->getPublicPath(), $path);
   }
@@ -32,7 +32,7 @@ trait WithPaths
     return $this->resources_path ?? $this->basepath('resources');
   }
 
-  public function resources_path($path)
+  public function resources_path($path = '')
   {
     return join_paths($this->getResourcesPath(), $path);
   }
@@ -51,7 +51,7 @@ trait WithPaths
     return $this->config_path ?? $this->basepath('config');
   }
 
-  public function config_path($path)
+  public function config_path($path = '')
   {
     return join_paths($this->getConfigPath(), $path);
   }
@@ -69,7 +69,7 @@ trait WithPaths
     return $this->storage_path ?? $this->basepath('storage');
   }
 
-  public function storage_path($path)
+  public function storage_path($path ='')
   {
     return join_paths($this->getStoragePath(), $path);
   }

@@ -6,7 +6,7 @@ use \PDO, \Exception, pluslib\Database\Table;
 class DB extends PDO
 {
   public function __construct(
-    public readonly string $db = 'plus',
+    public readonly string $db,
     public readonly string $username = 'root',
     public readonly string $password = '',
     public readonly string $host = 'localhost',

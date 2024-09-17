@@ -1,9 +1,10 @@
 <?php
 
-function c_url($url, $regularIt = true)
+function basepath($path='')
 {
-  return $regularIt ? regular_url(c_url($url, false)) : web_url(app()->basepath($url));
+  return app()->basepath($path);
 }
+
 function web_url($url)
 {
   return str_replace('\\', '/', $url);
@@ -20,33 +21,14 @@ function i_protocol()
   return $protocol;
 }
 
-function http_baseurl()
-{
-  $baseurl = i_protocol() . $_SERVER["HTTP_HOST"];
-  return $baseurl;
-}
-
 function etc_url($url)
 {
   return join_paths($_SERVER['DOCUMENT_ROOT'], $url);
 }
 
-function www_url($url)
-{
-  return http_baseurl() . web_url($url);
-}
-
-function form_processor_url($path, $dir = '/libs/custom/@form', $base = '')
-{
-  $base = $base ? $base : $_SERVER['DOCUMENT_ROOT'];
-  $full = $base . $dir . $path;
-  return $full;
-}
-
 function slugify($string, $separator = '-')
 {
   $zwng = html_entity_decode('&zwnj;');
-
 
   $string = trim($string);
   $string = str_replace($zwng, ' ', $string);
@@ -56,13 +38,6 @@ function slugify($string, $separator = '-')
   $string = preg_replace("/[\s_]/", $separator, $string);
 
   return $string;
-
-}
-
-function ScanRoute($format, &...$vars)
-{
-  sscanf($_SERVER['REQUEST_URI'], c_url($format, false), ...$vars);
-  return $vars;
 }
 
 if (!function_exists('build_url')) {
@@ -151,5 +126,27 @@ if (!function_exists('url')) {
       'scheme' => $scheme,
       'host' => $host
     ]));
+  }
+}
+
+// PATH
+if (!function_exists('storage_path')) {
+  function storage_path($path = '')
+  {
+    return app()->storage_path($path);
+  }
+}
+
+if (!function_exists('public_path')) {
+  function public_path($path = '')
+  {
+    return app()->public_path($path);
+  }
+}
+
+if (!function_exists('config_path')) {
+  function config_path($path = '')
+  {
+    return app()->config_path($path);
   }
 }

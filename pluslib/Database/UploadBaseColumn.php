@@ -43,7 +43,7 @@ abstract class UploadBaseColumn
   }
   public static function get_url($id)
   {
-    return urlOfUpload(static::val($id));
+    return upload_url(static::val($id));
   }
 
   static function rem($id)
@@ -57,7 +57,7 @@ abstract class UploadBaseColumn
   static function has($id)
   {
     $_purl = static::get_url($id);
-    $purl = $_SERVER['DOCUMENT_ROOT'] . regular_url($_purl);
+    $purl = upload_path($_purl);
     return file_exists($purl) && static::get_url($id);
   }
 

@@ -12,8 +12,6 @@ use pluslib\Support\Traits\WithPaths;
 class Application extends Container
 {
   use WithPaths;
-  public $upload_dir = '/uploads';
-  public $hash_pass_disable = false;
   public $devmode = true;
   public $friend_origins = [];
   public $anti_xss_header = true;
@@ -33,6 +31,7 @@ class Application extends Container
   {
     return [
       'application' => static::class,
+      'config' => Config::class,
       'database' => DB::class,
       'route' => Route::class
     ];
@@ -58,7 +57,7 @@ class Application extends Container
 
   public function invalidSessionRedirect($why = 'invses')
   {
-    redirect(url(c_url($this->login_path), ['why' => $why]), true);
+    redirect(url($this->login_path, ['why' => $why]), true);
   }
 
   function init()
@@ -71,7 +70,16 @@ class Application extends Container
       ini_set('display_errors', 'On');
     }
 
+    set_exception_handler('pls_exception_handler');
+
     $this->boot();
+  }
+
+  function boot()
+  {
+    $this['config'] = $this['config']->mergeWithDirectory($this->config_path());
+
+    parent::boot();
   }
 
   static function configure($basepath)
@@ -84,5 +92,16 @@ class Application extends Container
     Facade::setFacadeApplication($instance);
 
     return $instance;
+  }
+
+  // TODO Move to filesystem
+  static function symlink($target, $link){
+    if (!windows_os()) {
+      return symlink($target, $link);
+    }
+
+    $mode = is_dir($target) ? 'J' : 'H';
+
+    exec("mklink /{$mode} " . escapeshellarg($link) . ' ' . escapeshellarg($target));
   }
 }

@@ -12,12 +12,12 @@ class Database extends ServiceProvider
   public function boot()
   {
     $this->app->db(
-      env('database.db', 'plus'),
-      env('database.user', 'root'),
-      env('database.pass', ''),
-      env('database.host', 'localhost'),
-      env('database.charset', 'utf8mb4'),
-      env('database.engine', 'mysql'),
+      config('database.connection.db'),
+      config('database.connection.user', 'root'),
+      config('database.connection.pass', ''),
+      config('database.connection.host', 'localhost'),
+      config('database.connection.charset', 'utf8mb4'),
+      config('database.connection.engine', 'mysql'),
     );
   }
 }

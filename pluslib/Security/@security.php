@@ -90,7 +90,7 @@ function anti_xss($html)
 function secretFile($addr = null)
 {
   static $address = null;
-  $default = etc_url(web_url(c_url('/secret.json')));
+  $default = basepath('/secret.json');
   if (!is_null($addr)) {
     $address = $addr;
   }

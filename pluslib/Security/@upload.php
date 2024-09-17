@@ -25,18 +25,16 @@ function uploadTemp_secure(
     throw new Exception("File not allowed.", 400);
   }
 
-  $filename = uniqid($prefix, true) . '_' . basename($filepath);
-
   $extension = $allowedTypes[$filetype];
-  $newFile = web_url(join_paths(app()->upload_dir, "$filename.$extension"));
+  $filename = join_paths($prefix, uniqid(more_entropy: true)) . ".$extension";
 
-  $newFilepath = regular_url(etc_url(c_url($newFile)));
+  $newFilepath = upload_path($filename);
 
   if (!move_uploaded_file($filepath, $newFilepath)) { // Copy the file, returns false if failed
     throw new Exception("Can't move file.", 500);
   }
 
-  return $newFile;
+  return $filename;
 }
 
 function uploadFile_secure(
@@ -73,20 +71,25 @@ function uploadFile_secure(
 }
 function unlinkUpload($fname)
 {
-  if (!urlOfUpload($fname))
+  if (!upload_path($fname))
     return;
-  unlink(etc_urlOfUpload($fname));
+  unlink(upload_path($fname));
 }
 
-function urlOfUpload($fname, $no_www = false)
+function upload_path($fname = '')
+{
+  if (parse_url($fname, component: PHP_URL_HOST)) {
+    return null;
+  }
+
+  return $fname ? regular_url(join_paths(config('storage.driver.path'), $fname)) : null;
+}
+
+function upload_url($fname = '')
 {
   if (parse_url($fname, component: PHP_URL_HOST)) {
     return $fname;
   }
-  return $fname ? ($no_www ? c_url("/$fname") : url(c_url("/$fname", false))) : null;
-}
 
-function etc_urlOfUpload($fname)
-{
-  return etc_url(urlOfUpload($fname, true));
+  return config('storage.driver.url') . join_paths('', $fname);
 }

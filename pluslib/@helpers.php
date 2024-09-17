@@ -1,5 +1,6 @@
 <?php
 use pluslib\Eloquent\ModelNotFoundException;
+use pluslib\Support\Facades\Config;
 
 function truncate($string, $chars = 50, $terminator = ' …')
 {
@@ -291,7 +292,7 @@ if (!function_exists('join_paths')) {
 if (!function_exists('asset')) {
   function asset($path)
   {
-    return url(c_url(join_paths(app()->assets, $path)));
+    return url(join_paths(app()->assets, $path));
   }
 }
 
@@ -303,7 +304,7 @@ if (!function_exists('loadenv')) {
     static $loaded = [];
 
     if ($load || !in_array($path, $loaded)) {
-      $fpath = etc_url(c_url($path));
+      $fpath = basepath($path);
       $res = parse_ini_file($fpath, true);
       $env = [...$env, ...$res];
       $loaded[] = $path;
@@ -314,9 +315,28 @@ if (!function_exists('loadenv')) {
 }
 
 if (!function_exists('env')) {
-  function env($variable=null, $default=null)
+  function env($variable = null, $default = null)
   {
     return data_get(loadenv(load: false), $variable, $default);
+  }
+}
+
+if (!function_exists('config')) {
+  function config($variable = null, $default = null)
+  {
+    return Config::get($variable, $default);
+  }
+}
+
+if (!function_exists('windows_os')) {
+  /**
+   * Determine whether the current environment is Windows based.
+   *
+   * @return bool
+   */
+  function windows_os()
+  {
+    return PHP_OS_FAMILY === 'Windows';
   }
 }
 
