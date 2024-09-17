@@ -15,5 +15,5 @@ function app($accessor = 'application')
 
 function response($body = '', $status = 200, $headers = [])
 {
-  return (new Response)->setBody($body)->setHeaders($headers)->status($headers);
+  return (new Response)->setBody($body)->setHeaders($headers)->status($status);
 }
