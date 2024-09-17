@@ -57,7 +57,7 @@ class Application extends Container
 
   public function invalidSessionRedirect($why = 'invses')
   {
-    redirect(url($this->login_path, ['why' => $why]), true);
+    redirect(url($this->login_path, ['why' => $why]), true)->send();
   }
 
   function init()

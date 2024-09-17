@@ -1,5 +1,5 @@
 <?php
-function redirectBack($default = null, $gen_only = false)
+function back($default = null, $gen_only = false)
 {
   $url = '';
   if (!empty(get_val('back'))) {
@@ -11,5 +11,5 @@ function redirectBack($default = null, $gen_only = false)
   }
   if ($gen_only)
     return $url;
-  redirect($url);
+  return redirect($url);
 }

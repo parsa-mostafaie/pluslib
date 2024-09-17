@@ -13,7 +13,7 @@ function app($accessor = 'application')
   return Application::make($accessor);
 }
 
-function response()
+function response($body = '', $status = 200, $headers = [])
 {
-  return new Response;
+  return (new Response)->setBody($body)->setHeaders($headers)->status($headers);
 }
