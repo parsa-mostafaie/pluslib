@@ -21,11 +21,6 @@ function i_protocol()
   return $protocol;
 }
 
-function etc_url($url)
-{
-  return join_paths($_SERVER['DOCUMENT_ROOT'], $url);
-}
-
 function slugify($string, $separator = '-')
 {
   $zwng = html_entity_decode('&zwnj;');
