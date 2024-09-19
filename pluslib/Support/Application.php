@@ -20,7 +20,6 @@ class Application extends Container
   public int $regenerate_session_request_counts = 100;
   public bool $session_fingerprint = true;
   public int $session_expire_time = 3600;
-  public string $auth_class = Auth::class;
 
   /**
    * @var string Pluslib Version
@@ -33,7 +32,8 @@ class Application extends Container
       'application' => static::class,
       'config' => Config::class,
       'database' => DB::class,
-      'route' => Route::class
+      'route' => Route::class,
+      'auth' => Auth::class
     ];
   }
 

@@ -150,3 +150,10 @@ if (!function_exists('config_path')) {
     return app()->config_path($path);
   }
 }
+
+if (!function_exists('resources_path')) {
+  function resources_path($path = '')
+  {
+    return app()->resources_path($path);
+  }
+}

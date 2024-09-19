@@ -1,11 +1,6 @@
 <?php
 namespace pluslib\Eloquent\Traits;
 
-use pluslib\Collections\Arr;
-use pluslib\Database\Expression;
-
-use function ucwords;
-
 trait HasAccessors
 {
 

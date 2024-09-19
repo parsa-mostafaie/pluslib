@@ -1,29 +1,56 @@
 <?php
 namespace pluslib;
 
-use pluslib\App\Models\User as BaseUser;
+use pluslib\Support\Config;
 
 class Auth
 {
-  protected static string $UserTable = BaseUser::class; // Not implemented, For Multi-db
-  static function LoginWith($username, $password)
+  protected ?string $model = null;
+  protected $session = 'auth_credentials';
+
+  public function __construct()
   {
-    return loginWith($username, $password);
+    $this->model = config('auth.model');
+    $this->session = config('auth.session', 'auth_credentials');
   }
-  static function canLogin()
+
+  public function login($credentials)
   {
-    return canlogin();
+    session_new_id();
+
+    return tap($this->checkWith($credentials), function ($state) use ($credentials) {
+      if ($state)
+        set_session($this->session, $credentials);
+    });
   }
-  static function canLoginWith($i, $p)
+
+  function check()
   {
-    return canLoginWith($i, $p);
+    return $this->checkWith($this->credentials());
   }
-  static function logout()
+
+  function checkWith($credentials)
   {
-    return signout();
+    return app()->call([$this->model, 'authenticate'], ['credentials'=>$credentials]);
   }
-  static function authAdmin()
+
+  function user()
   {
-    return authAdmin();
+    $credentials = $this->credentials();
+
+    return app()->call([$this->model, 'getAuthenticated'], ['credentials'=>$credentials]);
+  }
+
+  function credentials()
+  {
+    return get_session($this->session) ?: [];
+  }
+
+  function logout()
+  {
+    session__unset($this->session);
+    session_new_id();
+
+    return true;
   }
 }

@@ -50,15 +50,18 @@ trait CallMethod
       ||
       (is_string($callback) && !is_callable($callback))
     ) {
-      $segments = explode('@', $callback);
+      $callback = explode('@', $callback);
+    }
 
+    if (is_array($callback)) {
+      $segments = $callback;
       $method = count($segments) == 2 ? $segments[1] : $defaultMethod;
 
       if (is_null($method)) {
         throw new InvalidArgumentException('Method not provided.');
       }
 
-      return [$this->make($segments[0]), $method];
+      return [is_object($segments[0]) ? $segments[0] : $this->make($segments[0]), $method];
     }
 
     return $callback;

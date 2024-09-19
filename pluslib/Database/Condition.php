@@ -48,45 +48,16 @@ class Condition
     return !is_string($operator) || !in_array(strtolower($operator), static::operators, true);
   }
 
-  public static function TextSearch($searchInput, ...$cols)
-  {
-    $instance = new static(static::False);
-
-    foreach ($cols as $col) {
-      $instance->or($col, 'like', $searchInput);
-    }
-    
-    return $instance;
-  }
-  protected string $cond;
-  public static function Objectify($val)
-  {
-    if ($val instanceof static) {
-      return $val;
-    } else {
-      return new static($val);
-    }
-  }
-
-  public static function Stringify($val)
-  {
-    if ($val instanceof static) {
-      return $val->cond;
-    } else {
-      return $val;
-    }
-  }
+  protected ?string $cond = null;
 
   // Construct
-  public function __construct($cond = "1 = 1", $operator = null, $value = null)
+  public function __construct($cond = null, $operator = null, $value = null)
   {
     if ($cond instanceof static) {
-      if ($cond instanceof Expression) {
-        $cond = $cond->raw;
-      }
       $this->cond = $cond;
       return;
     }
+
     if ($cond instanceof \Closure) {
       $this->cond = static::True;
       $cond($this);
@@ -94,7 +65,6 @@ class Condition
     }
 
     if (is_array($cond)) {
-      $this->cond = static::True;
       foreach ($cond as $key => $item) {
         if (!is_numeric($key)) {
           $this->and(new static($key, $item));
@@ -113,7 +83,8 @@ class Condition
       $this->cond = escape_col($cond) . " $operator " . escape($value);
       return;
     }
-    $this->cond = !empty($cond) ? $cond : static::True;
+
+    $this->cond = !empty($cond) ? (string) $cond : (is_null($cond) ? null : static::False);
   }
 
   // Operator
@@ -132,19 +103,19 @@ class Condition
   public function extra($cond, $operator = null, $value = null, $boolean = 'and')
   {
     $cond = new static(...[$cond, $operator, $value]);
-    $this->cond .= " $boolean ($cond)";
+
+    if ($this->cond)
+      $this->cond .= " $boolean ($cond)";
+    else
+      $this->cond = (string) $cond;
+
     return $this;
   }
 
   // Convert
-  public function Generate()
-  {
-    return static::Stringify($this);
-  }
-
   public function __toString()
   {
-    return static::Stringify($this);
+    return $this->cond ?? static::True;
   }
 
 }

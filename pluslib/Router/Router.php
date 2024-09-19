@@ -201,6 +201,10 @@ class Router
     return $f(...$args);
   }
 
+  public function make($class){
+    return app()->make($class);
+  }
+
   // methods
   protected $allowed_directs = ['get', 'post', 'delete', 'put', 'head'];
 

@@ -17,3 +17,14 @@ function response($body = '', $status = 200, $headers = [])
 {
   return (new Response)->setBody($body)->setHeaders($headers)->status($status);
 }
+
+function auth()
+{
+  return app('auth');
+}
+
+function view($path){
+  (fn()=>require(resources_path(join_paths('views', $path.'.php'))))();
+
+  // TODO Return Response
+}

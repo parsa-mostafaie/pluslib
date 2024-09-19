@@ -18,8 +18,9 @@ spl_autoload_register(function ($class) {
       continue;
     }
 
+    $class = ltrim($class, $namespace);
 
-    $classPath = join_paths($dir, "/$class.php");
+    $classPath = join_paths($dir, "$class.php");
     $classPathDefault = join_paths($dir, $class, basename($class) . ".php");
 
     $classPath = regular_url($classPath);
@@ -40,4 +41,4 @@ spl_autoload_register(function ($class) {
 });
 
 // Default Autoloads: Pluslib
-pls_autoload('pluslib', __DIR__);
+pls_autoload('pluslib\\', __DIR__.'/pluslib');

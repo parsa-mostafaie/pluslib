@@ -2,10 +2,8 @@
 namespace pluslib\Eloquent;
 
 use ArrayAccess;
-use pluslib\Database\Expression;
 use pluslib\Eloquent\Traits\HasAttributes;
 use pluslib\Eloquent\Traits\HasFilteredAttributes;
-use Sql_DB;
 use pluslib\Database\Table;
 use \Exception;
 use pluslib\Eloquent\Traits\HasRelations;

@@ -18,7 +18,7 @@ trait HasRelations
    * related records (loaded through relationships)
    * @var array
    */
-  protected $_related;
+  protected $_related = [];
 
 
   /**

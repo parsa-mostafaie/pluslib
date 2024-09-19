@@ -407,12 +407,12 @@ class Response
 
   public static function from($value)
   {
-    if (is_string($value) || $value instanceof Stringable) {
-      return response()->setBody((string) $value);
-    } else if (is_array($value) || $value instanceof JsonSerializable) {
-      return response()->json($value);
-    } else if ($value instanceof static) {
+    if ($value instanceof static) {
       return $value;
+    } else if (is_string($value) || $value instanceof Stringable) {
+      return response()->setBody((string) $value);
+    } else if (isJsonConvertible($value) && (!is_object($value) || $value instanceof JsonSerializable)) {
+      return response()->json($value);
     }
 
     return response();

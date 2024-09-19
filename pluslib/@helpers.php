@@ -260,10 +260,15 @@ function pls_exception_handler(Throwable $throwable)
   if ($throwable instanceof ModelNotFoundException) {
     response()->status(404)->send();
   }
-  $pre = "color: whitesmoke; background-color: blue; font-family: Consolas; padding: 5px; border-radius: 3px";
+  $pre = "color: whitesmoke; background-color: blue; font-family: Consolas; padding: 5px; border-radius: 3px;";
   $pre_ = "color: white; background-color: darkblue; font-family: Consolas; padding: 5px; border-radius: 3px";
   ?>
-  <div style="color: white; background-color:black; border-radius: 5px; padding: 15px; font-family: sans-serif">
+  <style>
+    .child-text-wrap * {
+      text-wrap: inherit;
+    }
+  </style>
+  <div class="child-text-wrap" style="color: white; background-color:black; border-radius: 5px; padding: 15px; font-family: sans-serif; text-wrap: wrap;">
     <b style="color: red"><?= get_class($throwable) ?></b>
     <i style="background-color: blueviolet; padding: 5px; border-radius: 3px"><?= $throwable->getCode() ?></i>
 
@@ -338,6 +343,15 @@ if (!function_exists('windows_os')) {
   {
     return PHP_OS_FAMILY === 'Windows';
   }
+}
+
+function isJsonConvertible($value)
+{
+  // Attempt to encode the value
+  $json = json_encode($value);
+
+  // Check if encoding was successful
+  return $json !== false && json_last_error() === JSON_ERROR_NONE;
 }
 
 include_once '@info.php';

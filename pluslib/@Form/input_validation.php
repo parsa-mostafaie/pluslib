@@ -219,6 +219,22 @@ function is_unique(array $data, string $field, string $table, string $column): b
   return $stmt->fetchColumn() === false;
 }
 
+function validateUsername($userName)
+{
+  if (preg_match('/^[A-Za-z][0-9A-Za-z_-]{2,24}$/', $userName)) {
+    return true;
+  }
+  return false;
+}
+function is_username(array $data, string $field): bool
+{
+  if (empty($data[$field])) {
+    return true;
+  }
+
+  return validateUsername($data[$field]);
+}
+
 // SANITIZE
 const FILTERS = [
   'string' => FILTER_SANITIZE_STRING,
