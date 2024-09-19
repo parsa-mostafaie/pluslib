@@ -40,6 +40,7 @@ class Application extends Container
   function getDefaultProviders()
   {
     return [
+      Providers\Timezone::class,
       Providers\Database::class,
       Providers\Security::class,
     ];

@@ -1,8 +1,6 @@
 <?php
 //NOTE: THIS NEED CUSTOMIZATION IN LINE THAT MARKED BY *
 
-date_default_timezone_set('Asia/Tehran');
-
 use pluslib\Database\Expression;
 
 use pluslib\Support\Facades\DB as dbFacade;
