@@ -23,8 +23,13 @@ function auth()
   return app('auth');
 }
 
-function view($path){
-  (fn()=>require(resources_path(join_paths('views', $path.'.php'))))();
-
-  // TODO Return Response
+function view($path)
+{
+  return response(
+    function () use ($path) {
+      ob_start();
+      require resources_path(join_paths('views', "$path.php"));
+      return ob_get_clean();
+    }
+  );
 }

@@ -4,6 +4,7 @@ namespace pluslib\HTTP;
 
 use JsonSerializable;
 use Stringable;
+use Closure;
 
 class Response
 {
@@ -275,17 +276,17 @@ class Response
    * ############################################################
    */
 
-  protected string $body = '';
+  protected string|Closure $body = '';
 
   /**
    * Sets body to be sent with the response.
    *
-   * @param $body string
+   * @param $body string|Closure
    *
    * @return self
    */
 
-  public function setBody(string $body): self
+  public function setBody(string|Closure $body): self
   {
     $this->body = $body;
 
@@ -295,11 +296,14 @@ class Response
   /**
    * Returns body to be sent with the response, or null if body has not been set.
    *
-   * @return string
+   * @return mixed
    */
 
-  public function getBody(): string
+  public function getBody($pure = false)
   {
+    if (!$pure)
+      return valueof($this->body);
+    
     return $this->body;
   }
 
