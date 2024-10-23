@@ -302,8 +302,8 @@ class Response
   public function getBody($pure = false)
   {
     if (!$pure)
-      return valueof($this->body);
-    
+      return $this->body = static::from($this->body)->getBody(true);
+
     return $this->body;
   }
 
@@ -414,12 +414,14 @@ class Response
     if ($value instanceof static) {
       return $value;
     } else if (is_string($value) || $value instanceof Stringable) {
-      return response()->setBody((string) $value);
+      return (new static)->setBody((string) $value);
     } else if (isJsonConvertible($value) && (!is_object($value) || $value instanceof JsonSerializable)) {
-      return response()->json($value);
+      return (new static)->json($value);
+    } else if (is_callable($value)) {
+      return static::from(value($value));
     }
 
-    return response();
+    return new static;
   }
 
   public function status($status_code)
