@@ -14,7 +14,7 @@ class DB extends PDO
     public readonly string $engine = 'mysql'
   ) {
     parent::__construct(
-      "$engine:hostname=$host;dbname=$db;charset=$charset",
+      "$engine:host=$host;dbname=$db;charset=$charset",
       $this->username,
       $this->password
     );
