@@ -23,11 +23,12 @@ function auth()
   return app('auth');
 }
 
-function view($path)
+function view($path, $props = [])
 {
   return response(
-    function () use ($path) {
+    function () use ($path, $props) {
       ob_start();
+      extract($props);
       require resources_path(join_paths('views', "$path.php"));
       return ob_get_clean();
     }
