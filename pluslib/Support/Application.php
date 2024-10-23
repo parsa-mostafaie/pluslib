@@ -12,7 +12,6 @@ use pluslib\Support\Traits\WithPaths;
 class Application extends Container
 {
   use WithPaths;
-  public $devmode = true;
   public $friend_origins = [];
   public $anti_xss_header = true;
   public $login_path;
@@ -43,6 +42,7 @@ class Application extends Container
       Providers\Timezone::class,
       Providers\Database::class,
       Providers\Security::class,
+      Providers\DebugMode::class
     ];
   }
 
@@ -56,6 +56,11 @@ class Application extends Container
     return $this;
   }
 
+  function isDebug()
+  {
+    return config('app.debug_mode', true);
+  }
+
   public function invalidSessionRedirect($why = 'invses')
   {
     redirect(url($this->login_path, ['why' => $why]), true)->send();
@@ -63,14 +68,6 @@ class Application extends Container
 
   function init()
   {
-    if (!$this->devmode) {
-      // Product mode
-      ini_set('display_errors', '0');
-    } else {
-      // Dev Mode
-      ini_set('display_errors', 'On');
-    }
-
     set_exception_handler('pls_exception_handler');
 
     $this->boot();
@@ -96,7 +93,8 @@ class Application extends Container
   }
 
   // TODO Move to filesystem
-  static function symlink($target, $link){
+  static function symlink($target, $link)
+  {
     if (!windows_os()) {
       return symlink($target, $link);
     }
@@ -106,7 +104,8 @@ class Application extends Container
     exec("mklink /{$mode} " . escapeshellarg($link) . ' ' . escapeshellarg($target));
   }
 
-  function host(){
+  function host()
+  {
     return env('APP_URL', $_SERVER['HTTP_HOST'] ?? 'localhost:8000');
   }
 }

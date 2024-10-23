@@ -363,5 +363,4 @@ include_once 'Collections/@helpers.php';
 include_once 'Security/@helpers.php';
 include_once '@Form/@helpers.php';
 include_once 'Database/@helpers.php';
-include_once 'SEO/@helpers.php';
 include_once '@facades.php';
