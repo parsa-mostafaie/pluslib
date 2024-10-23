@@ -105,4 +105,8 @@ class Application extends Container
 
     exec("mklink /{$mode} " . escapeshellarg($link) . ' ' . escapeshellarg($target));
   }
+
+  function host(){
+    return env('APP_URL', $_SERVER['HTTP_HOST'] ?? 'localhost:8000');
+  }
 }

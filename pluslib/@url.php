@@ -1,4 +1,5 @@
 <?php
+use pluslib\Support\Facades\Application;
 
 function basepath($path='')
 {
@@ -114,7 +115,7 @@ if (!function_exists('url')) {
 
     $scheme = $parsed['scheme'] ?? ($auto_host ? substr(i_protocol(), 0, -3) : '');
 
-    $host = $parsed['host'] ?? ($auto_host ? $_SERVER['HTTP_HOST'] : '');
+    $host = $parsed['host'] ?? ($auto_host ? Application::host() : '');
 
     return build_url(array_merge($parsed, [
       'query' => $query,
