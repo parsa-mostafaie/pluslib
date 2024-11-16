@@ -43,12 +43,6 @@ if (!function_exists('value')) {
   }
 }
 
-function importJSON($file, $assoc = null, $depth = 512, $flags = 0)
-{
-  return json_decode(file_get_contents($file), $assoc, $depth, $flags);
-}
-
-
 function number_format_short($n, $precision = 1)
 {
   if ($n < 900) {

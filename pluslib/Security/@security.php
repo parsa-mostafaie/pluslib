@@ -87,16 +87,6 @@ function anti_xss($html)
   return $dom->saveHTML();
 }
 
-function secretFile($addr = null)
-{
-  static $address = null;
-  $default = basepath('/secret.json');
-  if (!is_null($addr)) {
-    $address = $addr;
-  }
-  return importJSON($address ?? $default, true);
-}
-
 if (!function_exists('e')) {
   /**
    * Alias for htmlspecialchars
