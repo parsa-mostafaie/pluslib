@@ -184,6 +184,11 @@ class Response
     ];
   }
 
+  public static function getStatusPhrase($code)
+  {
+    return static::valid_status_codes[$code];
+  }
+
   /**
    * Headers
    */

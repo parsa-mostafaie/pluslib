@@ -31,10 +31,10 @@ class Router
   {
     return $this->normalizeURL(
       web_url(
-          join_paths(
-            $this->base_path,
-            $path
-          )
+        join_paths(
+          $this->base_path,
+          $path
+        )
       )
     );
   }
@@ -142,7 +142,7 @@ class Router
     if (($res = $this->compareRoutesAndURL())) {
       Response::from($this->callFunctionWithArray($res['route']['callback'], $res['params']))->send();
     } else {
-      response()->status(404)->send();
+      abort(404);
     }
   }
 
@@ -201,7 +201,8 @@ class Router
     return $f(...$args);
   }
 
-  public function make($class){
+  public function make($class)
+  {
     return app()->make($class);
   }
 

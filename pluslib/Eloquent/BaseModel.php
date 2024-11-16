@@ -92,7 +92,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable, RouteParamete
    */
   protected function _newSelect($cols = '*')
   {
-    return new Select(static::_getTable(), $cols, $this);
+    return new Select(static::_getTable(), $this, $cols);
   }
 
   //! Selecting static methods
@@ -131,7 +131,7 @@ abstract class BaseModel implements ArrayAccess, JsonSerializable, RouteParamete
    */
   public static function findOrFail($id)
   {
-    return tap(static::find($id), fn($v) => $v || (throw new ModelNotFoundException('Model Of Type ' . static::class . ' Was Not Found!')));
+    return tap(static::find($id), fn($v) => $v || (throw new ModelNotFoundException(static::class)));
   }
 
   public static function fromRoute($id): static

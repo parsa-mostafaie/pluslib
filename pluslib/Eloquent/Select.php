@@ -18,8 +18,8 @@ class Select extends BaseSelect
 
   public function __construct(
     Table $table,
-    string|array $cols = ['*'],
-    $model
+    $model = null,
+    string|array $cols = ['*']
   ) {
     parent::__construct($table, $cols);
 

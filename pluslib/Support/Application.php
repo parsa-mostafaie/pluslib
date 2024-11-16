@@ -8,10 +8,12 @@ use pluslib\Support\Facades\Facade;
 use pluslib\Database\DB;
 use pluslib\Router\Router as Route;
 use pluslib\Support\Traits\WithPaths;
+use pluslib\View\View;
 
 class Application extends Container
 {
-  use WithPaths;
+  use WithPaths, Traits\WithModes;
+
   public $friend_origins = [];
   public $anti_xss_header = true;
   public $login_path;
@@ -29,6 +31,7 @@ class Application extends Container
   {
     return [
       'application' => static::class,
+      'view' => View::class,
       'config' => Config::class,
       'database' => DB::class,
       'route' => Route::class,
@@ -39,6 +42,7 @@ class Application extends Container
   function getDefaultProviders()
   {
     return [
+      Providers\View::class,
       Providers\Timezone::class,
       Providers\Database::class,
       Providers\Security::class,
@@ -56,11 +60,6 @@ class Application extends Container
     return $this;
   }
 
-  function isDebug()
-  {
-    return config('app.debug_mode', true);
-  }
-
   public function invalidSessionRedirect($why = 'invses')
   {
     redirect(url($this->login_path, ['why' => $why]), true)->send();
@@ -68,8 +67,6 @@ class Application extends Container
 
   function init()
   {
-    set_exception_handler('pls_exception_handler');
-
     $this->boot();
   }
 
@@ -80,7 +77,7 @@ class Application extends Container
     parent::boot();
   }
 
-  static function configure($basepath)
+  static function configure($basepath = '')
   {
     $instance = new static;
     $instance['application'] = $instance;

@@ -1,6 +1,7 @@
 <?php
 namespace pluslib\Support\Providers;
 
+use pluslib\Support\Exception\Handler;
 use pluslib\Support\ServiceProvider;
 
 class DebugMode extends ServiceProvider
@@ -18,8 +19,13 @@ class DebugMode extends ServiceProvider
     } else {
       error_reporting(0);
       ini_set('display_errors', 0);
-      ini_set('log_errors', 1);
-      ini_set('error_log', storage_path("logs/errors.log"));
+    }
+
+    ini_set('log_errors', 1);
+    ini_set('error_log', storage_path("logs/errors.log"));
+
+    if (php_sapi_name() != 'cli') {
+      set_exception_handler([Handler::class, 'handle']);
     }
   }
 }

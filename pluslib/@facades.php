@@ -3,6 +3,8 @@
 use pluslib\HTTP\Response;
 use pluslib\Support\Facades\Application;
 use pluslib\Support\Facades\Facade;
+use pluslib\Support\Facades\View;
+use pluslib\View\ViewNotFoundException;
 
 function app($accessor = 'application')
 {
@@ -27,10 +29,13 @@ function view($path, $props = [])
 {
   return response(
     function () use ($path, $props) {
-      ob_start();
-      extract($props);
-      require resources_path(join_paths('views', "$path.php"));
-      return ob_get_clean();
+      if ($rpath = View::resolvePath($path)) {
+        ob_start();
+        extract($props);
+        require $rpath;
+        return ob_get_clean();
+      } else
+        throw new ViewNotFoundException($path);
     }
   );
 }

@@ -1,5 +1,7 @@
 <?php
 
+use pluslib\HTTP\HTTPException;
+
 function redirect($url, $back = false, $backURL = null, $status = 301)
 {
   $params = [];
@@ -21,7 +23,7 @@ function API_ORIGIN_header()
   if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $accepted_origins)) {
     header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
   } else {
-    response(null, 403, [])->send();
+    abort(403);
   }
 }
 
@@ -33,4 +35,9 @@ function API_header()
 function pls_content_type($type = 'application/json', $charset = 'utf8')
 {
   header("Content-type: $type; charset=$charset");
+}
+
+function abort($code, $message = '', $headers = [])
+{
+  throw new HTTPException($code, $message, $headers);
 }
